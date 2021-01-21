@@ -1,0 +1,40 @@
+﻿<Window x:Class="DiaryApp.Login"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DiaryApp"
+        mc:Ignorable="d"
+        Title="Diary App - Login" Height="320" Width="370"
+        WindowStartupLocation="CenterScreen" 
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="10"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}" 
+        ResizeMode="NoResize" ShowInTaskbar="False" WindowStyle="None">
+  <Grid>
+    <StackPanel>
+      <materialDesign:Card x:Name="cardHeader" Grid.Row="0" Padding="10" Margin="0" materialDesign:ShadowAssist.ShadowDepth="Depth3"   Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2" MouseDown="cardHeader_MouseDown">
+        <StackPanel Height="29" Margin="0,0,0,0">
+          <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" VerticalAlignment="Stretch" Style="{DynamicResource MaterialDesignTitleTextBlock}" FontSize="20" >Login</TextBlock>
+          <Button x:Name="btnClose" Content="×" HorizontalAlignment="Right" Margin="0,-36,0,0" Width="54" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontFamily="Bahnschrift" FontSize="40" Click="BtnClose_Click" Height="45" />
+        </StackPanel>
+      </materialDesign:Card>
+      <StackPanel Margin="25">
+        <TextBox x:Name="txtBoxUserName" Margin="20,0,0,0" materialDesign:HintAssist.Hint="Username" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" FontSize="20" Grid.Row="1"/>
+        <PasswordBox x:Name="txtBoxPassword" Margin="20,0,0,0" materialDesign:HintAssist.Hint="Password" Style="{DynamicResource MaterialDesignFloatingHintPasswordBox}" FontSize="20" Grid.Row="1" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+          <Button x:Name="btnLogin" Margin="15 20" Content="Login" FontSize="18" ToolTip="Login" Click="BtnLogin_Click"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+          <Label Content="No login? " Style="{DynamicResource MaterialDesignLabel}" FontSize="13"/>
+          <Button x:Name="btnRegister" Margin="-15 -4 0 0" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Sign up" Content="Sign up now" Click="BtnSignUpLogin_Click" />
+        </StackPanel>
+      </StackPanel>
+    </StackPanel>
+  </Grid>
+</Window>
