@@ -1,6 +1,6 @@
 ﻿using System.Data.Entity;
 
-namespace DiaryApp
+namespace DiaryApp.Control
 {
   public class DiaryContext : DbContext
   {

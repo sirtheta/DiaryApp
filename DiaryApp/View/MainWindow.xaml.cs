@@ -1,17 +1,14 @@
-﻿using MaterialDesignThemes.Wpf;
-using Microsoft.Win32;
+﻿using DiaryApp.Control;
+using Notifications.Wpf.Core;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Linq;
 using System.Data.Entity;
-using Notifications.Wpf.Core;
-using System.Windows.Input;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace DiaryApp
 {
@@ -23,18 +20,11 @@ namespace DiaryApp
     List<DiaryEntryDb> lstEntry = new List<DiaryEntryDb>();
     List<TagDb> lstTag = new List<TagDb>();
 
-
-    public static void ShowMessageBox(string messageStr, MessageType type, MessageButtons buttons) => new CustomMessageBox(messageStr, type, buttons).ShowDialog();
-
     public MainWindow()
     {
       InitializeComponent();
-      //If Database propertys has changed, drop the table and create an empty db
-      Database.SetInitializer(new DropCreateDatabaseIfModelChanges<DiaryContext>());
       GetCheckBoxTags();
       GetDataGridEntrys();
-      DatabaseHelper.AddTags();
-      DatabaseHelper.CreateTestUser();
     }
 
     private void GetDataGridEntrys()
@@ -94,7 +84,6 @@ namespace DiaryApp
         }
         sb.Append(chkBxBirthday.Content);
       }
-
       return Regex.Replace(sb.ToString(), "[^A-Za-z0-9, ]", "");
     }
 
@@ -110,7 +99,7 @@ namespace DiaryApp
         date = DateTime.Now.ToString("dd. MMMM yyyy");
       }
 
-      string tag = CreateTagText(); //TODO
+      string tag = CreateTagText();
       if (entryInputText.Text != "")
       {
         using (var db = new DiaryContext())
@@ -123,40 +112,38 @@ namespace DiaryApp
         //after adding new Entry, update the DataGrid
         dgManageEntrys.Items.Refresh();
         entryInputText.Text = "";
-        ShowNotification("Success", "Your diary entry is saved successfull", NotificationType.Success);
+        Helper.ShowNotification("Success", "Your diary entry is saved successfull", NotificationType.Success);
       }
       else
       {
-        ShowMessageBox("No text to Save. Please write your diarytext before saving!", MessageType.Error, MessageButtons.Ok);
+        Helper.ShowMessageBox("No text to Save. Please write your diarytext before saving!", MessageType.Error, MessageButtons.Ok);
       }
     }
 
     private void DeleteSelectedEntry()
     {
+
+
       if (dgManageEntrys.SelectedItem is DiaryEntryDb entrys)
       {
-        lstEntry.Remove(entrys);
-        using (var db = new DiaryContext())
+        if (Helper.ShowMessageBox("Delete selected entry?", MessageType.Confirmation, MessageButtons.YesNo))
         {
-          db.Entry(entrys).State = EntityState.Deleted;
-          db.SaveChanges();
+          lstEntry.Remove(entrys);
+          using (var db = new DiaryContext())
+          {
+            db.Entry(entrys).State = EntityState.Deleted;
+            db.SaveChanges();
+          }
+          //after deleting Entry, update the DataGrid
+          dgManageEntrys.Items.Refresh();
+          entryInputText.Text = "";
+          Helper.ShowNotification("Success", "Diary Entry Successfull deleted", NotificationType.Success); 
         }
-        //after deleting Entry, update the DataGrid
-        dgManageEntrys.Items.Refresh();
-        entryInputText.Text = "";
-        ShowNotification("Success", "Diary Entry Successfull deleted", NotificationType.Success);
       }
       else
       {
-        ShowNotification("Error", "No entry selected!", NotificationType.Error);
+        Helper.ShowNotification("Error", "No entry selected!", NotificationType.Error);
       }
-    }
-
-    private void ShowNotification(string titel, string message, NotificationType type)
-    {
-      var notificationManager = new NotificationManager();
-      notificationManager.ShowAsync(new NotificationContent { Title = titel, Message = message, Type = type },
-              areaName: "WindowArea");
     }
 
 

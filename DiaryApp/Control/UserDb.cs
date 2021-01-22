@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DiaryApp
+namespace DiaryApp.Control
 {
   public class UserDb
   {
