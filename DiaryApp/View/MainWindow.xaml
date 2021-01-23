@@ -5,6 +5,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:notifications="clr-namespace:Notifications.Wpf.Core.Controls;assembly=Notifications.Wpf.Core"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"      
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -14,7 +15,7 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="DiaryApp" Height="580" Width="900" ResizeMode="NoResize" WindowStyle="None">
+        Title="DiaryApp" Height="900" Width="900" ResizeMode="NoResize" WindowStyle="None">
   <Grid>
     <notifications:NotificationArea Panel.ZIndex="10" 
               MaxItems="3"
@@ -26,53 +27,42 @@
           <RowDefinition Height="auto"/>
           <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <materialDesign:Card x:Name="cardHeader" Grid.Row="0" Padding="10" Margin="0" materialDesign:ShadowAssist.ShadowDepth="Depth3"   Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2" MouseDown="cardHeader_MouseDown">
-          <StackPanel>
-            <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" Style="{DynamicResource MaterialDesignTitleTextBlock}" FontSize="20" >Diary App</TextBlock>
-            <Button x:Name="btnClose" Content="×" HorizontalAlignment="Right" Margin="0,-36,0,0" Width="54" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontFamily="Bahnschrift" FontSize="40" Click="BtnClose_Click" Height="45" />
-          </StackPanel>
+        <materialDesign:Card x:Name="cardHeader" Grid.Row="0" Padding="10" Margin="0" materialDesign:ShadowAssist.ShadowDepth="Depth3"   Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2" MouseDown="CardHeader_MouseDown">
+          <Grid>
+            <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" FontSize="25" >Diary App</TextBlock>
+            <Button x:Name="btnClose" Content="×" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontFamily="Bahnschrift" FontSize="40" ToolTip="Close" Click="BtnClose_Click" Height="45" />
+          </Grid>
         </materialDesign:Card>
       </Grid>
-      <TabControl Style="{DynamicResource MaterialDesignTabControl}">
-        <!--Create new diary Entry Tab-->
-        <TabItem Name="createEntry" Header="Create new entry">
-          <Grid Height="460">
-            <StackPanel>
-              <TextBox x:Name="entryInputText" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,30,0,0" materialDesign:HintAssist.Hint="Your diarytext here" Style="{DynamicResource MaterialDesignOutlinedTextFieldTextBox}" TextWrapping="Wrap" FontSize="15" Width="350" Height="350"/>
-              <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="22,0,0,-50" Width="150">
-                <Button x:Name="btnSaveEntry" Panel.ZIndex="100" Margin="15" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Save Entry" FontSize="18" ToolTip="Save Entry" Click="BtnSaveEntry_Click"/>
-              </StackPanel>
-              <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="160,-12,0,-50" Width="150">
-                <Button x:Name="btnAddImage" Panel.ZIndex="100" Margin="15" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Add Image" FontSize="18" ToolTip="Add Image" Click="BtnAddImage_Click"/>
-              </StackPanel>
-            </StackPanel>
-            <StackPanel x:Name="chkBxStkPanel" Width="260" HorizontalAlignment="Left" Margin="369,30,0,106">
-              <CheckBox x:Name="chkBxFamily" Style="{DynamicResource MaterialDesignCheckBox}" FontSize="15"></CheckBox>
-              <CheckBox x:Name="chkBxFriends" Style="{DynamicResource MaterialDesignCheckBox}" FontSize="15"></CheckBox>
-              <CheckBox x:Name="chkBxBirthday" Style="{DynamicResource MaterialDesignCheckBox}" FontSize="15"></CheckBox>
-            </StackPanel>
-            <Calendar x:Name="calendar" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,10,0" Style="{DynamicResource MaterialDesignCalendarPortrait}" />
-          </Grid>
-        </TabItem>
-        <!--Manage Entry Tab-->
-        <TabItem x:Name="manageEntry" Header="Manage your entrys">
-          <Grid>
-            <StackPanel>
-              <DataGrid x:Name="dgManageEntrys" AutoGenerateColumns="False" CanUserAddRows="False" Height="381" Style="{DynamicResource MaterialDesignDataGrid}">
-                <DataGrid.Columns>
-                  <DataGridTextColumn Header="Id" IsReadOnly="True" Binding="{Binding EntryId}"/>
-                  <DataGridTextColumn Header="Text" MaxWidth="200" Binding="{Binding Text}" />
-                  <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" />
-                  <DataGridTextColumn Header="Date" Binding="{Binding Date}" />
-                </DataGrid.Columns>
-              </DataGrid>
-              <StackPanel Width="260" HorizontalAlignment="Left" Margin="30,10,0,0">
-                <Button x:Name="btnDeleteEntry" Margin="0,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Delete selected entry" FontSize="18" ToolTip="Delete selected entry" Click="BtnDeleteSelected_Click"/>
-              </StackPanel>
-            </StackPanel>
-          </Grid>
-        </TabItem>
-      </TabControl>
+      <Grid Height="460">
+        <StackPanel Orientation="Horizontal">
+          <StackPanel>
+            <TextBox x:Name="entryInputText" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,30,0,0" materialDesign:HintAssist.Hint="Your diarytext here" Style="{DynamicResource MaterialDesignOutlinedTextFieldTextBox}" TextWrapping="Wrap" FontSize="15" Width="350" Height="350"/>
+          </StackPanel>
+          <StackPanel x:Name="chkBxStkPanel" Width="260" HorizontalAlignment="Left" Margin="10,30,0,0">
+            <CheckBox x:Name="chkBxFamily" Style="{DynamicResource MaterialDesignCheckBox}" FontSize="15"></CheckBox>
+            <CheckBox x:Name="chkBxFriends" Style="{DynamicResource MaterialDesignCheckBox}" FontSize="15"></CheckBox>
+            <CheckBox x:Name="chkBxBirthday" Style="{DynamicResource MaterialDesignCheckBox}" FontSize="15"></CheckBox>
+          </StackPanel>
+          <Calendar x:Name="calendar" DisplayDateEnd="{x:Static sys:DateTime.Today}" SelectedDate="{x:Static sys:DateTime.Today}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,10,0" ToolTip="Select date for diary entry" Style="{DynamicResource MaterialDesignCalendarPortrait}">
+          </Calendar>
+        </StackPanel>
+          <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Margin="20" HorizontalAlignment="Left" >
+            <Button x:Name="btnSaveEntry" Margin="0,0,20,0" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Save Entry" FontSize="18" ToolTip="Save Entry" Click="BtnSaveEntry_Click"/>
+            <Button x:Name="btnAddImage"  Margin="0" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Add Image" FontSize="18" ToolTip="Add Image" Click="BtnAddImage_Click"/>
+            <Button x:Name="btnDeleteEntry" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Delete selected entry" FontSize="18" ToolTip="Delete selected entry" Click="BtnDeleteSelected_Click"/>
+          </StackPanel>
+      </Grid>
+      <!--Manage Entry GridView-->
+      <Grid>
+        <DataGrid x:Name="dgManageEntrys" AutoGenerateColumns="False" CanUserAddRows="False" Style="{DynamicResource MaterialDesignDataGrid}" Width="900" Height="380">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Date" IsReadOnly="True" Binding="{Binding Date}" />
+            <DataGridTextColumn Header="Tag" IsReadOnly="True" Binding="{Binding Tag}" />
+            <DataGridTextColumn Header="Text" IsReadOnly="True" MaxWidth="200" Binding="{Binding Text}" />
+          </DataGrid.Columns>
+        </DataGrid>
+      </Grid>
     </StackPanel>
   </Grid>
 </Window>

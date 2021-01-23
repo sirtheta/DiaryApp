@@ -1,11 +1,7 @@
 ﻿using DiaryApp.Control;
+using MaterialDesignThemes.Wpf;
 using Notifications.Wpf.Core;
 using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -17,128 +13,44 @@ namespace DiaryApp
   /// </summary>
   public partial class MainWindow : Window
   {
-    List<DiaryEntryDb> lstEntry = new List<DiaryEntryDb>();
-    List<TagDb> lstTag = new List<TagDb>();
+    //List<DiaryEntryDb> lstEntry = new List<DiaryEntryDb>();
+
 
     public MainWindow()
     {
       InitializeComponent();
-      GetCheckBoxTags();
-      GetDataGridEntrys();
+      InitializeContent();
     }
 
-    private void GetDataGridEntrys()
+    private void InitializeContent()
     {
-      using (var db = new DiaryContext())
-      {
-        var query = from b in db.DiaryEntrys
-                    orderby b.EntryId
-                    select b;
-
-        foreach (var item in query)
-        {
-          lstEntry.Add(item);
-        }
-      }
-      dgManageEntrys.ItemsSource = lstEntry;
-    }
-
-    private void GetCheckBoxTags()
-    {
-      using (var db = new DiaryContext())
-      {
-        var query = from b in db.Tags
-                    orderby b.TagID
-                    select b;
-
-        foreach (var item in query)
-        {
-          lstTag.Add(item);
-        }
-      }
+      Logic logic = new Logic();
+      var lstTag = logic.LstTag;
       chkBxFamily.Content = lstTag[0].TagText;
       chkBxFriends.Content = lstTag[1].TagText;
       chkBxBirthday.Content = lstTag[2].TagText;
+      dgManageEntrys.ItemsSource = logic.LstEntry;
     }
 
-    private string CreateTagText()
+    #region Events
+    private void BtnSaveEntry_Click(object sender, RoutedEventArgs e)
     {
-      StringBuilder sb = new StringBuilder();
-      if ((bool)chkBxFamily.IsChecked)
-      {
-        sb.Append(chkBxFamily.Content);
-      }
-      if ((bool)chkBxFriends.IsChecked)
-      {
-        if (sb.Length != 0)
-        {
-          sb.Append(", ");
-        }
-        sb.Append(chkBxFriends.Content);
-      }
-      if ((bool)chkBxBirthday.IsChecked)
-      {
-        if (sb.Length != 0)
-        {
-          sb.Append(", ");
-        }
-        sb.Append(chkBxBirthday.Content);
-      }
-      return Regex.Replace(sb.ToString(), "[^A-Za-z0-9, ]", "");
+      Logic saveLogic = new Logic(entryInputText.Text, (bool)chkBxFamily.IsChecked, (bool)chkBxFriends.IsChecked, (bool)chkBxBirthday.IsChecked, calendar.SelectedDate.Value);
+      dgManageEntrys.ItemsSource = saveLogic.SaveEntry();
+
+      //clear text in input field and checkBoxes
+      entryInputText.Text = "";
+      chkBxFamily.IsChecked = false;
+      chkBxFriends.IsChecked = false;
+      chkBxBirthday.IsChecked = false;
     }
 
-    private void SaveEntry()
+    private void BtnDeleteSelected_Click(object sender, RoutedEventArgs e)
     {
-      string date;
-      if (calendar.SelectedDate != null)
-      {
-        date = calendar.SelectedDate.Value.ToString("dd. MMMM yyyy");
-      }
-      else
-      {
-        date = DateTime.Now.ToString("dd. MMMM yyyy");
-      }
-
-      string tag = CreateTagText();
-      if (entryInputText.Text != "")
-      {
-        using (var db = new DiaryContext())
-        {
-          var newEntry = new DiaryEntryDb() { Text = entryInputText.Text, Date = date, Tag = tag };
-          db.DiaryEntrys.Add(newEntry);
-          db.SaveChanges();
-          lstEntry.Add(newEntry);
-        }
-        //after adding new Entry, update the DataGrid
-        dgManageEntrys.Items.Refresh();
-        entryInputText.Text = "";
-        Helper.ShowNotification("Success", "Your diary entry is saved successfull", NotificationType.Success);
-      }
-      else
-      {
-        Helper.ShowMessageBox("No text to Save. Please write your diarytext before saving!", MessageType.Error, MessageButtons.Ok);
-      }
-    }
-
-    private void DeleteSelectedEntry()
-    {
-
-
       if (dgManageEntrys.SelectedItem is DiaryEntryDb entrys)
       {
-        if (Helper.ShowMessageBox("Delete selected entry?", MessageType.Confirmation, MessageButtons.YesNo))
-        {
-          lstEntry.Remove(entrys);
-          using (var db = new DiaryContext())
-          {
-            db.Entry(entrys).State = EntityState.Deleted;
-            db.SaveChanges();
-          }
-          //after deleting Entry, update the DataGrid
-          dgManageEntrys.Items.Refresh();
-          entryInputText.Text = "";
-          Helper.ShowNotification("Success", "Diary Entry Successfull deleted", NotificationType.Success); 
-        }
+        Logic deleteLogic = new Logic(entrys);
+        dgManageEntrys.ItemsSource = deleteLogic.DeleteSelectedEntry();
       }
       else
       {
@@ -146,20 +58,13 @@ namespace DiaryApp
       }
     }
 
-
-    #region Events
-    private void BtnSaveEntry_Click(object sender, RoutedEventArgs e)
-    {
-      SaveEntry();
-    }
-
-    private void BtnDeleteSelected_Click(object sender, RoutedEventArgs e)
-    {
-      DeleteSelectedEntry();
-    }
-
     private void BtnAddImage_Click(object sender, RoutedEventArgs e)
-    {
+    {  ////For Testing
+       //Logic logic = new Logic(calendar.SelectedDate.Value);
+       //Logic logic = new Logic((bool)chkBxFamily.IsChecked, (bool)chkBxFriends.IsChecked, (bool)chkBxBirthday.IsChecked);     
+       // dgManageEntrys.ItemsSource = logic.LstEntryByDate;
+
+      ////Add Image
       //OpenFileDialog dialog = new OpenFileDialog();
       //dialog.Filter = "Image files (*.jpg, *.jpeg, *.png) | *.jpg; *.jpeg; *.png";
       //if (dialog.ShowDialog() == true)
@@ -184,13 +89,14 @@ namespace DiaryApp
       Application.Current.Shutdown();
     }
 
-    private void cardHeader_MouseDown(object sender, MouseButtonEventArgs e)
+    private void CardHeader_MouseDown(object sender, MouseButtonEventArgs e)
     {
       DragMove();
-    } 
-    #endregion
+    }
 
-    //For Dark Theme switch implementation:
+    //private void BtnDarkSwitch_Click(object sender, RoutedEventArgs e)
+    //{
+    //  //For Dark Theme switch implementation:
     //  bool isDark = true;
     //  ITheme theme = _paletteHelper.GetTheme();
     //  IBaseTheme baseTheme = isDark ? new MaterialDesignDarkTheme() : (IBaseTheme)new MaterialDesignLightTheme();
@@ -199,4 +105,5 @@ namespace DiaryApp
     //}
     //private readonly PaletteHelper _paletteHelper = new PaletteHelper();
   }
+  #endregion
 }

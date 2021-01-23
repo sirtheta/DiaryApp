@@ -34,7 +34,7 @@ namespace DiaryApp
     #region Events
     private void Window_KeyDown(object sender, KeyEventArgs e)
     {
-      if (e.Key == Key.Enter)
+        if (e.Key == Key.Enter)
       {
         Login();
       }

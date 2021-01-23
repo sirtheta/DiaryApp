@@ -63,10 +63,10 @@
                 <ColumnDefinition Width="*"/>
               </Grid.ColumnDefinitions>
 
-              <Button x:Name="btnOk" Click="BtnOk_Click" Grid.Column="1" Style="{StaticResource MaterialDesignRaisedButton}" Margin="5" Width="100" Content="OK" ToolTip="OK"/>
-              <Button x:Name="btnCancel" Click="BtnCancel_Click" Grid.Column="2" Style="{StaticResource MaterialDesignRaisedButton}" Margin="5" Width="100" Content="Cancel" ToolTip="Cancel"/>
-              <Button x:Name="btnYes" Click="BtnYes_Click" Grid.Column="1" Style="{StaticResource MaterialDesignRaisedButton}" Margin="5" Width="100" Content="Yes" ToolTip="Yes"/>
-              <Button x:Name="btnNo" Click="BtnNo_Click" Grid.Column="2" Style="{StaticResource MaterialDesignRaisedButton}" Margin="5" Width="100" Content="No" ToolTip="No"/>
+              <Button x:Name="btnOk" Click="BtnOk_Click" Grid.Column="1" Style="{DynamicResource MaterialDesignRaisedButton}" Margin="5" Width="100" FontSize="18" Content="OK" ToolTip="OK"/>
+              <Button x:Name="btnCancel" Click="BtnCancel_Click" Grid.Column="2" Style="{DynamicResource MaterialDesignRaisedButton}" Margin="5" Width="100" FontSize="18"  Content="Cancel" ToolTip="Cancel"/>
+              <Button x:Name="btnYes" Click="BtnYes_Click" Grid.Column="1" Style="{DynamicResource MaterialDesignRaisedButton}" Margin="5" Width="100" FontSize="18" Content="Yes" ToolTip="Yes"/>
+              <Button x:Name="btnNo" Click="BtnNo_Click" Grid.Column="2" Style="{DynamicResource MaterialDesignRaisedButton}" Margin="5" Width="100" FontSize="18" Content="No" ToolTip="No"/>
             </Grid>
           </Grid>
         </Grid>

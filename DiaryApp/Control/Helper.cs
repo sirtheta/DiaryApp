@@ -1,5 +1,6 @@
 ﻿using Notifications.Wpf.Core;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 
 namespace DiaryApp.Control
@@ -17,6 +18,13 @@ namespace DiaryApp.Control
       notificationManager.ShowAsync(new NotificationContent { Title = titel, Message = message, Type = type },
               areaName: "WindowArea");
     }
+  }
+
+  public class DiaryContext : DbContext
+  {
+    public DbSet<DiaryEntryDb> DiaryEntrys { get; set; }
+    public DbSet<UserDb> Users { get; set; }
+    public DbSet<TagDb> Tags { get; set; }
   }
 
   public static class DatabaseHelper

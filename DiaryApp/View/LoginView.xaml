@@ -21,8 +21,8 @@
     <StackPanel>
       <materialDesign:Card x:Name="cardHeader" Grid.Row="0" Padding="10" Margin="0" materialDesign:ShadowAssist.ShadowDepth="Depth3"   Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2" MouseDown="CardHeader_MouseDown">
         <StackPanel Height="29" Margin="0,0,0,0">
-          <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" VerticalAlignment="Stretch" Style="{DynamicResource MaterialDesignTitleTextBlock}" FontSize="20" >Login</TextBlock>
-          <Button x:Name="btnClose" Content="×" HorizontalAlignment="Right" Margin="0,-36,0,0" Width="54" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontFamily="Bahnschrift" FontSize="40" Click="BtnClose_Click" Height="45" />
+          <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" VerticalAlignment="Stretch" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" FontSize="25" >Login</TextBlock>
+          <Button x:Name="btnClose" Content="×" HorizontalAlignment="Right" Margin="0,-36,0,0" Width="54" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontFamily="Bahnschrift" FontSize="40" ToolTip="Close" Click="BtnClose_Click" Height="45" />
         </StackPanel>
       </materialDesign:Card>
       <StackPanel Margin="25">
