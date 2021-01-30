@@ -1,7 +1,9 @@
-﻿using Notifications.Wpf.Core;
+﻿using DiaryApp.Model;
+using Notifications.Wpf.Core;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+
 
 namespace DiaryApp.Control
 {
@@ -24,25 +26,10 @@ namespace DiaryApp.Control
   {
     public DbSet<DiaryEntryDb> DiaryEntrys { get; set; }
     public DbSet<UserDb> Users { get; set; }
-    public DbSet<TagDb> Tags { get; set; }
   }
 
   public static class DatabaseHelper
   {
-    //Adding the Tags  to DB if DB is empty
-    public static void AddTags()
-    {
-      using (var db = new DiaryContext())
-      {
-        if (!db.Tags.Any())
-        {
-          db.Tags.Add(new TagDb { TagText = "Family" });
-          db.Tags.Add(new TagDb { TagText = "Friends" });
-          db.Tags.Add(new TagDb { TagText = "Birthday" });
-          db.SaveChanges();
-        }
-      }
-    }
 
     public static void CreateTestUser()//TODO
     {

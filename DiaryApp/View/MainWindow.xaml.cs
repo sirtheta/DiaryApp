@@ -1,7 +1,6 @@
 ﻿using DiaryApp.Control;
-using MaterialDesignThemes.Wpf;
+using DiaryApp.Model;
 using Notifications.Wpf.Core;
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -15,6 +14,7 @@ namespace DiaryApp
   {
     //List<DiaryEntryDb> lstEntry = new List<DiaryEntryDb>();
 
+    readonly MainWindowLogic logic = new MainWindowLogic();
 
     public MainWindow()
     {
@@ -24,19 +24,19 @@ namespace DiaryApp
 
     private void InitializeContent()
     {
-      Logic logic = new Logic();
       var lstTag = logic.LstTag;
-      chkBxFamily.Content = lstTag[0].TagText;
-      chkBxFriends.Content = lstTag[1].TagText;
-      chkBxBirthday.Content = lstTag[2].TagText;
+      chkBxFamily.Content = lstTag[0];
+      chkBxFriends.Content = lstTag[1];
+      chkBxBirthday.Content = lstTag[2];
       dgManageEntrys.ItemsSource = logic.LstEntry;
     }
 
     #region Events
     private void BtnSaveEntry_Click(object sender, RoutedEventArgs e)
     {
-      Logic saveLogic = new Logic(entryInputText.Text, (bool)chkBxFamily.IsChecked, (bool)chkBxFriends.IsChecked, (bool)chkBxBirthday.IsChecked, calendar.SelectedDate.Value);
-      dgManageEntrys.ItemsSource = saveLogic.SaveEntry();
+      dgManageEntrys.ItemsSource = logic.SaveEntry(entryInputText.Text, (bool)chkBxFamily.IsChecked, (bool)chkBxFriends.IsChecked, (bool)chkBxBirthday.IsChecked, calendar.SelectedDate.Value);
+      //Update Datagrid
+      dgManageEntrys.Items.Refresh();
 
       //clear text in input field and checkBoxes
       entryInputText.Text = "";
@@ -45,12 +45,19 @@ namespace DiaryApp
       chkBxBirthday.IsChecked = false;
     }
 
+    private void BtnAddImage_Click(object sender, RoutedEventArgs e)
+    {
+      //Add Image
+      imageBox.Source = logic.AddImage();
+    }
+
     private void BtnDeleteSelected_Click(object sender, RoutedEventArgs e)
     {
       if (dgManageEntrys.SelectedItem is DiaryEntryDb entrys)
       {
-        Logic deleteLogic = new Logic(entrys);
-        dgManageEntrys.ItemsSource = deleteLogic.DeleteSelectedEntry();
+        dgManageEntrys.ItemsSource = logic.DeleteSelectedEntry(entrys);
+        //Update Datagrid
+        dgManageEntrys.Items.Refresh();
       }
       else
       {
@@ -58,23 +65,23 @@ namespace DiaryApp
       }
     }
 
-    private void BtnAddImage_Click(object sender, RoutedEventArgs e)
-    {  ////For Testing
-       //Logic logic = new Logic(calendar.SelectedDate.Value);
-       //Logic logic = new Logic((bool)chkBxFamily.IsChecked, (bool)chkBxFriends.IsChecked, (bool)chkBxBirthday.IsChecked);     
-       // dgManageEntrys.ItemsSource = logic.LstEntryByDate;
+    private void BtnSearchTag_Click(object sender, RoutedEventArgs e)
+    {
+      dgManageEntrys.ItemsSource = logic.GetEntrysByTag((bool)chkBxFamily.IsChecked, (bool)chkBxFriends.IsChecked, (bool)chkBxBirthday.IsChecked);
 
-      ////Add Image
-      //OpenFileDialog dialog = new OpenFileDialog();
-      //dialog.Filter = "Image files (*.jpg, *.jpeg, *.png) | *.jpg; *.jpeg; *.png";
-      //if (dialog.ShowDialog() == true)
-      //{
-      //  //do something with the file
-      //}
+    }
+    private void BtnSearchDate_Click(object sender, RoutedEventArgs e)
+    {
+      dgManageEntrys.ItemsSource = logic.GetEntrysByDate(calendar.SelectedDate.Value);
+    }
+
+    private void BtnShowAll_Click(object sender, RoutedEventArgs e)
+    {
+      dgManageEntrys.ItemsSource = logic.ShowAll();
     }
 
     //This method prevents the mous from captured inside calender
-    //-->Problem without: You have to cklick twice onto the button in order to fire the click event
+    //-->Problem without: One have to cklick twice onto button in order to fire the click event
     protected override void OnPreviewMouseUp(MouseButtonEventArgs e)
     {
       base.OnPreviewMouseUp(e);
