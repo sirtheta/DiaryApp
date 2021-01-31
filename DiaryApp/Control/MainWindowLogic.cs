@@ -15,6 +15,9 @@ namespace DiaryApp.Control
     readonly List<DiaryEntryDb> lstEntry = new List<DiaryEntryDb>();
     readonly List<string> lstTag = new List<string>() { "Family", "Friends", "Birthday" };
     string selectedFileName;
+    int userId = 1;
+
+    public int UserId { get; set; }
 
     #region getter
     public List<DiaryEntryDb> LstEntry
@@ -24,6 +27,7 @@ namespace DiaryApp.Control
         using (var db = new DiaryContext())
         {
           var query = from b in db.DiaryEntrys
+                      where b.UserId == userId
                       orderby b.EntryId
                       select b;
 
@@ -61,7 +65,8 @@ namespace DiaryApp.Control
             TagFamily = tagFamily,
             TagFriends = tagFriends,
             TagBirthday = tagBirthday,
-            ByteImage = File.ReadAllBytes(selectedFileName)
+            ByteImage = ImageToByteArray(),
+            UserId = userId
           };
           db.DiaryEntrys.Add(newEntry);
           db.SaveChanges();
@@ -74,6 +79,15 @@ namespace DiaryApp.Control
         Helper.ShowMessageBox("No text to Save. Please write your diarytext before saving!", MessageType.Error, MessageButtons.Ok);
       }
       return lstEntry;
+    }
+
+    public byte[] ImageToByteArray()
+    {
+      if (selectedFileName != null)
+      {
+        return File.ReadAllBytes(selectedFileName);
+      }
+      return null;
     }
 
     //Delete selected entry from Database

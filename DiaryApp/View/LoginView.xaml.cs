@@ -17,7 +17,7 @@ namespace DiaryApp
 
     private void Login()
     {
-      //if password/username is invalid
+      
       if (txtBoxUserName.Text != "1" && txtBoxPassword.Password != "1")
       {
         Helper.ShowMessageBox("Login incorrect, try again!", MessageType.Error, MessageButtons.Ok);

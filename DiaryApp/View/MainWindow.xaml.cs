@@ -12,15 +12,14 @@ namespace DiaryApp
   /// </summary>
   public partial class MainWindow : Window
   {
-    //List<DiaryEntryDb> lstEntry = new List<DiaryEntryDb>();
-
-    readonly MainWindowLogic logic = new MainWindowLogic();
 
     public MainWindow()
-    {
+    { 
       InitializeComponent();
       InitializeContent();
     }
+
+    readonly MainWindowLogic logic = new MainWindowLogic();
 
     private void InitializeContent()
     {
@@ -34,7 +33,11 @@ namespace DiaryApp
     #region Events
     private void BtnSaveEntry_Click(object sender, RoutedEventArgs e)
     {
-      dgManageEntrys.ItemsSource = logic.SaveEntry(entryInputText.Text, (bool)chkBxFamily.IsChecked, (bool)chkBxFriends.IsChecked, (bool)chkBxBirthday.IsChecked, calendar.SelectedDate.Value);
+      dgManageEntrys.ItemsSource = logic.SaveEntry(entryInputText.Text,
+                                                   (bool)chkBxFamily.IsChecked,
+                                                   (bool)chkBxFriends.IsChecked,
+                                                   (bool)chkBxBirthday.IsChecked,
+                                                   calendar.SelectedDate.Value);
       //Update Datagrid
       dgManageEntrys.Items.Refresh();
 

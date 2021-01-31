@@ -19,7 +19,7 @@ namespace DiaryApp
     }
     private void BtnClose_Click(object sender, RoutedEventArgs e)
     {
-      Application.Current.Shutdown();
+      Close();
     }
 
     private void CardHeader_MouseDown(object sender, MouseButtonEventArgs e)

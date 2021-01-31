@@ -6,6 +6,7 @@ namespace DiaryApp.Model
 {
   public class DiaryEntryDb
   {
+
     [Key]
     public int EntryId { get; set; }
     public string Text { get; set; }
@@ -15,6 +16,10 @@ namespace DiaryApp.Model
     public string Date { get; set; }
     public byte[] ByteImage { get; set; }
 
+    //Add foreignkey from UserDb to Entry
+    public int UserId { get; set; }
+    public virtual UserDb UserDb { get; set; }
+   
     public string TagText
     {
       get
@@ -43,8 +48,5 @@ namespace DiaryApp.Model
         return Regex.Replace(sb.ToString(), "[^A-Za-z0-9, ]", "");        
       }
     }
-
-    //public int UserId { get; set; }
-    //public virtual User User { get; set; }
   }
 }
