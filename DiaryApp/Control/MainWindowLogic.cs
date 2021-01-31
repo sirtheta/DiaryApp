@@ -16,32 +16,43 @@ namespace DiaryApp.Control
     readonly List<string> lstTag = new List<string>() { "Family", "Friends", "Birthday" };
     string selectedFileName;
 
-    #region getter
-    public List<DiaryEntryDb> LstEntry
-    {
-      get
-      {
-        using (var db = new DiaryContext())
-        {
-          var query = from b in db.DiaryEntrys
-                      where b.UserId == Globals.UserId
-                      orderby b.EntryId
-                      select b;
-
-          foreach (var item in query)
-          {
-            lstEntry.Add(item);
-          }
-        }
-        return lstEntry;
-      }
-    }
-
     public List<string> LstTag
     {
       get
       {
         return lstTag;
+      }
+    }
+
+    #region ReadfromDatabase
+    public List<DiaryEntryDb> LstEntry()
+    {
+      using (var db = new DiaryContext())
+      {
+        var query = from b in db.DiaryEntrys
+                    where b.UserId == Globals.UserId
+                    orderby b.EntryId
+                    select b;
+
+        foreach (var item in query)
+        {
+          lstEntry.Add(item);
+        }
+      }
+      return lstEntry;
+
+    }
+
+    public string FullName()
+    {
+
+      using (var db = new DiaryContext())
+      {
+        var query = (from b in db.Users
+                     where b.UserId == Globals.UserId
+                     select b).SingleOrDefault();
+        return ($"{query.FirstName} {query.LastName}");
+
       }
     }
     #endregion getter

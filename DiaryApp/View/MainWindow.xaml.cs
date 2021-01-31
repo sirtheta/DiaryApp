@@ -24,10 +24,11 @@ namespace DiaryApp
     private void InitializeContent()
     {
       var lstTag = logic.LstTag;
+      txtLoggedInUser.Text = logic.FullName();
       chkBxFamily.Content = lstTag[0];
       chkBxFriends.Content = lstTag[1];
       chkBxBirthday.Content = lstTag[2];
-      dgManageEntrys.ItemsSource = logic.LstEntry;
+      dgManageEntrys.ItemsSource = logic.LstEntry();
     }
 
     #region Events
