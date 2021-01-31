@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace DiaryApp.Control
 {
-  public class Helper
+  class Helper
   {
     public static bool ShowMessageBox(string messageStr, MessageType type, MessageButtons buttons)
     {
@@ -20,6 +20,11 @@ namespace DiaryApp.Control
       notificationManager.ShowAsync(new NotificationContent { Title = titel, Message = message, Type = type },
               areaName: "WindowArea");
     }
+  }
+
+  static class Globals
+  {
+    public static int UserId { get; set; }
   }
 
   public class DiaryContext : DbContext
@@ -36,8 +41,8 @@ namespace DiaryApp.Control
       {
         if (!db.Users.Any())
         {
-          List<UserDb> lstUser = new List<UserDb>() { new UserDb { UserName = "Tester", FirstName = "User", LastName = "Example", Password = "1" } };
-          lstUser.Add(new UserDb { UserName = "Tester2", FirstName = "User2", LastName = "Example2", Password = "2" });
+          List<UserDb> lstUser = new List<UserDb>() { new UserDb { UserName = "1", FirstName = "User", LastName = "Example", Password = "1" } };
+          lstUser.Add(new UserDb { UserName = "2", FirstName = "User2", LastName = "Example2", Password = "2" });
           db.Users.Add(lstUser[0]);
           db.Users.Add(lstUser[1]);
           db.SaveChanges();

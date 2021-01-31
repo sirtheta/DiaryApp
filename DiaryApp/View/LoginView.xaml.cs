@@ -1,6 +1,7 @@
 ﻿using DiaryApp.Control;
 using System.Windows;
 using System.Windows.Input;
+using System.Linq;
 
 namespace DiaryApp
 {
@@ -17,24 +18,17 @@ namespace DiaryApp
 
     private void Login()
     {
-      
-      if (txtBoxUserName.Text != "1" && txtBoxPassword.Password != "1")
+      LoginLogic logic = new LoginLogic(txtBoxUserName.Text, txtBoxPassword.Password);
+      if (logic.Login())
       {
-        Helper.ShowMessageBox("Login incorrect, try again!", MessageType.Error, MessageButtons.Ok);
-      }
-      else
-      {
-        Window main = new MainWindow();
-        main.Show();
-        this.Close();
+        Close();
       }
     }
-
 
     #region Events
     private void Window_KeyDown(object sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Enter)
+      if (e.Key == Key.Enter)
       {
         Login();
       }

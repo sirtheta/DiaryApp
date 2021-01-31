@@ -15,9 +15,6 @@ namespace DiaryApp.Control
     readonly List<DiaryEntryDb> lstEntry = new List<DiaryEntryDb>();
     readonly List<string> lstTag = new List<string>() { "Family", "Friends", "Birthday" };
     string selectedFileName;
-    int userId = 1;
-
-    public int UserId { get; set; }
 
     #region getter
     public List<DiaryEntryDb> LstEntry
@@ -27,7 +24,7 @@ namespace DiaryApp.Control
         using (var db = new DiaryContext())
         {
           var query = from b in db.DiaryEntrys
-                      where b.UserId == userId
+                      where b.UserId == Globals.UserId
                       orderby b.EntryId
                       select b;
 
@@ -66,7 +63,7 @@ namespace DiaryApp.Control
             TagFriends = tagFriends,
             TagBirthday = tagBirthday,
             ByteImage = ImageToByteArray(),
-            UserId = userId
+            UserId = Globals.UserId
           };
           db.DiaryEntrys.Add(newEntry);
           db.SaveChanges();
