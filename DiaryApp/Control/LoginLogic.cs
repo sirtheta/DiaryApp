@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace DiaryApp.Control
+namespace DiaryApp
 {
   class LoginLogic
   {

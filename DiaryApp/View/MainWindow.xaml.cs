@@ -1,4 +1,4 @@
-﻿using DiaryApp.Control;
+﻿
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,7 +10,7 @@ namespace DiaryApp
   /// </summary>
   public partial class MainWindow : Window
   {
-    readonly Control.Control control = new Control.Control();
+    readonly Control control = new Control();
 
     public MainWindow()
     {

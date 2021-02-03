@@ -7,7 +7,7 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
-namespace DiaryApp.Control
+namespace DiaryApp
 {
   class Control
   {

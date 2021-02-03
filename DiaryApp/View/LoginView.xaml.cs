@@ -1,4 +1,4 @@
-﻿using DiaryApp.Control;
+﻿
 using System.Windows;
 using System.Windows.Input;
 using System.Linq;

@@ -1,10 +1,6 @@
 ﻿using Notifications.Wpf.Core;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
 
-namespace DiaryApp.Control
+namespace DiaryApp
 {
   class Helper
   {

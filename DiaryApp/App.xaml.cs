@@ -1,5 +1,4 @@
-﻿using DiaryApp.Control;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Windows;
 
 namespace DiaryApp
@@ -16,7 +15,7 @@ namespace DiaryApp
       Database.SetInitializer(new DropCreateDatabaseIfModelChanges<DiaryContext>());
       DatabaseInitializer.CreateTestUser();
       DatabaseInitializer.CreateTestEntrys();
-      Globals.UserId = 1;
+      //Globals.UserId = 1;
     }
   }
 }

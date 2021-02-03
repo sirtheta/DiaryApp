@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:notifications="clr-namespace:Notifications.Wpf.Core.Controls;assembly=Notifications.Wpf.Core"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        xmlns:Control="clr-namespace:DiaryApp.Control" x:Class="DiaryApp.MainWindow"
+        xmlns:Control="clr-namespace:DiaryApp" x:Class="DiaryApp.MainWindow"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"      
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
