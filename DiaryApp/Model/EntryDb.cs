@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace DiaryApp.Model
+namespace DiaryApp
 {
   public class DiaryEntryDb
   {

@@ -14,8 +14,9 @@ namespace DiaryApp
       base.OnStartup(e);
       //If Database propertys has changed, drop the table and create an empty db
       Database.SetInitializer(new DropCreateDatabaseIfModelChanges<DiaryContext>());
-      DatabaseHelper.CreateTestUser();
-      DatabaseHelper.CreateTestEntrys();
+      DatabaseInitializer.CreateTestUser();
+      DatabaseInitializer.CreateTestEntrys();
+      Globals.UserId = 1;
     }
   }
 }

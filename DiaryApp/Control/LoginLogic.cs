@@ -1,20 +1,13 @@
 ﻿using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace DiaryApp.Control
 {
   class LoginLogic
   {
-    string userName;
-    string password;
 
-    public LoginLogic(string userName, string password)
-    {
-      this.userName = userName;
-      this.password = password;
-    }
-
-    private bool CheckForValidUser()
+    private bool CheckForValidUser(string userName, string password)
     {
       using (var db = new DiaryContext())
       {
@@ -30,10 +23,10 @@ namespace DiaryApp.Control
       return false;
     }
 
-    public bool Login()
+    public bool Login(TextBox userName, PasswordBox password)
     {
 
-      if (CheckForValidUser())
+      if (CheckForValidUser(userName.Text, password.Password))
       {
         Window main = new MainWindow();
         main.Show();

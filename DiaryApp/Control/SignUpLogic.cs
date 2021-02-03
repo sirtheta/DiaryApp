@@ -13,11 +13,11 @@ namespace DiaryApp.Control
     string LastName;
     string FirstName;
 
-    //public bool CheckPassword()
-    //{
-    //  //Regex regex = new Regex("((?=.*\d)(?=.*[a - z])(?=.*[A - Z])(?=.*[\W]).{ 8,64})");
+    public bool CheckPassword()
+    {
+      Regex regex = new Regex(@"^(?=(.*\d){2})(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).{8,}$");
 
-    //  return true;
-    //}
+      return true;
+    }
   }
 }

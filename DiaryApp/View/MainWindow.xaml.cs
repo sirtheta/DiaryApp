@@ -1,6 +1,4 @@
 ﻿using DiaryApp.Control;
-using DiaryApp.Model;
-using Notifications.Wpf.Core;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,76 +10,44 @@ namespace DiaryApp
   /// </summary>
   public partial class MainWindow : Window
   {
+    readonly Control.Control control = new Control.Control();
 
     public MainWindow()
-    { 
-      InitializeComponent();
-      InitializeContent();
-    }
-
-    readonly MainWindowLogic logic = new MainWindowLogic();
-
-    private void InitializeContent()
     {
-      var lstTag = logic.LstTag;
-      txtLoggedInUser.Text = logic.FullName();
-      chkBxFamily.Content = lstTag[0];
-      chkBxFriends.Content = lstTag[1];
-      chkBxBirthday.Content = lstTag[2];
-      dgManageEntrys.ItemsSource = logic.LstEntry();
+      InitializeComponent();
+      control.LoadEntrysFromDb(dgManageEntrys);
     }
+
 
     #region Events
     private void BtnSaveEntry_Click(object sender, RoutedEventArgs e)
     {
-      dgManageEntrys.ItemsSource = logic.SaveEntry(entryInputText.Text,
-                                                   (bool)chkBxFamily.IsChecked,
-                                                   (bool)chkBxFriends.IsChecked,
-                                                   (bool)chkBxBirthday.IsChecked,
-                                                   calendar.SelectedDate.Value);
-      //Update Datagrid
-      dgManageEntrys.Items.Refresh();
-
-      //clear text in input field and checkBoxes
-      entryInputText.Text = "";
-      chkBxFamily.IsChecked = false;
-      chkBxFriends.IsChecked = false;
-      chkBxBirthday.IsChecked = false;
+      control.SaveEntry(entryInputText, chkBxFamily, chkBxFriends, chkBxBirthday, calendar, dgManageEntrys);
     }
 
     private void BtnAddImage_Click(object sender, RoutedEventArgs e)
     {
-      //Add Image
-      imageBox.Source = logic.AddImage();
+      //Add Image TODO
+      //imageBox.Source = control.AddImage();
     }
 
     private void BtnDeleteSelected_Click(object sender, RoutedEventArgs e)
     {
-      if (dgManageEntrys.SelectedItem is DiaryEntryDb entrys)
-      {
-        dgManageEntrys.ItemsSource = logic.DeleteSelectedEntry(entrys);
-        //Update Datagrid
-        dgManageEntrys.Items.Refresh();
-      }
-      else
-      {
-        Helper.ShowNotification("Error", "No entry selected!", NotificationType.Error);
-      }
+      control.DeleteSelectedEntry(dgManageEntrys);
     }
 
     private void BtnSearchTag_Click(object sender, RoutedEventArgs e)
     {
-      dgManageEntrys.ItemsSource = logic.GetEntrysByTag((bool)chkBxFamily.IsChecked, (bool)chkBxFriends.IsChecked, (bool)chkBxBirthday.IsChecked);
-
+      control.GetEntrysByTag(chkBxFamily, chkBxFriends, chkBxBirthday, dgManageEntrys);
     }
     private void BtnSearchDate_Click(object sender, RoutedEventArgs e)
     {
-      dgManageEntrys.ItemsSource = logic.GetEntrysByDate(calendar.SelectedDate.Value);
+      control.GetEntrysByDate(calendar, dgManageEntrys);
     }
 
     private void BtnShowAll_Click(object sender, RoutedEventArgs e)
     {
-      dgManageEntrys.ItemsSource = logic.ShowAll();
+      control.ShowAll(dgManageEntrys);
     }
 
     //This method prevents the mous from captured inside calender

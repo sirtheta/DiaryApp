@@ -18,8 +18,8 @@ namespace DiaryApp
 
     private void Login()
     {
-      LoginLogic logic = new LoginLogic(txtBoxUserName.Text, txtBoxPassword.Password);
-      if (logic.Login())
+      LoginLogic logic = new LoginLogic();
+      if (logic.Login(txtBoxUserName, txtBoxPassword))
       {
         Close();
       }
