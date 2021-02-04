@@ -10,11 +10,12 @@ namespace DiaryApp
   /// </summary>
   public partial class MainWindow : Window
   {
-    readonly Control control = new Control();
+    Control control;
 
-    public MainWindow()
+    public MainWindow(Control t_control)
     {
       InitializeComponent();
+      control = t_control;
       control.LoadEntrysFromDb(dgManageEntrys);
     }
 
@@ -34,12 +35,14 @@ namespace DiaryApp
     private void BtnDeleteSelected_Click(object sender, RoutedEventArgs e)
     {
       control.DeleteSelectedEntry(dgManageEntrys);
+
     }
 
     private void BtnSearchTag_Click(object sender, RoutedEventArgs e)
     {
       control.GetEntrysByTag(chkBxFamily, chkBxFriends, chkBxBirthday, dgManageEntrys);
     }
+
     private void BtnSearchDate_Click(object sender, RoutedEventArgs e)
     {
       control.GetEntrysByDate(calendar, dgManageEntrys);

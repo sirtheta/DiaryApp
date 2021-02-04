@@ -1,31 +1,70 @@
 ﻿using Microsoft.Win32;
 using Notifications.Wpf.Core;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
 namespace DiaryApp
 {
-  class Control
+  public class Control
   {
     readonly Model model = new Model();
 
-    List<DiaryEntryDb> lstEntry = new List<DiaryEntryDb>();
+    ObservableCollection<DiaryEntryDb> lstEntry = new ObservableCollection<DiaryEntryDb>();
     string selectedFileName;
 
     public string LoggedInUser { get { return model.FullName(); } }
     public string ChkBxFamily { get { return "Family"; } }
     public string ChkBxFriends { get { return "Friends"; } }
     public string ChkBxBirthday { get { return "Birthday"; } }
+    public static int UserId { get; set; }
 
     public void LoadEntrysFromDb(DataGrid dgManageEntrys)
     {
-      lstEntry = model.GetEntrysFromDb(Globals.UserId);
+      foreach (var item in Model.GetEntrysFromDb(UserId))
+      {
+        lstEntry.Add(item);
+      } 
       dgManageEntrys.ItemsSource = lstEntry;
     }
+
+
+    #region Login
+    private bool CheckForValidUser(string userName, string password)
+    {
+      using (var db = new DiaryContext())
+      {
+        if (db.Users.Any(o => o.UserName == userName) && db.Users.Any(o => o.Password == password))
+        {
+          //Set userID to use in MainWindowLogic
+          UserId = model.GetUserId(userName);
+          return true;
+        }
+      }
+      return false;
+    }
+
+    public bool Login(TextBox userName, PasswordBox password, Control control)
+    {
+
+      if (CheckForValidUser(userName.Text, password.Password))
+      {
+        Window main = new MainWindow(control);
+        main.Show();
+        return true;
+      }
+      else
+      {
+        Helper.ShowMessageBox("Login incorrect, try again!", MessageType.Error, MessageButtons.Ok);
+        return false;
+      }
+    } 
+    #endregion
+
 
     #region MainWindow
     #region SaveDelete
@@ -41,7 +80,7 @@ namespace DiaryApp
           TagFriends = (bool)chkBxFriends.IsChecked,
           TagBirthday = (bool)chkBxBirthday.IsChecked,
           ByteImage = ImageToByteArray(),
-          UserId = Globals.UserId
+          UserId = UserId
         };
         model.EntryToDb(newEntry);
         lstEntry.Add(newEntry);
@@ -62,7 +101,7 @@ namespace DiaryApp
         Helper.ShowMessageBox("No text to Save. Please write your diarytext before saving!", MessageType.Error, MessageButtons.Ok);
       }
     }
-
+    //public void DeleteSelectedEntry(DataGrid dgManageEntrys)
     public void DeleteSelectedEntry(DataGrid dgManageEntrys)
     {
       if (dgManageEntrys.SelectedItem != null)

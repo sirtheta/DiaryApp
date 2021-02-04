@@ -16,10 +16,11 @@ namespace DiaryApp
       InitializeComponent();
     }
 
+    readonly Control control = new Control();
+
     private void Login()
     {
-      LoginLogic logic = new LoginLogic();
-      if (logic.Login(txtBoxUserName, txtBoxPassword))
+      if (control.Login(txtBoxUserName, txtBoxPassword, control))
       {
         Close();
       }
@@ -27,7 +28,7 @@ namespace DiaryApp
 
     #region Events
     private void Window_KeyDown(object sender, KeyEventArgs e)
-    {
+      {
       if (e.Key == Key.Enter)
       {
         Login();

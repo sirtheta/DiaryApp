@@ -13,8 +13,22 @@ namespace DiaryApp
 
   class Model
   {
+
+    public int GetUserId(string userName)
+    {
+      using (var db = new DiaryContext())
+      {
+        return (from b in db.Users
+                          where b.UserName == userName
+                          select b.UserId).SingleOrDefault();
+      }
+    }
+
+
+
+
     //retrieve all entrys from database
-    public List<DiaryEntryDb> GetEntrysFromDb(int userId)
+    public static List<DiaryEntryDb> GetEntrysFromDb(int userId)
     {
       using (var db = new DiaryContext())
       {
@@ -31,7 +45,7 @@ namespace DiaryApp
       using (var db = new DiaryContext())
       {
         var query = (from b in db.Users
-                     where b.UserId == Globals.UserId
+                     where b.UserId == Control.UserId
                      select b).SingleOrDefault();
         return $"{query.FirstName} {query.LastName}";
       }

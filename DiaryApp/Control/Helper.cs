@@ -17,8 +17,8 @@ namespace DiaryApp
     }
   }
 
-  static class Globals
-  {
-    public static int UserId { get; set; }
-  }
+  //static class Globals
+  //{
+  //  public static int UserId { get; set; }
+  //}
 }
