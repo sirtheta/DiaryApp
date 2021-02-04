@@ -16,9 +16,4 @@ namespace DiaryApp
               areaName: "WindowArea");
     }
   }
-
-  //static class Globals
-  //{
-  //  public static int UserId { get; set; }
-  //}
 }

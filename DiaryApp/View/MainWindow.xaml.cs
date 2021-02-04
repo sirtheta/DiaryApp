@@ -16,41 +16,51 @@ namespace DiaryApp
     {
       InitializeComponent();
       control = t_control;
-      control.LoadEntrysFromDb(dgManageEntrys);
+      control.SetReferences(entryInputText, chkBxFamily, chkBxFriends, chkBxBirthday, calendar, dgManageEntrys, imageBox);
+      control.LoadEntrysFromDb();
     }
 
 
     #region Events
     private void BtnSaveEntry_Click(object sender, RoutedEventArgs e)
     {
-      control.SaveEntry(entryInputText, chkBxFamily, chkBxFriends, chkBxBirthday, calendar, dgManageEntrys);
+      control.SaveEntry();
     }
 
     private void BtnAddImage_Click(object sender, RoutedEventArgs e)
     {
       //Add Image TODO
-      //imageBox.Source = control.AddImage();
+      imageBox.Source = control.AddImage();
+    }
+
+    private void BtnClear_Click(object sender, RoutedEventArgs e)
+    {
+      dgManageEntrys.SelectedItem = null;
     }
 
     private void BtnDeleteSelected_Click(object sender, RoutedEventArgs e)
     {
-      control.DeleteSelectedEntry(dgManageEntrys);
-
+      control.DeleteSelectedEntry();
     }
 
     private void BtnSearchTag_Click(object sender, RoutedEventArgs e)
     {
-      control.GetEntrysByTag(chkBxFamily, chkBxFriends, chkBxBirthday, dgManageEntrys);
+      control.GetEntrysByTag();
     }
 
     private void BtnSearchDate_Click(object sender, RoutedEventArgs e)
     {
-      control.GetEntrysByDate(calendar, dgManageEntrys);
+      control.GetEntrysByDate();
     }
 
     private void BtnShowAll_Click(object sender, RoutedEventArgs e)
     {
       control.ShowAll(dgManageEntrys);
+    }
+
+    private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      control.ShowSelectedItem();
     }
 
     //This method prevents the mous from captured inside calender

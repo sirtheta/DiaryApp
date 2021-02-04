@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:local="clr-namespace:DiaryApp"
         mc:Ignorable="d"
         Title="Diary App - Sign Up" Height="500
@@ -19,10 +20,10 @@
         WindowStyle="None" ResizeMode="NoResize" Topmost="True">
   <Grid>
     <StackPanel>
-      <materialDesign:Card x:Name="cardHeader" Grid.Row="0" Padding="10" Margin="0" materialDesign:ShadowAssist.ShadowDepth="Depth3"   Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2" MouseDown="CardHeader_MouseDown">
+      <materialDesign:Card x:Name="cardHeader" Grid.Row="0" Padding="10" Margin="0" materialDesign:ShadowAssist.ShadowDepth="Depth3" Height="50" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2" MouseDown="CardHeader_MouseDown">
         <StackPanel>
           <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" VerticalAlignment="Stretch" Style="{DynamicResource MaterialDesignHeadline6TextBlock}"  >Sign Up</TextBlock>
-          <Button x:Name="btnClose" Content="×" HorizontalAlignment="Right" Margin="0,-36,0,0" Width="54" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontFamily="Bahnschrift" FontSize="40" ToolTip="Close" Click="BtnClose_Click" Height="45" />
+          <Button x:Name="btnClose" fa:Awesome.Content="PowerOff" HorizontalAlignment="Right" Margin="0,-30,0,0" Width="54" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Close" Click="BtnClose_Click" Height="45" />
         </StackPanel>
       </materialDesign:Card>
       <StackPanel Margin="25">

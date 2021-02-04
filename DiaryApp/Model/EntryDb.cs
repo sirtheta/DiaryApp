@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -13,7 +14,7 @@ namespace DiaryApp
     public bool TagFamily { get; set; }
     public bool TagFriends { get; set; }
     public bool TagBirthday { get; set; }
-    public string Date { get; set; }
+    public DateTime Date { get; set; }
     public byte[] ByteImage { get; set; }
 
     //Add foreignkey from UserDb to Entry

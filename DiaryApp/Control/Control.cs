@@ -1,7 +1,9 @@
 ﻿using Microsoft.Win32;
 using Notifications.Wpf.Core;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -13,46 +15,50 @@ namespace DiaryApp
   public class Control
   {
     readonly Model model = new Model();
+    List<DiaryEntryDb> lstEntry;
 
-    ObservableCollection<DiaryEntryDb> lstEntry = new ObservableCollection<DiaryEntryDb>();
-    string selectedFileName;
+    TextBox entryText;
+    CheckBox chkBxFamily;
+    CheckBox chkBxFriends;
+    CheckBox chkBxBirthday;
+    Calendar calendar;
+    DataGrid dgManageEntrys;
+    Image imageBox;
 
     public string LoggedInUser { get { return model.FullName(); } }
     public string ChkBxFamily { get { return "Family"; } }
     public string ChkBxFriends { get { return "Friends"; } }
     public string ChkBxBirthday { get { return "Birthday"; } }
-    public static int UserId { get; set; }
+    private string SelectedFileName { get; set; }
+    public static int LooggedInUserId { get; set; }
 
-    public void LoadEntrysFromDb(DataGrid dgManageEntrys)
+    #region initialize
+    //Set references to all control elements from View
+    public void SetReferences(TextBox t_entryText, CheckBox t_chkBxFamily, CheckBox t_chkBxFriends, CheckBox t_chkBxBirthday, Calendar t_calendar, DataGrid t_dgManageEntrys, Image t_imageBox)
     {
-      foreach (var item in Model.GetEntrysFromDb(UserId))
-      {
-        lstEntry.Add(item);
-      } 
+      entryText = t_entryText;
+      chkBxFamily = t_chkBxFamily;
+      chkBxFriends = t_chkBxFriends;
+      chkBxBirthday = t_chkBxBirthday;
+      calendar = t_calendar;
+      dgManageEntrys = t_dgManageEntrys;
+      imageBox = t_imageBox;
+    }
+    public void LoadEntrysFromDb()
+    {
+      lstEntry = new List<DiaryEntryDb>(Model.GetEntrysFromDb(LooggedInUserId));
+      //Load lstEntry to Datagrid
       dgManageEntrys.ItemsSource = lstEntry;
     }
-
+    #endregion
 
     #region Login
-    private bool CheckForValidUser(string userName, string password)
-    {
-      using (var db = new DiaryContext())
-      {
-        if (db.Users.Any(o => o.UserName == userName) && db.Users.Any(o => o.Password == password))
-        {
-          //Set userID to use in MainWindowLogic
-          UserId = model.GetUserId(userName);
-          return true;
-        }
-      }
-      return false;
-    }
 
     public bool Login(TextBox userName, PasswordBox password, Control control)
     {
-
-      if (CheckForValidUser(userName.Text, password.Password))
+      if (model.CheckForValidUser(userName.Text, password.Password))
       {
+        LooggedInUserId = model.GetUserId(userName.Text);
         Window main = new MainWindow(control);
         main.Show();
         return true;
@@ -62,47 +68,93 @@ namespace DiaryApp
         Helper.ShowMessageBox("Login incorrect, try again!", MessageType.Error, MessageButtons.Ok);
         return false;
       }
-    } 
+    }
     #endregion
 
 
     #region MainWindow
     #region SaveDelete
-    public void SaveEntry(TextBox entryText, CheckBox chkBxFamily, CheckBox chkBxFriends, CheckBox chkBxBirthday, Calendar date, DataGrid dgManageEntrys)
+    public void ShowSelectedItem()
     {
-      if (entryText.Text != "")
+      entryText.Text = "";
+      chkBxFamily.IsChecked = false;
+      chkBxFriends.IsChecked = false;
+      chkBxBirthday.IsChecked = false;
+      calendar.SelectedDate = DateTime.Now;
+      imageBox.Source = null;
+
+      if (dgManageEntrys.SelectedItem != null)
       {
-        var newEntry = new DiaryEntryDb()
+        var selected = dgManageEntrys.SelectedItem as DiaryEntryDb;
+        entryText.Text = selected.Text;
+        chkBxFamily.IsChecked = selected.TagFamily;
+        chkBxFriends.IsChecked = selected.TagFriends;
+        chkBxBirthday.IsChecked = selected.TagBirthday;
+        calendar.SelectedDate = selected.Date;
+        ImageFromByteArray(selected.ByteImage);
+      }
+    }
+
+    public void SaveEntry()
+    {
+      if (dgManageEntrys.SelectedItem == null)
+      {
+        if (entryText.Text != "")
         {
+          var newEntry = new DiaryEntryDb()
+          {
+            Text = entryText.Text,
+            Date = calendar.SelectedDate.Value,
+            TagFamily = (bool)chkBxFamily.IsChecked,
+            TagFriends = (bool)chkBxFriends.IsChecked,
+            TagBirthday = (bool)chkBxBirthday.IsChecked,
+            ByteImage = ImageToByteArray(SelectedFileName),
+            UserId = LooggedInUserId
+          };
+          model.EntryToDb(newEntry);
+          lstEntry.Add(newEntry);
+          dgManageEntrys.ItemsSource = lstEntry.OrderByDescending(d => d.Date).ToList();
+
+          Helper.ShowNotification("Success", "Your diary entry is saved successfull", NotificationType.Success);
+        }
+        else
+        {
+          Helper.ShowMessageBox("No text to Save. Please write your diarytext before saving!", MessageType.Error, MessageButtons.Ok);
+        }
+      }
+      else if (dgManageEntrys.SelectedItem is DiaryEntryDb updateEntry)
+      {
+        var entry = new DiaryEntryDb()
+        {
+          EntryId = updateEntry.EntryId,
           Text = entryText.Text,
-          Date = date.SelectedDate.Value.ToString("dd. MMMM yyyy"),
+          Date = calendar.SelectedDate.Value,
           TagFamily = (bool)chkBxFamily.IsChecked,
           TagFriends = (bool)chkBxFriends.IsChecked,
           TagBirthday = (bool)chkBxBirthday.IsChecked,
-          ByteImage = ImageToByteArray(),
-          UserId = UserId
+          ByteImage = ImageToByteArray(SelectedFileName)
         };
-        model.EntryToDb(newEntry);
-        lstEntry.Add(newEntry);
+        model.EntryToDb(entry);
+        lstEntry.Remove(updateEntry);
+        lstEntry.Add(entry);
+        dgManageEntrys.ItemsSource= lstEntry.OrderByDescending(d => d.Date).ToList();
 
-        Helper.ShowNotification("Success", "Your diary entry is saved successfull", NotificationType.Success);
-
-        //Update Datagrid
-        dgManageEntrys.Items.Refresh();
-
-        //clear text in input field and checkBoxes
-        entryText.Text = "";
-        chkBxFamily.IsChecked = false;
-        chkBxFriends.IsChecked = false;
-        chkBxBirthday.IsChecked = false;
+        Helper.ShowNotification("Success", "Your diary entry successfully updated!", NotificationType.Success);
       }
-      else
-      {
-        Helper.ShowMessageBox("No text to Save. Please write your diarytext before saving!", MessageType.Error, MessageButtons.Ok);
-      }
+      //clear text in input field and checkBoxes
+      entryText.Text = "";
+      chkBxFamily.IsChecked = false;
+      chkBxFriends.IsChecked = false;
+      chkBxBirthday.IsChecked = false;
+      calendar.SelectedDate = DateTime.Now;
+      imageBox.Source = null;
+      dgManageEntrys.SelectedItem = null;
+      
+      //Update Datagrid
+      dgManageEntrys.Items.Refresh();
     }
-    //public void DeleteSelectedEntry(DataGrid dgManageEntrys)
-    public void DeleteSelectedEntry(DataGrid dgManageEntrys)
+
+    public void DeleteSelectedEntry()
     {
       if (dgManageEntrys.SelectedItem != null)
       {
@@ -118,7 +170,12 @@ namespace DiaryApp
 
           Helper.ShowNotification("Success", "Entry Successfull deleted", NotificationType.Success);
           //Update Datagrid
-          dgManageEntrys.Items.Refresh();
+          dgManageEntrys.ItemsSource = lstEntry.OrderByDescending(d => d.Date).ToList();
+          entryText.Text = "";
+          chkBxFamily.IsChecked = false;
+          chkBxFriends.IsChecked = false;
+          chkBxBirthday.IsChecked = false;
+          imageBox.Source = null;
         }
       }
       else
@@ -126,54 +183,47 @@ namespace DiaryApp
         Helper.ShowNotification("Error", "No entry selected!", NotificationType.Error);
       }
     }
+
     #endregion
 
     #region Search
     //Search for entrys by Date
-    public void GetEntrysByDate(Calendar date, DataGrid dgManageEntrys)
+    public void GetEntrysByDate()
     {
-      dgManageEntrys.ItemsSource = lstEntry.Where(lst => lst.Date == date.SelectedDate.Value.ToString("dd. MMMM yyyy")).ToList();
+      //Convert date to string because I cant ignore the Timepart
+      dgManageEntrys.ItemsSource = lstEntry.Where(lst => lst.Date.ToString("dd.MMMM yyyy") == calendar.SelectedDate.Value.ToString("dd.MMMM yyyy")).ToList();
     }
 
     public void ShowAll(DataGrid dgManageEntrys)
     {
+      entryText.Text = "";
+      chkBxFamily.IsChecked = false;
+      chkBxFriends.IsChecked = false;
+      chkBxBirthday.IsChecked = false;
+      calendar.SelectedDate = DateTime.Now;
+      imageBox.Source = null;
+      dgManageEntrys.SelectedItem = null;
       dgManageEntrys.ItemsSource = lstEntry;
     }
 
     //Search for entrys by Tag
-    public void GetEntrysByTag(CheckBox chkBxFamily, CheckBox chkBxFriends, CheckBox chkBxBirthday, DataGrid dgManageEntrys)
+    public void GetEntrysByTag()
     {
       bool bFamily = (bool)chkBxFamily.IsChecked;
       bool bFriends = (bool)chkBxFriends.IsChecked;
       bool bBirthday = (bool)chkBxBirthday.IsChecked;
 
-      if (bFamily == true && bFriends == false && bBirthday == false)
+      if (bFamily == true)
       {
         dgManageEntrys.ItemsSource = lstEntry.Where(lst => lst.TagFamily).ToList();
       }
-      else if (bFamily == false && bFriends == true && bBirthday == false)
+      else if (bFriends == true)
       {
-        dgManageEntrys.ItemsSource = lstEntry.Where(lst => lst.TagFriends).ToList();
+        dgManageEntrys.ItemsSource = lstEntry.Where(lst => lst.TagFriends! & lst.TagBirthday! & lst.TagFamily).ToList();
       }
-      else if (bFamily == false && bFriends == false && bBirthday == true)
+      else if (bBirthday == true)
       {
         dgManageEntrys.ItemsSource = lstEntry.Where(lst => lst.TagBirthday).ToList();
-      }
-      else if (bFamily == true && bFriends == true && bBirthday == false)
-      {
-        dgManageEntrys.ItemsSource = lstEntry.Where(lst => lst.TagFamily && lst.TagFriends).ToList();
-      }
-      else if (bFamily == true && bFriends == true && bBirthday == true)
-      {
-        dgManageEntrys.ItemsSource = lstEntry.Where(lst => lst.TagFamily && lst.TagBirthday && lst.TagFriends).ToList();
-      }
-      else if (bFamily == true && bFriends == false && bBirthday == true)
-      {
-        dgManageEntrys.ItemsSource = lstEntry.Where(lst => lst.TagFamily && lst.TagBirthday).ToList();
-      }
-      else if (bFamily == false && bFriends == true && bBirthday == true)
-      {
-        dgManageEntrys.ItemsSource = lstEntry.Where(lst => lst.TagFriends && lst.TagBirthday).ToList();
       }
       else
       {
@@ -183,13 +233,32 @@ namespace DiaryApp
     #endregion
     #endregion
 
-    public byte[] ImageToByteArray()
+    public byte[] ImageToByteArray(string selectedFileName)
     {
       if (selectedFileName != null)
       {
         return File.ReadAllBytes(selectedFileName);
       }
-      return null;
+      else
+      {
+        return null;
+      }
+    }
+
+    public async void ImageFromByteArray(byte[] array)
+    {
+      if (array != null)
+      {
+        await using (var ms = new MemoryStream(array))
+        {
+          var image = new BitmapImage();
+          image.BeginInit();
+          image.CacheOption = BitmapCacheOption.OnLoad;
+          image.StreamSource = ms;
+          image.EndInit();
+          imageBox.Source = image;
+        }
+      }
     }
 
     public BitmapImage AddImage()
@@ -199,10 +268,10 @@ namespace DiaryApp
       dialog.Filter = "Image files (*.jpg, *.jpeg, *.png) | *.jpg; *.jpeg; *.png";
       if (dialog.ShowDialog() == true)
       {
-        selectedFileName = dialog.FileName;
+        SelectedFileName = dialog.FileName;
         BitmapImage bitmap = new BitmapImage();
         bitmap.BeginInit();
-        bitmap.UriSource = new Uri(selectedFileName);
+        bitmap.UriSource = new Uri(SelectedFileName);
         bitmap.EndInit();
         return bitmap;
       }

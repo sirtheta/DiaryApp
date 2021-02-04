@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -19,13 +20,10 @@ namespace DiaryApp
       using (var db = new DiaryContext())
       {
         return (from b in db.Users
-                          where b.UserName == userName
-                          select b.UserId).SingleOrDefault();
+                where b.UserName == userName
+                select b.UserId).SingleOrDefault();
       }
     }
-
-
-
 
     //retrieve all entrys from database
     public static List<DiaryEntryDb> GetEntrysFromDb(int userId)
@@ -34,9 +32,20 @@ namespace DiaryApp
       {
         return (from b in db.DiaryEntrys
                 where b.UserId == userId
-                orderby b.EntryId
-                select b).ToList();
+                select b).OrderByDescending(d=> d.Date).ToList();
       }
+    }
+
+    public bool CheckForValidUser(string userName, string password)
+    {
+      using (var db = new DiaryContext())
+      {
+        if (db.Users.Any(o => o.UserName == userName) && db.Users.Any(o => o.Password == password))
+        {
+          return true;
+        }
+      }
+      return false;
     }
 
     //Get the username from database
@@ -45,18 +54,31 @@ namespace DiaryApp
       using (var db = new DiaryContext())
       {
         var query = (from b in db.Users
-                     where b.UserId == Control.UserId
+                     where b.UserId == Control.LooggedInUserId
                      select b).SingleOrDefault();
         return $"{query.FirstName} {query.LastName}";
       }
     }
 
     //Save the Created Entry to Database
-    public void EntryToDb(DiaryEntryDb newEntry)
+    public void EntryToDb(DiaryEntryDb entry)
     {
       using (var db = new DiaryContext())
       {
-        db.DiaryEntrys.Add(newEntry);
+        var result = db.DiaryEntrys.SingleOrDefault(e => e.EntryId == entry.EntryId);
+        if (result != null)
+        {
+          result.Text = entry.Text;
+          result.Date = entry.Date;
+          result.TagFamily = entry.TagFamily;
+          result.TagFriends = entry.TagFriends;
+          result.TagBirthday = entry.TagBirthday;
+          result.ByteImage = entry.ByteImage;
+        }
+        else
+        {
+        db.DiaryEntrys.Add(entry);
+        }
         db.SaveChanges();
       }
     }
@@ -94,6 +116,7 @@ namespace DiaryApp
     public static void CreateTestEntrys()
     {
       string testText = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
+      
       using (var db = new DiaryContext())
       {
         //add some test entrys to the EntryDb for TestUser 1 and 2
@@ -104,7 +127,7 @@ namespace DiaryApp
             { Text = testText,
               TagBirthday = true,
               TagFriends = true, UserId = 1,
-              Date = DateTime.Now.ToString("dd. MMMM yyyy")
+              Date = DateTime.Now
             }
           };
           lstTestEntrys.Add(new DiaryEntryDb
@@ -113,28 +136,28 @@ namespace DiaryApp
             TagBirthday = true,
             TagFamily = true,
             UserId = 1,
-            Date = DateTime.Now.AddDays(-1).ToString("dd. MMMM yyyy")
+            Date = DateTime.Now.AddDays(-1)
           });
           lstTestEntrys.Add(new DiaryEntryDb
           {
             Text = testText,
             TagFamily = true,
             UserId = 1,
-            Date = DateTime.Now.AddDays(-2).ToString("dd. MMMM yyyy")
+            Date = DateTime.Now.AddDays(-2)
           });
           lstTestEntrys.Add(new DiaryEntryDb
           {
             Text = testText,
             TagBirthday = true,
             UserId = 1,
-            Date = DateTime.Now.AddDays(-3).ToString("dd. MMMM yyyy")
+            Date = DateTime.Now.AddDays(-3)
           });
           lstTestEntrys.Add(new DiaryEntryDb
           {
             Text = testText,
             TagFriends = true,
             UserId = 1,
-            Date = DateTime.Now.AddDays(-4).ToString("dd. MMMM yyyy")
+            Date = DateTime.Now.AddDays(-4)
           });
           lstTestEntrys.Add(new DiaryEntryDb
           {
@@ -143,7 +166,7 @@ namespace DiaryApp
             TagBirthday = true,
             TagFamily = true,
             UserId = 1,
-            Date = DateTime.Now.AddDays(-5).ToString("dd. MMMM yyyy")
+            Date = DateTime.Now.AddDays(-5)
           });
           lstTestEntrys.Add(new DiaryEntryDb
           {
@@ -152,7 +175,7 @@ namespace DiaryApp
             TagBirthday = true,
             TagFamily = true,
             UserId = 2,
-            Date = DateTime.Now.AddDays(-6).ToString("dd. MMMM yyyy")
+            Date = DateTime.Now.AddDays(-6)
           });
           //more entrys
           for (int i = 6; i < 200; i++)
@@ -164,7 +187,7 @@ namespace DiaryApp
               TagBirthday = true,
               TagFamily = true,
               UserId = 1,
-              Date = DateTime.Now.AddDays(-i).ToString("dd. MMMM yyyy")
+              Date = DateTime.Now.AddDays(-i)
             });
           }
 
