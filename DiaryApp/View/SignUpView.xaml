@@ -20,7 +20,7 @@
         WindowStyle="None" ResizeMode="NoResize" Topmost="True">
   <Grid>
     <StackPanel>
-      <materialDesign:Card x:Name="cardHeader" Grid.Row="0" Padding="10" Margin="0" materialDesign:ShadowAssist.ShadowDepth="Depth3" Height="50" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2" MouseDown="CardHeader_MouseDown">
+      <materialDesign:Card x:Name="cardHeader" UniformCornerRadius="0" Grid.Row="0" Padding="10" Margin="0" materialDesign:ShadowAssist.ShadowDepth="Depth3" Height="50" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2" MouseDown="CardHeader_MouseDown">
         <StackPanel>
           <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" VerticalAlignment="Stretch" Style="{DynamicResource MaterialDesignHeadline6TextBlock}"  >Sign Up</TextBlock>
           <Button x:Name="btnClose" fa:Awesome.Content="PowerOff" HorizontalAlignment="Right" Margin="0,-30,0,0" Width="54" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Close" Click="BtnClose_Click" Height="45" />

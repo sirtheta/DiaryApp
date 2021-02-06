@@ -2,8 +2,6 @@
 using Notifications.Wpf.Core;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -24,13 +22,16 @@ namespace DiaryApp
     Calendar calendar;
     DataGrid dgManageEntrys;
     Image imageBox;
+    
 
     public string LoggedInUser { get { return model.FullName(); } }
     public string ChkBxFamily { get { return "Family"; } }
     public string ChkBxFriends { get { return "Friends"; } }
     public string ChkBxBirthday { get { return "Birthday"; } }
-    private string SelectedFileName { get; set; }
     public static int LooggedInUserId { get; set; }
+   
+    private string SelectedFileName { get; set; }
+    private byte[] ImgInByteArr { get; set; }
 
     #region initialize
     //Set references to all control elements from View
@@ -108,9 +109,10 @@ namespace DiaryApp
             TagFamily = (bool)chkBxFamily.IsChecked,
             TagFriends = (bool)chkBxFriends.IsChecked,
             TagBirthday = (bool)chkBxBirthday.IsChecked,
-            ByteImage = ImageToByteArray(SelectedFileName),
+            ByteImage = ImgInByteArr,
             UserId = LooggedInUserId
           };
+
           model.EntryToDb(newEntry);
           lstEntry.Add(newEntry);
           dgManageEntrys.ItemsSource = lstEntry.OrderByDescending(d => d.Date).ToList();
@@ -132,8 +134,10 @@ namespace DiaryApp
           TagFamily = (bool)chkBxFamily.IsChecked,
           TagFriends = (bool)chkBxFriends.IsChecked,
           TagBirthday = (bool)chkBxBirthday.IsChecked,
-          ByteImage = ImageToByteArray(SelectedFileName)
+          ByteImage = ImgInByteArr,
+          UserId = updateEntry.UserId
         };
+
         model.EntryToDb(entry);
         lstEntry.Remove(updateEntry);
         lstEntry.Add(entry);
@@ -142,12 +146,7 @@ namespace DiaryApp
         Helper.ShowNotification("Success", "Your diary entry successfully updated!", NotificationType.Success);
       }
       //clear text in input field and checkBoxes
-      entryText.Text = "";
-      chkBxFamily.IsChecked = false;
-      chkBxFriends.IsChecked = false;
-      chkBxBirthday.IsChecked = false;
-      calendar.SelectedDate = DateTime.Now;
-      imageBox.Source = null;
+      ClearControls();
       dgManageEntrys.SelectedItem = null;
       
       //Update Datagrid
@@ -171,11 +170,8 @@ namespace DiaryApp
           Helper.ShowNotification("Success", "Entry Successfull deleted", NotificationType.Success);
           //Update Datagrid
           dgManageEntrys.ItemsSource = lstEntry.OrderByDescending(d => d.Date).ToList();
-          entryText.Text = "";
-          chkBxFamily.IsChecked = false;
-          chkBxFriends.IsChecked = false;
-          chkBxBirthday.IsChecked = false;
-          imageBox.Source = null;
+          dgManageEntrys.SelectedItem = null;
+          ClearControls();
         }
       }
       else
@@ -196,17 +192,21 @@ namespace DiaryApp
 
     public void ShowAll(DataGrid dgManageEntrys)
     {
+      ClearControls();
+      dgManageEntrys.SelectedItem = null;
+      dgManageEntrys.ItemsSource = lstEntry;
+    }
+
+    public void ClearControls()
+    {
       entryText.Text = "";
       chkBxFamily.IsChecked = false;
       chkBxFriends.IsChecked = false;
       chkBxBirthday.IsChecked = false;
       calendar.SelectedDate = DateTime.Now;
       imageBox.Source = null;
-      dgManageEntrys.SelectedItem = null;
-      dgManageEntrys.ItemsSource = lstEntry;
     }
 
-    //Search for entrys by Tag
     public void GetEntrysByTag()
     {
       bool bFamily = (bool)chkBxFamily.IsChecked;
@@ -233,19 +233,15 @@ namespace DiaryApp
     #endregion
     #endregion
 
-    public byte[] ImageToByteArray(string selectedFileName)
+    private void ImageToByteArray()
     {
-      if (selectedFileName != null)
+      if (SelectedFileName != null)
       {
-        return File.ReadAllBytes(selectedFileName);
-      }
-      else
-      {
-        return null;
+        ImgInByteArr = File.ReadAllBytes(SelectedFileName);
       }
     }
 
-    public async void ImageFromByteArray(byte[] array)
+    private async void ImageFromByteArray(byte[] array)
     {
       if (array != null)
       {
@@ -261,7 +257,7 @@ namespace DiaryApp
       }
     }
 
-    public BitmapImage AddImage()
+    public void AddImage()
     {
       //Add Image
       OpenFileDialog dialog = new OpenFileDialog();
@@ -273,9 +269,9 @@ namespace DiaryApp
         bitmap.BeginInit();
         bitmap.UriSource = new Uri(SelectedFileName);
         bitmap.EndInit();
-        return bitmap;
+        imageBox.Source = bitmap;
+        ImageToByteArray();
       }
-      return null;
     }
   }
 }

@@ -32,7 +32,7 @@
           <RowDefinition Height="auto"/>
           <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <materialDesign:Card x:Name="cardHeader" Grid.Row="0" Padding="10" Margin="0" materialDesign:ShadowAssist.ShadowDepth="Depth3" Height="50"  Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2" MouseDown="CardHeader_MouseDown">
+        <materialDesign:Card x:Name="cardHeader" UniformCornerRadius="0" Grid.Row="0" Padding="10" Margin="0" materialDesign:ShadowAssist.ShadowDepth="Depth3" Height="50"  Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2" MouseDown="CardHeader_MouseDown">
           <Grid>
             <StackPanel Orientation="Horizontal">
               <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" FontSize="20" ><Run Text="Welcome"/></TextBlock>
@@ -58,7 +58,7 @@
               <CheckBox x:Name="chkBxFamily" Content="{Binding ChkBxFamily}" Style="{DynamicResource MaterialDesignCheckBox}" FontSize="15"/>
               <CheckBox x:Name="chkBxFriends" Content="{Binding ChkBxFriends}"  Style="{DynamicResource MaterialDesignCheckBox}" FontSize="15"/>
               <CheckBox x:Name="chkBxBirthday" Content="{Binding ChkBxBirthday}"  Style="{DynamicResource MaterialDesignCheckBox}" FontSize="15"/>
-              <Image x:Name="imageBox" HorizontalAlignment="Left" Height="261" Margin="0,10,0,0" Width="254"/>
+              <Image x:Name="imageBox" HorizontalAlignment="Left" Height="261" Margin="0,10,0,0" Width="254" Stretch="Uniform" MouseDown="ImageBox_MouseDown" />
             </StackPanel>
             <Calendar x:Name="calendar" DisplayDateEnd="{x:Static sys:DateTime.Today}" SelectedDate="{x:Static sys:DateTime.Today}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,10,0" ToolTip="Select date" Style="{DynamicResource MaterialDesignCalendarPortrait}"/>
           </StackPanel>
@@ -81,5 +81,16 @@
         </DataGrid>
       </Grid>
     </StackPanel>
+    <!--Imagepopup (lightbox) when clicking on image-->
+    <Popup Name="imgPopup" HorizontalAlignment="Left" Placement="Center" AllowsTransparency="True" MouseDown="ImgPopup_MouseDown" MaxWidth="1024" MaxHeight="900">
+      <Grid>
+        <Border Margin="0,0,8,8" Background="White" BorderThickness="1">
+          <Border.Effect>
+            <DropShadowEffect BlurRadius="5" Opacity="0.4"/>
+          </Border.Effect>
+          <Image x:Name="imageInPopup"></Image>
+        </Border>
+      </Grid>
+    </Popup>
   </Grid>
 </Window>

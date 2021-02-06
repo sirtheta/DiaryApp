@@ -28,14 +28,13 @@ namespace DiaryApp
     }
 
     private void BtnAddImage_Click(object sender, RoutedEventArgs e)
-    {
-      //Add Image TODO
-      imageBox.Source = control.AddImage();
+    {      
+      control.AddImage();
     }
 
     private void BtnClear_Click(object sender, RoutedEventArgs e)
     {
-      dgManageEntrys.SelectedItem = null;
+      control.ClearControls();
     }
 
     private void BtnDeleteSelected_Click(object sender, RoutedEventArgs e)
@@ -71,7 +70,7 @@ namespace DiaryApp
       if (Mouse.Captured is Calendar || Mouse.Captured is System.Windows.Controls.Primitives.CalendarItem)
       {
         Mouse.Capture(null);
-      }
+      }     
     }
 
     private void BtnClose_Click(object sender, RoutedEventArgs e)
@@ -82,6 +81,17 @@ namespace DiaryApp
     private void CardHeader_MouseDown(object sender, MouseButtonEventArgs e)
     {
       DragMove();
+    }
+
+    private void ImageBox_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+      imgPopup.IsOpen = true;
+      imageInPopup.Source = imageBox.Source;
+    }
+
+    private void ImgPopup_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+      imgPopup.IsOpen = false;
     }
 
     //private void BtnDarkSwitch_Click(object sender, RoutedEventArgs e)
