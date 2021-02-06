@@ -15,7 +15,6 @@ namespace DiaryApp
       Database.SetInitializer(new DropCreateDatabaseIfModelChanges<DiaryContext>());
       DatabaseInitializer.CreateTestUser();
       DatabaseInitializer.CreateTestEntrys();
-      //Globals.UserId = 1;
     }
   }
 }

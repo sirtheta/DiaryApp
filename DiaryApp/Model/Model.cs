@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -14,7 +13,6 @@ namespace DiaryApp
 
   class Model
   {
-
     public int GetUserId(string userName)
     {
       using (var db = new DiaryContext())
@@ -26,7 +24,7 @@ namespace DiaryApp
     }
 
     //retrieve all entrys from database
-    public static List<DiaryEntryDb> GetEntrysFromDb(int userId)
+    public List<DiaryEntryDb> GetEntrysFromDb(int userId)
     {
       using (var db = new DiaryContext())
       {
@@ -49,12 +47,12 @@ namespace DiaryApp
     }
 
     //Get the username from database
-    public string FullName()
+    public string FullName(int userId)
     {
       using (var db = new DiaryContext())
       {
         var query = (from b in db.Users
-                     where b.UserId == Control.LooggedInUserId
+                     where b.UserId == userId
                      select b).SingleOrDefault();
         return $"{query.FirstName} {query.LastName}";
       }
@@ -115,7 +113,7 @@ namespace DiaryApp
 
     public static void CreateTestEntrys()
     {
-      string testText = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
+     string testText = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
       
       using (var db = new DiaryContext())
       {

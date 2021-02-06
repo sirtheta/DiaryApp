@@ -1,5 +1,4 @@
-﻿
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -12,16 +11,55 @@ namespace DiaryApp
   {
     Control control;
 
-    public MainWindow(Control t_control)
+    public MainWindow()
     {
       InitializeComponent();
-      control = t_control;
-      control.SetReferences(entryInputText, chkBxFamily, chkBxFriends, chkBxBirthday, calendar, dgManageEntrys, imageBox);
-      control.LoadEntrysFromDb();
+      control = new Control(entryInputText, chkBxFamily, chkBxFriends, chkBxBirthday, calendar, dgManageEntrys, imageBox);
+    }    
+
+    private void Login()
+    {
+      if (control.Login(txtBoxUserName, txtBoxPassword))
+      {
+       popupLogin.IsOpen = false;
+       mainStackPanel.IsEnabled = true;
+       btnLogin.IsEnabled = false;
+      }
+    }
+    
+    private void Window_KeyDown(object sender, KeyEventArgs e)
+    {
+      if (e.Key == Key.Enter && popupLogin.IsOpen == true)
+      {
+        Login();
+      }
     }
 
+    private void BtnPopupLogin_Click(object sender, RoutedEventArgs e)
+    {
+      Login();
+    }
 
-    #region Events
+    private void BtnSignUpLogin_Click(object sender, RoutedEventArgs e)
+    {
+      new SignUp().ShowDialog();
+    }
+
+    private void BtnLoginClose_Click(object sender, RoutedEventArgs e)
+    {
+      popupLogin.IsOpen = false;
+    }
+    private void ImageBox_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+      imgPopup.IsOpen = true;
+      imageInPopup.Source = imageBox.Source;
+    }
+
+    private void ImgPopup_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+      imgPopup.IsOpen = false;
+    }
+
     private void BtnSaveEntry_Click(object sender, RoutedEventArgs e)
     {
       control.SaveEntry();
@@ -62,6 +100,11 @@ namespace DiaryApp
       control.ShowSelectedItem();
     }
 
+    private void BtnClose_Click(object sender, RoutedEventArgs e)
+    {
+      Application.Current.Shutdown();
+    }
+
     //This method prevents the mous from captured inside calender
     //-->Problem without: One have to cklick twice onto button in order to fire the click event
     protected override void OnPreviewMouseUp(MouseButtonEventArgs e)
@@ -73,25 +116,9 @@ namespace DiaryApp
       }     
     }
 
-    private void BtnClose_Click(object sender, RoutedEventArgs e)
-    {
-      Application.Current.Shutdown();
-    }
-
     private void CardHeader_MouseDown(object sender, MouseButtonEventArgs e)
     {
       DragMove();
-    }
-
-    private void ImageBox_MouseDown(object sender, MouseButtonEventArgs e)
-    {
-      imgPopup.IsOpen = true;
-      imageInPopup.Source = imageBox.Source;
-    }
-
-    private void ImgPopup_MouseDown(object sender, MouseButtonEventArgs e)
-    {
-      imgPopup.IsOpen = false;
     }
 
     //private void BtnDarkSwitch_Click(object sender, RoutedEventArgs e)
@@ -105,5 +132,4 @@ namespace DiaryApp
     //}
     //private readonly PaletteHelper _paletteHelper = new PaletteHelper();
   }
-  #endregion
 }

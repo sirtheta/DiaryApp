@@ -17,21 +17,30 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="DiaryApp" Height="900" Width="900" ResizeMode="NoResize" WindowStyle="None">
+        Title="DiaryApp" Height="900" Width="900" ResizeMode="NoResize" WindowStyle="None" KeyDown="Window_KeyDown" >
   <Window.DataContext>
     <Control:Control/>
   </Window.DataContext>
+
   <Grid>
     <notifications:NotificationArea Panel.ZIndex="10" 
               MaxItems="3"
               x:Name="WindowArea"
               Position="BottomRight" />
+
+    <!--***************************************************
+    Definition of MainWindow with DiaryEntry area
+    ***************************************************-->
     <StackPanel>
       <Grid>
         <Grid.RowDefinitions>
           <RowDefinition Height="auto"/>
           <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+
+        <!--***************************************************
+        Header
+        ***************************************************-->
         <materialDesign:Card x:Name="cardHeader" UniformCornerRadius="0" Grid.Row="0" Padding="10" Margin="0" materialDesign:ShadowAssist.ShadowDepth="Depth3" Height="50"  Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2" MouseDown="CardHeader_MouseDown">
           <Grid>
             <StackPanel Orientation="Horizontal">
@@ -39,50 +48,67 @@
               <TextBlock x:Name="txtLoggedInUser" Margin="10,0,0,0" Text="{Binding LoggedInUser}" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" FontSize="20"/>
             </StackPanel>
             <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" FontSize="25" ><Run Text="Diary App"/></TextBlock>
-            <Button x:Name="btnClose" fa:Awesome.Content="PowerOff" HorizontalAlignment="Right" Margin="0,-5,0,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Close" Click="BtnClose_Click" Height="45" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+              <ToggleButton x:Name="btnLogin" fa:Awesome.Content="SignIn" HorizontalAlignment="Left" Margin="0,-5,20,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Login" Height="45" />
+              <Button x:Name="btnClose" fa:Awesome.Content="PowerOff" HorizontalAlignment="Right" Margin="0,-5,0,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Close" Click="BtnClose_Click" Height="45" />
+            </StackPanel>
           </Grid>
         </materialDesign:Card>
       </Grid>
-      <Grid Height="465">
-        <StackPanel>
-          <StackPanel Orientation="Horizontal">
-            <Button x:Name="btnSaveEntry" Margin="10" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignRaisedButton}" fa:Awesome.Content="Save" FontSize="25" ToolTip="Save Entry" Click="BtnSaveEntry_Click"/>
-            <Button x:Name="btnAddImage"  Margin="10" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignRaisedButton}" fa:Awesome.Content="Image" FontSize="25" ToolTip="Add Image" Click="BtnAddImage_Click"/>
-            <Button x:Name="btClear"  Margin="10" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Clear" FontSize="18" ToolTip="Clear input" Click="BtnClear_Click"/>
-          </StackPanel>
-          <StackPanel Orientation="Horizontal">
-            <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,0,0,0">
-              <TextBox x:Name="entryInputText" HorizontalAlignment="Left" VerticalAlignment="Top" materialDesign:HintAssist.Hint="Your diarytext here" Style="{DynamicResource MaterialDesignOutlinedTextFieldTextBox}" TextWrapping="Wrap" FontSize="15" Width="350" Height="350"/>
+
+      <!--***************************************************
+        Main Entry Area
+        ***************************************************-->
+      <Grid>
+        <StackPanel x:Name="mainStackPanel" IsEnabled="False">
+          <Grid  Height="465">
+            <StackPanel>
+              <StackPanel Orientation="Horizontal">
+                <Button x:Name="btnSaveEntry" Margin="10" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignRaisedButton}" fa:Awesome.Content="Save" FontSize="25" ToolTip="Save Entry" Click="BtnSaveEntry_Click"/>
+                <Button x:Name="btnAddImage" Margin="10" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignRaisedButton}" fa:Awesome.Content="Image" FontSize="25" ToolTip="Add Image" Click="BtnAddImage_Click"/>
+                <Button x:Name="btClear"  Margin="10" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Clear" FontSize="18" ToolTip="Clear input" Click="BtnClear_Click"/>
+              </StackPanel>
+              <StackPanel Orientation="Horizontal">
+                <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,0,0,0">
+                  <TextBox x:Name="entryInputText" HorizontalAlignment="Left" VerticalAlignment="Top" materialDesign:HintAssist.Hint="Your diarytext here" Style="{DynamicResource MaterialDesignOutlinedTextFieldTextBox}" TextWrapping="Wrap" FontSize="15" Width="350" Height="350"/>
+                </StackPanel>
+                <StackPanel x:Name="chkBxStkPanel" Width="260" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0">
+                  <CheckBox x:Name="chkBxFamily" Content="{Binding ChkBxFamily}" Style="{DynamicResource MaterialDesignCheckBox}" FontSize="15"/>
+                  <CheckBox x:Name="chkBxFriends" Content="{Binding ChkBxFriends}"  Style="{DynamicResource MaterialDesignCheckBox}" FontSize="15"/>
+                  <CheckBox x:Name="chkBxBirthday" Content="{Binding ChkBxBirthday}"  Style="{DynamicResource MaterialDesignCheckBox}" FontSize="15"/>
+                  <Image x:Name="imageBox" HorizontalAlignment="Left" Height="261" Margin="0,10,0,0" Width="254" Stretch="Uniform" MouseDown="ImageBox_MouseDown" />
+                </StackPanel>
+                <Calendar x:Name="calendar" DisplayDateEnd="{x:Static sys:DateTime.Today}" SelectedDate="{x:Static sys:DateTime.Today}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,10,0" ToolTip="Select date" Style="{DynamicResource MaterialDesignCalendarPortrait}"/>
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Margin="20" HorizontalAlignment="Left" >
+                <Button x:Name="btnDeleteEntry" Margin="0,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" fa:Awesome.Content="Trash" FontSize="25" ToolTip="Delete selected entry" Click="BtnDeleteSelected_Click"/>
+                <Button x:Name="btnSearchByTag" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Search by tag" FontSize="18" ToolTip="Search by tag" Click="BtnSearchTag_Click"/>
+                <Button x:Name="btnSearchByDate" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Search by date" FontSize="18" ToolTip="Search by date" Click="BtnSearchDate_Click"/>
+                <Button x:Name="btnShowwAll" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Show all" FontSize="18" ToolTip="Show all" Click="BtnShowAll_Click"/>
+              </StackPanel>
             </StackPanel>
-            <StackPanel x:Name="chkBxStkPanel" Width="260" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0">
-              <CheckBox x:Name="chkBxFamily" Content="{Binding ChkBxFamily}" Style="{DynamicResource MaterialDesignCheckBox}" FontSize="15"/>
-              <CheckBox x:Name="chkBxFriends" Content="{Binding ChkBxFriends}"  Style="{DynamicResource MaterialDesignCheckBox}" FontSize="15"/>
-              <CheckBox x:Name="chkBxBirthday" Content="{Binding ChkBxBirthday}"  Style="{DynamicResource MaterialDesignCheckBox}" FontSize="15"/>
-              <Image x:Name="imageBox" HorizontalAlignment="Left" Height="261" Margin="0,10,0,0" Width="254" Stretch="Uniform" MouseDown="ImageBox_MouseDown" />
-            </StackPanel>
-            <Calendar x:Name="calendar" DisplayDateEnd="{x:Static sys:DateTime.Today}" SelectedDate="{x:Static sys:DateTime.Today}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,10,0" ToolTip="Select date" Style="{DynamicResource MaterialDesignCalendarPortrait}"/>
-          </StackPanel>
-          <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Margin="20" HorizontalAlignment="Left" >
-            <Button x:Name="btnDeleteEntry" Margin="0,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" fa:Awesome.Content="Trash" FontSize="25" ToolTip="Delete selected entry" Click="BtnDeleteSelected_Click"/>
-            <Button x:Name="btnSearchByTag" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Search by tag" FontSize="18" ToolTip="Search by tag" Click="BtnSearchTag_Click"/>
-            <Button x:Name="btnSearchByDate" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Search by date" FontSize="18" ToolTip="Search by date" Click="BtnSearchDate_Click"/>
-            <Button x:Name="btnShowwAll" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Show all" FontSize="18" ToolTip="Show all" Click="BtnShowAll_Click"/>
-          </StackPanel>
+          </Grid>
+
+          <!--***************************************************
+          Manage Entry GridView
+          ***************************************************-->
+          <Grid Margin="0,10,0,0" Height="360">
+            <DataGrid x:Name="dgManageEntrys" AutoGenerateColumns="False" CanUserAddRows="False" Style="{DynamicResource MaterialDesignDataGrid}" SelectionChanged="DataGrid_SelectionChanged" Width="900">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="Date" IsReadOnly="True" Binding="{Binding Date, StringFormat=\{0:dd.MM.yyyy\}}" SortDirection="Descending" />
+                <DataGridTextColumn Header="Tag" IsReadOnly="True" Binding="{Binding TagText}" />
+                <DataGridTextColumn Header="Text" IsReadOnly="True" MaxWidth="200" Binding="{Binding Text}" />
+              </DataGrid.Columns>
+            </DataGrid>
+          </Grid>
         </StackPanel>
       </Grid>
-      <!--Manage Entry GridView-->
-      <Grid Margin="0,10,0,0" Height="360">
-        <DataGrid x:Name="dgManageEntrys" AutoGenerateColumns="False" CanUserAddRows="False" Style="{DynamicResource MaterialDesignDataGrid}" SelectionChanged="DataGrid_SelectionChanged" Width="900">
-          <DataGrid.Columns>
-            <DataGridTextColumn Header="Date" IsReadOnly="True" Binding="{Binding Date, StringFormat=\{0:dd.MM.yyyy\}}" SortDirection="Descending" />
-            <DataGridTextColumn Header="Tag" IsReadOnly="True" Binding="{Binding TagText}" />
-            <DataGridTextColumn Header="Text" IsReadOnly="True" MaxWidth="200" Binding="{Binding Text}" />
-          </DataGrid.Columns>
-        </DataGrid>
-      </Grid>
     </StackPanel>
-    <!--Imagepopup (lightbox) when clicking on image-->
-    <Popup Name="imgPopup" HorizontalAlignment="Left" Placement="Center" AllowsTransparency="True" MouseDown="ImgPopup_MouseDown" MaxWidth="1024" MaxHeight="900">
+
+    <!--***************************************************
+    Imagepopup (lightbox) when clicking on image
+    ***************************************************-->
+    <Popup Name="imgPopup" HorizontalAlignment="Left" Placement="Center" AllowsTransparency="True"  MaxWidth="1024" MaxHeight="900" MouseDown="ImgPopup_MouseDown" >
       <Grid>
         <Border Margin="0,0,8,8" Background="White" BorderThickness="1">
           <Border.Effect>
@@ -91,6 +117,38 @@
           <Image x:Name="imageInPopup"></Image>
         </Border>
       </Grid>
+    </Popup>
+
+    <!--***************************************************
+    LoginPopup
+    ***************************************************-->
+    <Popup x:Name="popupLogin" IsOpen="{Binding IsChecked, ElementName=btnLogin}" AllowsTransparency="True" Placement="Center" Width="370" Height="320">
+      <Border Margin="0,0,8,8" Background="White" BorderThickness="1">
+        <Border.Effect>
+          <DropShadowEffect BlurRadius="5" Opacity="0.4"/>
+        </Border.Effect>
+        <Grid Background="{DynamicResource MaterialDesignPaper}">
+          <StackPanel>
+            <materialDesign:Card UniformCornerRadius="0" Grid.Row="0" Padding="10" Margin="0" Height="50" materialDesign:ShadowAssist.ShadowDepth="Depth3" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2" MouseDown="CardHeader_MouseDown">
+              <StackPanel  Margin="0,0,0,0">
+                <TextBlock x:Name="txtPopupTitle" HorizontalAlignment="Center" VerticalAlignment="Stretch" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" FontSize="25" >Login</TextBlock>
+                <Button x:Name="btnLoginClose" fa:Awesome.Content="PowerOff" HorizontalAlignment="Right" Margin="0,-36,0,0" Width="54" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Close" Click="BtnLoginClose_Click" Height="45" />
+              </StackPanel>
+            </materialDesign:Card>
+            <StackPanel Margin="25">
+              <TextBox x:Name="txtBoxUserName" Margin="20,0,0,0" materialDesign:HintAssist.Hint="Username" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" FontSize="20" Grid.Row="1"/>
+              <PasswordBox x:Name="txtBoxPassword" Margin="20,0,0,0" materialDesign:HintAssist.Hint="Password" Style="{DynamicResource MaterialDesignFloatingHintPasswordBox}" FontSize="20" Grid.Row="1" />
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="btnPopupLogin" Margin="15 20" fa:Awesome.Content="SignIn" FontSize="18" ToolTip="Login" Click="BtnPopupLogin_Click"/>
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Label Content="No login? " Style="{DynamicResource MaterialDesignLabel}" FontSize="13"/>
+                <Button x:Name="btnSignUp" Margin="-15 -4 0 0" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Sign up" Content="Sign up now" Click="BtnSignUpLogin_Click" />
+              </StackPanel>
+            </StackPanel>
+          </StackPanel>
+        </Grid>
+      </Border>
     </Popup>
   </Grid>
 </Window>
