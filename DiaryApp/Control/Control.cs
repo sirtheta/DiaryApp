@@ -22,6 +22,7 @@ namespace DiaryApp
     DataGrid dgManageEntrys;
     Image imageBox;
 
+    //empty constructor needed to initialize MainWindow
     public Control()
     {
 

@@ -120,7 +120,6 @@ namespace DiaryApp
     {
       DragMove();
     }
-
     //private void BtnDarkSwitch_Click(object sender, RoutedEventArgs e)
     //{
     //  //For Dark Theme switch implementation:
