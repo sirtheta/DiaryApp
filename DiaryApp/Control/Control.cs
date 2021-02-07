@@ -85,8 +85,8 @@ namespace DiaryApp
           LooggedInUserId = user.UserId;
           LoadEntrysFromDb();
           Helper.ShowNotification("Success", "Sign in successfull!", NotificationType.Success);
-          userName.Text = "";
-          password.Password = "";
+          userName.Text = null;
+          password.Password = null;
           return true;
         }
         else
@@ -98,16 +98,17 @@ namespace DiaryApp
       catch (Exception)
       {
         Helper.ShowMessageBox("No such user! Sign up now!", MessageType.Error, MessageButtons.Ok);
-        userName.Text = "";
-        password.Password = "";
+        userName.Text = null;
+        password.Password = null;
         return false;
       }
     }
+
     public void SignOut()
     {
       lstEntry.Clear();
       ClearControls();
-      dgManageEntrys.Items.Refresh();
+      dgManageEntrys.ItemsSource = null;
       LooggedInUserId = 0;
     }
     #endregion
@@ -237,7 +238,7 @@ namespace DiaryApp
 
     public void ClearControls()
     {
-      entryText.Text = "";
+      entryText.Text = null;
       chkBxFamily.IsChecked = false;
       chkBxFriends.IsChecked = false;
       chkBxBirthday.IsChecked = false;
@@ -298,9 +299,9 @@ namespace DiaryApp
 
     private async void ImageFromByteArray(byte[] array)
     {
+      var image = new BitmapImage();
       if (array != null)
       {
-        var image = new BitmapImage();
         await using (var ms = new MemoryStream(array))
         {
           image.BeginInit();
