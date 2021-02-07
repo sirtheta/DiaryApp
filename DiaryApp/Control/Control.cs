@@ -23,11 +23,15 @@ namespace DiaryApp
     Image imageBox;
 
     //empty constructor needed to initialize MainWindow
-    public Control()
-    {
+    public Control() { }
 
-    }
-    public Control(TextBox t_entryText, CheckBox t_chkBxFamily, CheckBox t_chkBxFriends, CheckBox t_chkBxBirthday, Calendar t_calendar, DataGrid t_dgManageEntrys, Image t_imageBox)
+    public Control(TextBox t_entryText,
+                   CheckBox t_chkBxFamily,
+                   CheckBox t_chkBxFriends,
+                   CheckBox t_chkBxBirthday,
+                   Calendar t_calendar,
+                   DataGrid t_dgManageEntrys,
+                   Image t_imageBox)
     {
       entryText = t_entryText;
       chkBxFamily = t_chkBxFamily;
@@ -38,20 +42,22 @@ namespace DiaryApp
       imageBox = t_imageBox;
     }
 
-    public string LoggedInUser { get
+    public string LoggedInUser
+    {
+      get
       {
         if (LooggedInUserId != 0)
         {
-        return model.FullName(LooggedInUserId); 
+          return model.FullName(LooggedInUserId);
         }
         return null;
-      } 
+      }
     }
     public string ChkBxFamily { get { return "Family"; } }
     public string ChkBxFriends { get { return "Friends"; } }
     public string ChkBxBirthday { get { return "Birthday"; } }
     public int LooggedInUserId { get; set; }
-   
+
     private string SelectedFileName { get; set; }
     private byte[] ImgInByteArr { get; set; }
 
@@ -60,12 +66,15 @@ namespace DiaryApp
     {
       if (LooggedInUserId != 0)
       {
-      lstEntry = new List<DiaryEntryDb>(model.GetEntrysFromDb(LooggedInUserId));
-      //Load lstEntry to Datagrid
-      dgManageEntrys.ItemsSource = lstEntry;
+        lstEntry = new List<DiaryEntryDb>(model.GetEntrysFromDb(LooggedInUserId));
+        //Load lstEntry to Datagrid
+        dgManageEntrys.ItemsSource = lstEntry;
       }
     }
 
+    //**************************************************************************
+    //Login section
+    //**************************************************************************
     #region Login
 
     public bool Login(TextBox userName, PasswordBox password)
@@ -84,6 +93,9 @@ namespace DiaryApp
     }
     #endregion
 
+    //**************************************************************************
+    //Entry Save and delete section
+    //**************************************************************************
     #region SaveDelete
     //If item is selected in Datagrid, show it
     public void ShowSelectedItem()
@@ -93,6 +105,7 @@ namespace DiaryApp
       if (dgManageEntrys.SelectedItem != null)
       {
         var selected = dgManageEntrys.SelectedItem as DiaryEntryDb;
+
         entryText.Text = selected.Text;
         chkBxFamily.IsChecked = selected.TagFamily;
         chkBxFriends.IsChecked = selected.TagFriends;
@@ -149,10 +162,10 @@ namespace DiaryApp
         //remove old entry from list and then add the updated one and order it by date
         lstEntry.Remove(updateEntry);
         lstEntry.Add(entry);
-        dgManageEntrys.ItemsSource= lstEntry.OrderByDescending(d => d.Date).ToList();
+        dgManageEntrys.ItemsSource = lstEntry.OrderByDescending(d => d.Date).ToList();
 
         Helper.ShowNotification("Success", "Your diary entry successfully updated!", NotificationType.Success);
-      }      
+      }
       //Update Datagrid
       dgManageEntrys.Items.Refresh();
     }
@@ -185,6 +198,9 @@ namespace DiaryApp
     }
     #endregion
 
+    //**************************************************************************
+    //Search entry section
+    //**************************************************************************
     #region Search
     //Search for entrys by Date
     public void GetEntrysByDate()
@@ -265,16 +281,16 @@ namespace DiaryApp
     {
       if (array != null)
       {
+        var image = new BitmapImage();
         await using (var ms = new MemoryStream(array))
         {
-          var image = new BitmapImage();
           image.BeginInit();
           image.CacheOption = BitmapCacheOption.OnLoad;
           image.StreamSource = ms;
           image.EndInit();
-          imageBox.Source = image;
         }
+          imageBox.Source = image;
       }
-    }    
+    }
   }
 }
