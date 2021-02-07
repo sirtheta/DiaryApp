@@ -84,6 +84,9 @@ namespace DiaryApp
         {
           LooggedInUserId = user.UserId;
           LoadEntrysFromDb();
+          Helper.ShowNotification("Success", "Sign in successfull!", NotificationType.Success);
+          userName.Text = "";
+          password.Password = "";
           return true;
         }
         else
@@ -103,11 +106,10 @@ namespace DiaryApp
     public void SignOut()
     {
       lstEntry.Clear();
+      ClearControls();
       dgManageEntrys.Items.Refresh();
       LooggedInUserId = 0;
     }
-
-
     #endregion
 
     //**************************************************************************

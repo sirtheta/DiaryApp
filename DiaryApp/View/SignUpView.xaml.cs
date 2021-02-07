@@ -21,8 +21,7 @@ namespace DiaryApp
       if (logic.SignUp())
       {
         Close();
-      }
-      
+      }      
     }
     private void BtnClose_Click(object sender, RoutedEventArgs e)
     {

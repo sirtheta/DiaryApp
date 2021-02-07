@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Notifications.Wpf.Core;
+using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
@@ -32,18 +34,17 @@ namespace DiaryApp
 
     public bool SignUp()
     {
-      try
+      if (model.GetUser(txtBoxUserName.Text).Count == 0)
       {
-        model.GetUser(txtBoxUserName.Text).Single();
-
         if (CheckPassword())
         {
           CreateNewUser();
+          Helper.ShowNotification("Success", "Sign up successfull!", NotificationType.Success);
           return true;
         }
         return false;
       }
-      catch (Exception)
+      else
       {
         Helper.ShowMessageBox("User already exists!", MessageType.Error, MessageButtons.Ok);
         txtBoxUserName.Text = "";
@@ -66,21 +67,28 @@ namespace DiaryApp
     private bool CheckPassword()
     {
       Regex regex = new Regex(@"^(?=(.*\d){2})(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).{8,}$");
-      if (txtBoxPassword.Password == txtBoxPasswordConfirm.Password)
+      try
       {
-        Helper.ShowMessageBox("Passwords are not matching!", MessageType.Error, MessageButtons.Ok);
-        txtBoxPassword = null;
-        txtBoxPasswordConfirm = null;
+        if (txtBoxPassword.Password != txtBoxPasswordConfirm.Password)
+        {
+          Helper.ShowMessageBox("Passwords are not matching!", MessageType.Error, MessageButtons.Ok);
+          txtBoxPassword.Password = "";
+          txtBoxPasswordConfirm.Password = "";
+          return false;
+        }
+        if (!regex.IsMatch(txtBoxPassword.Password))
+        {
+          Helper.ShowMessageBox("The entered password does not meet the requirements. Requirements: minimum 8 characters, 1 lowercase, 1 uppercase, 1 digit and 1 special character.", MessageType.Error, MessageButtons.Ok);
+          txtBoxPassword.Password = "";
+          txtBoxPasswordConfirm.Password = "";
+          return false;
+        }
+        return true;
+      }
+      catch (Exception)
+      {
         return false;
       }
-      if (!regex.IsMatch(txtBoxPassword.Password))
-      {
-        Helper.ShowMessageBox("The entered password does not meet the requirements. Requirements: minimum 8 characters, 1 lowercase, 1 uppercase, 1 digit and 1 special character.", MessageType.Error, MessageButtons.Ok);
-        txtBoxPassword = null;
-        txtBoxPasswordConfirm = null;
-        return false;
-      }
-      return true;
     }
   }
 }
