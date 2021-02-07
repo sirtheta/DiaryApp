@@ -13,16 +13,9 @@ namespace DiaryApp
 
   class Model
   {
-    public int GetUserId(string userName)
-    {
-      using (var db = new DiaryContext())
-      {
-        return (from b in db.Users
-                where b.UserName == userName
-                select b.UserId).SingleOrDefault();
-      }
-    }
-
+    //**************************************************************************
+    //entry section
+    //**************************************************************************
     //retrieve all entrys from database
     public List<DiaryEntryDb> GetEntrysFromDb(int userId)
     {
@@ -30,31 +23,7 @@ namespace DiaryApp
       {
         return (from b in db.DiaryEntrys
                 where b.UserId == userId
-                select b).OrderByDescending(d=> d.Date).ToList();
-      }
-    }
-
-    public bool CheckForValidUser(string userName, string password)
-    {
-      using (var db = new DiaryContext())
-      {
-        if (db.Users.Any(o => o.UserName == userName) && db.Users.Any(o => o.Password == password))
-        {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    //Get the username from database
-    public string FullName(int userId)
-    {
-      using (var db = new DiaryContext())
-      {
-        var query = (from b in db.Users
-                     where b.UserId == userId
-                     select b).SingleOrDefault();
-        return $"{query.FirstName} {query.LastName}";
+                select b).OrderByDescending(d => d.Date).ToList();
       }
     }
 
@@ -75,7 +44,7 @@ namespace DiaryApp
         }
         else
         {
-        db.DiaryEntrys.Add(entry);
+          db.DiaryEntrys.Add(entry);
         }
         db.SaveChanges();
       }
@@ -90,7 +59,47 @@ namespace DiaryApp
         db.SaveChanges();
       }
     }
+    //**************************************************************************
+    //user section
+    //**************************************************************************
+    public bool CheckForValidUser(string userName, string password)
+    {
+      using (var db = new DiaryContext())
+      {
+        if (db.Users.Any(o => o.UserName == userName) && db.Users.Any(o => o.Password == password))
+        {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    public int GetUserId(string userName)
+    {
+      using (var db = new DiaryContext())
+      {
+        return (from b in db.Users
+                where b.UserName == userName
+                select b.UserId).SingleOrDefault();
+      }
+    }
+
+    //Get the username from database
+    public string FullName(int userId)
+    {
+      using (var db = new DiaryContext())
+      {
+        var query = (from b in db.Users
+                     where b.UserId == userId
+                     select b).SingleOrDefault();
+        return $"{query.FirstName} {query.LastName}";
+      }
+    }
   }
+
+  //**************************************************************************
+  //Create test entrys
+  //**************************************************************************
   #region CreateTestEntrys
 
   public static class DatabaseInitializer
@@ -113,8 +122,8 @@ namespace DiaryApp
 
     public static void CreateTestEntrys()
     {
-     string testText = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
-      
+      string testText = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
+
       using (var db = new DiaryContext())
       {
         //add some test entrys to the EntryDb for TestUser 1 and 2
