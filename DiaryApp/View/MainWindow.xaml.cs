@@ -15,15 +15,17 @@ namespace DiaryApp
     {
       InitializeComponent();
       control = new Control(entryInputText, chkBxFamily, chkBxFriends, chkBxBirthday, calendar, dgManageEntrys, imageBox);
+      popupLogin.IsOpen = true;
     }    
 
-    private void Login()
+    private void SignIn()
     {
-      if (control.Login(txtBoxUserName, txtBoxPassword))
+      if (control.VerifyCredentials(txtBoxUserName, txtBoxPassword))
       {
        popupLogin.IsOpen = false;
        mainStackPanel.IsEnabled = true;
-       btnLogin.IsEnabled = false;
+       btnLogin.Visibility = Visibility.Hidden;
+       btnSignOut.Visibility = Visibility.Visible;
        txtLoggedInUser.Text = control.LoggedInUserFullName;
       }
     }
@@ -32,13 +34,22 @@ namespace DiaryApp
     {
       if (e.Key == Key.Enter && popupLogin.IsOpen == true)
       {
-        Login();
+        SignIn();
       }
     }
 
     private void BtnPopupLogin_Click(object sender, RoutedEventArgs e)
     {
-      Login();
+      SignIn();
+    }
+
+    private void BtnSignOut_Click(object sender, RoutedEventArgs e)
+    {
+      control.SignOut();
+      mainStackPanel.IsEnabled = false;
+      btnLogin.Visibility = Visibility.Visible;
+      btnSignOut.Visibility = Visibility.Hidden;
+      txtLoggedInUser.Text = "";
     }
 
     private void BtnSignUpLogin_Click(object sender, RoutedEventArgs e)
@@ -121,6 +132,7 @@ namespace DiaryApp
     {
       DragMove();
     }
+
     //private void BtnDarkSwitch_Click(object sender, RoutedEventArgs e)
     //{
     //  //For Dark Theme switch implementation:

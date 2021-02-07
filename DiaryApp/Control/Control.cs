@@ -67,15 +67,14 @@ namespace DiaryApp
       lstEntry = new List<DiaryEntryDb>(model.GetEntrysFromDb(LooggedInUserId));
       //Load lstEntry to Datagrid
       dgManageEntrys.ItemsSource = lstEntry;
-
     }
 
     //**************************************************************************
-    //Login section
+    //Sign in/sign out section
     //**************************************************************************
-    #region Login
+    #region SignIn/out
 
-    public bool Login(TextBox userName, PasswordBox password)
+    public bool VerifyCredentials(TextBox userName, PasswordBox password)
     {
       try
       {
@@ -101,6 +100,14 @@ namespace DiaryApp
         return false;
       }
     }
+    public void SignOut()
+    {
+      lstEntry.Clear();
+      dgManageEntrys.Items.Refresh();
+      LooggedInUserId = 0;
+    }
+
+
     #endregion
 
     //**************************************************************************

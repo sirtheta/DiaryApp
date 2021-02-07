@@ -50,7 +50,8 @@
             </StackPanel>
             <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" FontSize="25" ><Run Text="Diary App"/></TextBlock>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-              <ToggleButton x:Name="btnLogin" fa:Awesome.Content="SignIn" HorizontalAlignment="Left" Margin="0,-5,20,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Login" Height="45" />
+              <ToggleButton x:Name="btnLogin" fa:Awesome.Content="SignIn" HorizontalAlignment="Left" Margin="0,-5,-25,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Sign in" Height="45" />
+              <Button x:Name="btnSignOut" Visibility="Hidden" fa:Awesome.Content="SignOut" HorizontalAlignment="Left" Margin="0,-5,20,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Sign out" Height="45" Click="BtnSignOut_Click" />
               <Button x:Name="btnClose" fa:Awesome.Content="PowerOff" HorizontalAlignment="Right" Margin="0,-5,0,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Close" Click="BtnClose_Click" Height="45" />
             </StackPanel>
           </Grid>
