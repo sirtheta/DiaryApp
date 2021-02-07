@@ -42,7 +42,7 @@ namespace DiaryApp
       imageBox = t_imageBox;
     }
 
-    public string LoggedInUser
+    public string LoggedInUserFullName
     {
       get
       {
@@ -64,12 +64,10 @@ namespace DiaryApp
     //Load all entrys from DB with the logged in User
     public void LoadEntrysFromDb()
     {
-      if (LooggedInUserId != 0)
-      {
-        lstEntry = new List<DiaryEntryDb>(model.GetEntrysFromDb(LooggedInUserId));
-        //Load lstEntry to Datagrid
-        dgManageEntrys.ItemsSource = lstEntry;
-      }
+      lstEntry = new List<DiaryEntryDb>(model.GetEntrysFromDb(LooggedInUserId));
+      //Load lstEntry to Datagrid
+      dgManageEntrys.ItemsSource = lstEntry;
+
     }
 
     //**************************************************************************
@@ -79,15 +77,27 @@ namespace DiaryApp
 
     public bool Login(TextBox userName, PasswordBox password)
     {
-      if (model.CheckForValidUser(userName.Text, password.Password))
+      try
       {
-        LooggedInUserId = model.GetUserId(userName.Text);
-        LoadEntrysFromDb();
-        return true;
+        var user = model.GetUser(userName.Text).Single();
+
+        if (SecurePasswordHasher.Verify(password.Password, user.Password))
+        {
+          LooggedInUserId = user.UserId;
+          LoadEntrysFromDb();
+          return true;
+        }
+        else
+        {
+          Helper.ShowMessageBox("Login incorrect, try again!", MessageType.Error, MessageButtons.Ok);
+          return false;
+        }
       }
-      else
+      catch (Exception)
       {
-        Helper.ShowMessageBox("Login incorrect, try again!", MessageType.Error, MessageButtons.Ok);
+        Helper.ShowMessageBox("No such user! Sign up now!", MessageType.Error, MessageButtons.Ok);
+        userName.Text = "";
+        password.Password = "";
         return false;
       }
     }
@@ -289,7 +299,7 @@ namespace DiaryApp
           image.StreamSource = ms;
           image.EndInit();
         }
-          imageBox.Source = image;
+        imageBox.Source = image;
       }
     }
   }

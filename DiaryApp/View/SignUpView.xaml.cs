@@ -8,14 +8,21 @@ namespace DiaryApp
   /// </summary>
   public partial class SignUp : Window
   {
+    readonly SignUpLogic logic;
+
     public SignUp()
     {
       InitializeComponent();
+      logic = new SignUpLogic(txtBoxLastName, txtBoxFirstName, txtBoxUserName, txtBoxPassword, txtBoxPasswordConfirm);
     }
 
     private void SignUp_Click(object sender, RoutedEventArgs e)
     {
-      Close();
+      if (logic.SignUp())
+      {
+        Close();
+      }
+      
     }
     private void BtnClose_Click(object sender, RoutedEventArgs e)
     {

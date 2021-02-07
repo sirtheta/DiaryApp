@@ -17,27 +17,59 @@
         TextOptions.TextRenderingMode="Auto"  
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
+        AllowsTransparency="True"
         WindowStyle="None" ResizeMode="NoResize" Topmost="True">
   <Grid>
-    <StackPanel>
-      <materialDesign:Card x:Name="cardHeader" UniformCornerRadius="0" Grid.Row="0" Padding="10" Margin="0" materialDesign:ShadowAssist.ShadowDepth="Depth3" Height="50" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2" MouseDown="CardHeader_MouseDown">
-        <StackPanel>
-          <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" VerticalAlignment="Stretch" Style="{DynamicResource MaterialDesignHeadline6TextBlock}"  >Sign Up</TextBlock>
-          <Button x:Name="btnClose" fa:Awesome.Content="PowerOff" HorizontalAlignment="Right" Margin="0,-30,0,0" Width="54" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Close" Click="BtnClose_Click" Height="45" />
-        </StackPanel>
-      </materialDesign:Card>
-      <StackPanel Margin="25">
-        <TextBlock Style="{DynamicResource MaterialDesignHeadline6TextBlock}" HorizontalAlignment="Center" Text="Sign Up as new User" Grid.Row="1"/>
-        <TextBox x:Name="txtBoxLastName" Margin="20,0,0,0" materialDesign:HintAssist.Hint="Last Name" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" FontSize="20" Grid.Row="1"/>
-        <TextBox x:Name="txtBoxFirstName"  Margin="20,0,0,0" materialDesign:HintAssist.Hint="First Name" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" FontSize="20" Grid.Row="1"/>
-        <TextBox x:Name="txtBoxUserName"  Margin="20,0,0,0" materialDesign:HintAssist.Hint="Username" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" FontSize="20" Grid.Row="1"/>
-        <PasswordBox x:Name="txtBoxPassword" Margin="20,2,0,0" materialDesign:HintAssist.Hint="Password" Style="{DynamicResource MaterialDesignFloatingHintPasswordBox}" FontSize="20" Grid.Row="1" />
-        <PasswordBox x:Name="txtBoxPasswordConfirm" Margin="20,3,0,0" materialDesign:HintAssist.Hint="Confirm Password" Style="{DynamicResource MaterialDesignFloatingHintPasswordBox}" FontSize="20" Grid.Row="1" />
-
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-          <Button x:Name="btnSignUp" Margin="15 20" Content="Sign Up" FontSize="18" ToolTip="Sign Up" Click="SignUp_Click"/>
+    <Border Margin="0,0,5,5" Background="White" BorderThickness="0">
+      <Border.Effect>
+        <DropShadowEffect BlurRadius="5" Opacity="0.4"/>
+      </Border.Effect>
+      <StackPanel>
+        <materialDesign:Card x:Name="cardHeader" UniformCornerRadius="0" Grid.Row="0" Padding="10" Margin="0" materialDesign:ShadowAssist.ShadowDepth="Depth3" Height="50" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2" MouseDown="CardHeader_MouseDown">
+          <StackPanel>
+            <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" VerticalAlignment="Stretch" Style="{DynamicResource MaterialDesignHeadline6TextBlock}"  >Sign Up</TextBlock>
+            <Button x:Name="btnClose" fa:Awesome.Content="PowerOff" HorizontalAlignment="Right" Margin="0,-30,0,0" Width="54" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Close" Click="BtnClose_Click" Height="45" />
+          </StackPanel>
+        </materialDesign:Card>
+        <StackPanel Margin="25">
+          <TextBlock Style="{DynamicResource MaterialDesignHeadline6TextBlock}" HorizontalAlignment="Center" Text="Sign Up as new User" Grid.Row="1"/>
+          <TextBox Name="txtBoxLastName" Margin="20,0,0,0" materialDesign:HintAssist.Hint="Last Name" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" FontSize="20" Grid.Row="1"/>
+          <TextBox x:Name="txtBoxFirstName"  Margin="20,0,0,0" materialDesign:HintAssist.Hint="First Name" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" FontSize="20" Grid.Row="1"/>
+          <TextBox x:Name="txtBoxUserName" Margin="20,0,0,0" materialDesign:HintAssist.Hint="Username" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" FontSize="20" Grid.Row="1"/>
+          <PasswordBox x:Name="txtBoxPassword" Margin="20,2,0,0" materialDesign:HintAssist.Hint="Password" Style="{DynamicResource MaterialDesignFloatingHintPasswordBox}" FontSize="20" Grid.Row="1" />
+          <PasswordBox x:Name="txtBoxPasswordConfirm" Margin="20,3,0,0" materialDesign:HintAssist.Hint="Confirm Password" Style="{DynamicResource MaterialDesignFloatingHintPasswordBox}" FontSize="20" Grid.Row="1" />
+          
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button x:Name="btnSignUp" Margin="15 20" Content="Sign Up" FontSize="18" ToolTip="Sign Up" Click="SignUp_Click">
+              <Button.Style>
+                <Style BasedOn="{StaticResource MaterialDesignRaisedButton}" TargetType="Button">
+                  <Setter Property="IsEnabled" Value="True"/>
+                  <Style.Triggers>
+                    <MultiDataTrigger>
+                      <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=Text.Length, ElementName=txtBoxLastName}" Value="0"/>
+                      </MultiDataTrigger.Conditions>
+                      <Setter Property="IsEnabled" Value="False"/>
+                    </MultiDataTrigger>
+                    <MultiDataTrigger>
+                      <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=Text.Length, ElementName=txtBoxFirstName}" Value="0"/>
+                      </MultiDataTrigger.Conditions>
+                      <Setter Property="IsEnabled" Value="False"/>
+                    </MultiDataTrigger>
+                    <MultiDataTrigger>
+                      <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=Text.Length, ElementName=txtBoxUserName}" Value="0"/>
+                      </MultiDataTrigger.Conditions>
+                      <Setter Property="IsEnabled" Value="False"/>
+                    </MultiDataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </Button.Style>
+            </Button>
+          </StackPanel>         
         </StackPanel>
       </StackPanel>
-    </StackPanel>
+    </Border>
   </Grid>
 </Window>

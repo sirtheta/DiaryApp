@@ -9,7 +9,7 @@ namespace DiaryApp
   /// </summary>
   public partial class MainWindow : Window
   {
-    Control control;
+    readonly Control control;
 
     public MainWindow()
     {
@@ -24,6 +24,7 @@ namespace DiaryApp
        popupLogin.IsOpen = false;
        mainStackPanel.IsEnabled = true;
        btnLogin.IsEnabled = false;
+       txtLoggedInUser.Text = control.LoggedInUserFullName;
       }
     }
     

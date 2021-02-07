@@ -62,25 +62,24 @@ namespace DiaryApp
     //**************************************************************************
     //user section
     //**************************************************************************
-    public bool CheckForValidUser(string userName, string password)
+
+    //Save the Created Entry to Database
+    public void UserToDb(UserDb user)
     {
       using (var db = new DiaryContext())
       {
-        if (db.Users.Any(o => o.UserName == userName) && db.Users.Any(o => o.Password == password))
-        {
-          return true;
-        }
+        db.Users.Add(user);
+        db.SaveChanges();
       }
-      return false;
     }
 
-    public int GetUserId(string userName)
+    public List<UserDb> GetUser(string userName)
     {
       using (var db = new DiaryContext())
       {
         return (from b in db.Users
                 where b.UserName == userName
-                select b.UserId).SingleOrDefault();
+                select b).ToList();
       }
     }
 
@@ -110,8 +109,8 @@ namespace DiaryApp
       {
         if (!db.Users.Any())
         {
-          List<UserDb> lstUser = new List<UserDb>() { new UserDb { UserName = "1", FirstName = "User", LastName = "Example", Password = "1" } };
-          lstUser.Add(new UserDb { UserName = "2", FirstName = "User2", LastName = "Example2", Password = "2" });
+          List<UserDb> lstUser = new List<UserDb>() { new UserDb { UserName = "1", FirstName = "User", LastName = "Example", Password = SecurePasswordHasher.Hash("1") } };
+          lstUser.Add(new UserDb { UserName = "2", FirstName = "User2", LastName = "Example2", Password = SecurePasswordHasher.Hash("2") });
           db.Users.Add(lstUser[0]);
           db.Users.Add(lstUser[1]);
           db.SaveChanges();
