@@ -1,8 +1,4 @@
 ﻿using Notifications.Wpf.Core;
-using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Security;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
 
@@ -17,7 +13,6 @@ namespace DiaryApp
     TextBox txtBoxUserName;
     PasswordBox txtBoxPassword;
     PasswordBox txtBoxPasswordConfirm;
-    SecureString password;
 
     public SignUpLogic() { }
 

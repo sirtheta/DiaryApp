@@ -16,20 +16,20 @@ namespace DiaryApp
       InitializeComponent();
       control = new Control(entryInputText, chkBxFamily, chkBxFriends, chkBxBirthday, calendar, dgManageEntrys, imageBox);
       popupLogin.IsOpen = true;
-    }    
+    }
 
     private void SignIn()
     {
       if (control.VerifyCredentials(txtBoxUserName, txtBoxPassword))
       {
-       popupLogin.IsOpen = false;
-       mainStackPanel.IsEnabled = true;
-       btnLogin.Visibility = Visibility.Hidden;
-       btnSignOut.Visibility = Visibility.Visible;
-       txtLoggedInUser.Text = control.LoggedInUserFullName;
+        popupLogin.IsOpen = false;
+        mainStackPanel.IsEnabled = true;
+        btnLogin.Visibility = Visibility.Hidden;
+        btnSignOut.Visibility = Visibility.Visible;
+        txtLoggedInUser.Text = control.LoggedInUserFullName;
       }
     }
-    
+
     private void Window_KeyDown(object sender, KeyEventArgs e)
     {
       if (e.Key == Key.Enter && popupLogin.IsOpen == true)
@@ -78,7 +78,7 @@ namespace DiaryApp
     }
 
     private void BtnAddImage_Click(object sender, RoutedEventArgs e)
-    {      
+    {
       control.AddImage();
     }
 
@@ -125,7 +125,7 @@ namespace DiaryApp
       if (Mouse.Captured is Calendar || Mouse.Captured is System.Windows.Controls.Primitives.CalendarItem)
       {
         Mouse.Capture(null);
-      }     
+      }
     }
 
     private void CardHeader_MouseDown(object sender, MouseButtonEventArgs e)

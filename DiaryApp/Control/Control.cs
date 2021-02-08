@@ -2,7 +2,6 @@
 using Notifications.Wpf.Core;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -58,7 +57,6 @@ namespace DiaryApp
     public string ChkBxBirthday { get { return "Birthday"; } }
     public int LooggedInUserId { get; set; }
 
-    private string SelectedFileName { get; set; }
     private byte[] ImgInByteArr { get; set; }
 
     //Load all entrys from DB with the logged in User
@@ -122,8 +120,10 @@ namespace DiaryApp
     {
       //before displaying selected item, clear entire input area
       ClearControls();
+
       if (dgManageEntrys.SelectedItem != null)
       {
+        Imager imager = new Imager();
         var selected = dgManageEntrys.SelectedItem as DiaryEntryDb;
 
         entryText.Text = selected.Text;
@@ -131,7 +131,8 @@ namespace DiaryApp
         chkBxFriends.IsChecked = selected.TagFriends;
         chkBxBirthday.IsChecked = selected.TagBirthday;
         calendar.SelectedDate = selected.Date;
-        ImageFromByteArray(selected.ByteImage);
+        ImgInByteArr = selected.ByteImage;
+        imageBox.Source = imager.ImageFromByteArray(ImgInByteArr);
       }
     }
 
@@ -175,7 +176,7 @@ namespace DiaryApp
           TagFriends = (bool)chkBxFriends.IsChecked,
           TagBirthday = (bool)chkBxBirthday.IsChecked,
           ByteImage = ImgInByteArr,
-          UserId = updateEntry.UserId
+          UserId = LooggedInUserId
         };
 
         model.EntryToDb(entry);
@@ -248,19 +249,15 @@ namespace DiaryApp
 
     public void GetEntrysByTag()
     {
-      bool bFamily = (bool)chkBxFamily.IsChecked;
-      bool bFriends = (bool)chkBxFriends.IsChecked;
-      bool bBirthday = (bool)chkBxBirthday.IsChecked;
-
-      if (bFamily == true)
+      if ((bool)chkBxFamily.IsChecked == true)
       {
         dgManageEntrys.ItemsSource = lstEntry.Where(lst => lst.TagFamily).ToList();
       }
-      else if (bFriends == true)
+      else if ((bool)chkBxFriends.IsChecked == true)
       {
         dgManageEntrys.ItemsSource = lstEntry.Where(lst => lst.TagFriends! & lst.TagBirthday! & lst.TagFamily).ToList();
       }
-      else if (bBirthday == true)
+      else if ((bool)chkBxBirthday.IsChecked == true)
       {
         dgManageEntrys.ItemsSource = lstEntry.Where(lst => lst.TagBirthday).ToList();
       }
@@ -274,42 +271,15 @@ namespace DiaryApp
     public void AddImage()
     {
       //Add Image
-      OpenFileDialog dialog = new OpenFileDialog();
-      dialog.Filter = "Image files (*.jpg, *.jpeg, *.png) | *.jpg; *.jpeg; *.png";
+      OpenFileDialog dialog = new OpenFileDialog
+      {
+        Filter = "Image files (*.jpg, *.jpeg, *.png) | *.jpg; *.jpeg; *.png"
+      };
       if (dialog.ShowDialog() == true)
       {
-        SelectedFileName = dialog.FileName;
-        BitmapImage bitmap = new BitmapImage();
-        bitmap.BeginInit();
-        bitmap.UriSource = new Uri(SelectedFileName);
-        bitmap.EndInit();
-        imageBox.Source = bitmap;
-        ImageToByteArray();
-      }
-    }
-
-
-    private void ImageToByteArray()
-    {
-      if (SelectedFileName != null)
-      {
-        ImgInByteArr = File.ReadAllBytes(SelectedFileName);
-      }
-    }
-
-    private async void ImageFromByteArray(byte[] array)
-    {
-      var image = new BitmapImage();
-      if (array != null)
-      {
-        await using (var ms = new MemoryStream(array))
-        {
-          image.BeginInit();
-          image.CacheOption = BitmapCacheOption.OnLoad;
-          image.StreamSource = ms;
-          image.EndInit();
-        }
-        imageBox.Source = image;
+        Imager imager = new Imager();
+        imageBox.Source = imager.BitmapForImageSource(dialog.FileName);
+        ImgInByteArr = imager.ImageToByteArray(dialog.FileName);
       }
     }
   }

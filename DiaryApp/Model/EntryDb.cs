@@ -20,7 +20,7 @@ namespace DiaryApp
     //Add foreignkey from UserDb to Entry
     public int UserId { get; set; }
     public virtual UserDb UserDb { get; set; }
-   
+
     public string TagText
     {
       get
@@ -46,7 +46,7 @@ namespace DiaryApp
           }
           sb.Append("Birthday");
         }
-        return Regex.Replace(sb.ToString(), "[^A-Za-z0-9, ]", "");        
+        return Regex.Replace(sb.ToString(), "[^A-Za-z0-9, ]", "");
       }
     }
   }
