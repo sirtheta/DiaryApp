@@ -41,31 +41,29 @@ namespace DiaryApp
       imageBox = t_imageBox;
     }
 
+    //byte array hold the Image
+    private byte[] imgInByteArr;
+    private int loggedInUserId;
+    
+    //property to get the full name of the user to in MainWindow
     public string LoggedInUserFullName
     {
       get
       {
-        if (LooggedInUserId != 0)
+        if (loggedInUserId != 0)
         {
-          return model.FullName(LooggedInUserId);
+          return model.FullName(loggedInUserId);
         }
         return null;
       }
     }
+
+    //Propertis with Binding from MainView
     public string ChkBxFamily { get { return "Family"; } }
     public string ChkBxFriends { get { return "Friends"; } }
     public string ChkBxBirthday { get { return "Birthday"; } }
-    public int LooggedInUserId { get; set; }
 
-    private byte[] ImgInByteArr { get; set; }
 
-    //Load all entrys from DB with the logged in User
-    public void LoadEntrysFromDb()
-    {
-      lstEntry = new List<DiaryEntryDb>(model.GetEntrysFromDb(LooggedInUserId));
-      //Load lstEntry to Datagrid
-      dgManageEntrys.ItemsSource = lstEntry;
-    }
 
     //**************************************************************************
     //Sign in/sign out section
@@ -80,7 +78,7 @@ namespace DiaryApp
 
         if (SecurePasswordHasher.Verify(password.Password, user.Password))
         {
-          LooggedInUserId = user.UserId;
+          loggedInUserId = user.UserId;
           LoadEntrysFromDb();
           Helper.ShowNotification("Success", "Sign in successfull!", NotificationType.Success);
           userName.Text = null;
@@ -102,12 +100,20 @@ namespace DiaryApp
       }
     }
 
+    //Load all entrys from DB with the logged in User
+    public void LoadEntrysFromDb()
+    {
+      lstEntry = new List<DiaryEntryDb>(model.GetEntrysFromDb(loggedInUserId));
+      //Load lstEntry to Datagrid
+      dgManageEntrys.ItemsSource = lstEntry;
+    }
+
     public void SignOut()
     {
       lstEntry.Clear();
       ClearControls();
       dgManageEntrys.ItemsSource = null;
-      LooggedInUserId = 0;
+      loggedInUserId = 0;
     }
     #endregion
 
@@ -119,7 +125,12 @@ namespace DiaryApp
     public void ShowSelectedItem()
     {
       //before displaying selected item, clear entire input area
-      ClearControls();
+      entryText.Text = null;
+      chkBxFamily.IsChecked = false;
+      chkBxFriends.IsChecked = false;
+      chkBxBirthday.IsChecked = false;
+      calendar.SelectedDate = DateTime.Now;
+      imageBox.Source = null;
 
       if (dgManageEntrys.SelectedItem != null)
       {
@@ -131,8 +142,8 @@ namespace DiaryApp
         chkBxFriends.IsChecked = selected.TagFriends;
         chkBxBirthday.IsChecked = selected.TagBirthday;
         calendar.SelectedDate = selected.Date;
-        ImgInByteArr = selected.ByteImage;
-        imageBox.Source = imager.ImageFromByteArray(ImgInByteArr);
+        imgInByteArr = selected.ByteImage;
+        imageBox.Source = imager.ImageFromByteArray(imgInByteArr);
       }
     }
 
@@ -149,8 +160,8 @@ namespace DiaryApp
             TagFamily = (bool)chkBxFamily.IsChecked,
             TagFriends = (bool)chkBxFriends.IsChecked,
             TagBirthday = (bool)chkBxBirthday.IsChecked,
-            ByteImage = ImgInByteArr,
-            UserId = LooggedInUserId
+            ByteImage = imgInByteArr,
+            UserId = loggedInUserId
           };
 
           model.EntryToDb(newEntry);
@@ -158,6 +169,7 @@ namespace DiaryApp
           dgManageEntrys.ItemsSource = lstEntry.OrderByDescending(d => d.Date).ToList();
 
           Helper.ShowNotification("Success", "Your diary entry is saved successfull", NotificationType.Success);
+          ClearControls();
         }
         else
         {
@@ -175,8 +187,8 @@ namespace DiaryApp
           TagFamily = (bool)chkBxFamily.IsChecked,
           TagFriends = (bool)chkBxFriends.IsChecked,
           TagBirthday = (bool)chkBxBirthday.IsChecked,
-          ByteImage = ImgInByteArr,
-          UserId = LooggedInUserId
+          ByteImage = imgInByteArr,
+          UserId = loggedInUserId
         };
 
         model.EntryToDb(entry);
@@ -233,7 +245,6 @@ namespace DiaryApp
     public void ShowAll(DataGrid dgManageEntrys)
     {
       ClearControls();
-      dgManageEntrys.SelectedItem = null;
       dgManageEntrys.ItemsSource = lstEntry;
     }
 
@@ -245,8 +256,11 @@ namespace DiaryApp
       chkBxBirthday.IsChecked = false;
       calendar.SelectedDate = DateTime.Now;
       imageBox.Source = null;
+      dgManageEntrys.SelectedItem = null;
+      imgInByteArr = null;
     }
 
+    //Not really working. TODO
     public void GetEntrysByTag()
     {
       if ((bool)chkBxFamily.IsChecked == true)
@@ -255,7 +269,7 @@ namespace DiaryApp
       }
       else if ((bool)chkBxFriends.IsChecked == true)
       {
-        dgManageEntrys.ItemsSource = lstEntry.Where(lst => lst.TagFriends! & lst.TagBirthday! & lst.TagFamily).ToList();
+        dgManageEntrys.ItemsSource = lstEntry.Where(lst => lst.TagFriends).ToList();
       }
       else if ((bool)chkBxBirthday.IsChecked == true)
       {
@@ -279,7 +293,7 @@ namespace DiaryApp
       {
         Imager imager = new Imager();
         imageBox.Source = imager.BitmapForImageSource(dialog.FileName);
-        ImgInByteArr = imager.ImageToByteArray(dialog.FileName);
+        imgInByteArr = imager.ImageToByteArray(dialog.FileName);
       }
     }
   }
