@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 
 namespace DiaryApp
 {
@@ -18,7 +17,7 @@ namespace DiaryApp
     CheckBox chkBxFriends;
     CheckBox chkBxBirthday;
     Calendar calendar;
-    DataGrid dgManageEntrys;
+    DataGrid datgridEntrys;
     Image imageBox;
 
     //empty constructor needed to initialize MainWindow
@@ -37,14 +36,14 @@ namespace DiaryApp
       chkBxFriends = t_chkBxFriends;
       chkBxBirthday = t_chkBxBirthday;
       calendar = t_calendar;
-      dgManageEntrys = t_dgManageEntrys;
+      datgridEntrys = t_dgManageEntrys;
       imageBox = t_imageBox;
     }
 
     //byte array hold the Image
     private byte[] imgInByteArr;
     private int loggedInUserId;
-    
+
     //property to get the full name of the user to in MainWindow
     public string LoggedInUserFullName
     {
@@ -105,14 +104,14 @@ namespace DiaryApp
     {
       lstEntry = new List<DiaryEntryDb>(model.GetEntrysFromDb(loggedInUserId));
       //Load lstEntry to Datagrid
-      dgManageEntrys.ItemsSource = lstEntry;
+      datgridEntrys.ItemsSource = lstEntry;
     }
 
     public void SignOut()
     {
       lstEntry.Clear();
       ClearControls();
-      dgManageEntrys.ItemsSource = null;
+      datgridEntrys.ItemsSource = null;
       loggedInUserId = 0;
     }
     #endregion
@@ -132,10 +131,10 @@ namespace DiaryApp
       calendar.SelectedDate = DateTime.Now;
       imageBox.Source = null;
 
-      if (dgManageEntrys.SelectedItem != null)
+      if (datgridEntrys.SelectedItem != null)
       {
         Imager imager = new Imager();
-        var selected = dgManageEntrys.SelectedItem as DiaryEntryDb;
+        var selected = datgridEntrys.SelectedItem as DiaryEntryDb;
 
         entryText.Text = selected.Text;
         chkBxFamily.IsChecked = selected.TagFamily;
@@ -149,7 +148,7 @@ namespace DiaryApp
 
     public void SaveEntry()
     {
-      if (dgManageEntrys.SelectedItem == null)
+      if (datgridEntrys.SelectedItem == null)
       {
         if (entryText.Text != "")
         {
@@ -166,7 +165,7 @@ namespace DiaryApp
 
           model.EntryToDb(newEntry);
           lstEntry.Add(newEntry);
-          dgManageEntrys.ItemsSource = lstEntry.OrderByDescending(d => d.Date).ToList();
+          datgridEntrys.ItemsSource = lstEntry.OrderByDescending(d => d.Date).ToList();
 
           Helper.ShowNotification("Success", "Your diary entry is saved successfull", NotificationType.Success);
           ClearControls();
@@ -177,7 +176,7 @@ namespace DiaryApp
         }
       }
       //If a entry is updated, update it in the database
-      else if (dgManageEntrys.SelectedItem is DiaryEntryDb updateEntry)
+      else if (datgridEntrys.SelectedItem is DiaryEntryDb updateEntry)
       {
         var entry = new DiaryEntryDb()
         {
@@ -195,22 +194,22 @@ namespace DiaryApp
         //remove old entry from list and then add the updated one and order it by date
         lstEntry.Remove(updateEntry);
         lstEntry.Add(entry);
-        dgManageEntrys.ItemsSource = lstEntry.OrderByDescending(d => d.Date).ToList();
+        datgridEntrys.ItemsSource = lstEntry.OrderByDescending(d => d.Date).ToList();
 
         Helper.ShowNotification("Success", "Your diary entry successfully updated!", NotificationType.Success);
       }
       //Update Datagrid
-      dgManageEntrys.Items.Refresh();
+      datgridEntrys.Items.Refresh();
     }
 
     public void DeleteSelectedEntry()
     {
-      if (dgManageEntrys.SelectedItem != null)
+      if (datgridEntrys.SelectedItem != null)
       {
         if (Helper.ShowMessageBox("Delete selected entry?", MessageType.Confirmation, MessageButtons.YesNo))
         {
           //Cast selected Items to Enumerate with foreach
-          var entry = dgManageEntrys.SelectedItems.Cast<DiaryEntryDb>().ToList();
+          var entry = datgridEntrys.SelectedItems.Cast<DiaryEntryDb>().ToList();
           foreach (var item in entry)
           {
             lstEntry.Remove(item);
@@ -219,14 +218,29 @@ namespace DiaryApp
 
           Helper.ShowNotification("Success", "Entry Successfull deleted", NotificationType.Success);
           //Update Datagrid
-          dgManageEntrys.ItemsSource = lstEntry.OrderByDescending(d => d.Date).ToList();
-          dgManageEntrys.SelectedItem = null;
+          datgridEntrys.ItemsSource = lstEntry.OrderByDescending(d => d.Date).ToList();
+          datgridEntrys.SelectedItem = null;
           ClearControls();
         }
       }
       else
       {
         Helper.ShowNotification("Error", "No entry selected!", NotificationType.Error);
+      }
+    }
+
+    public void AddImage()
+    {
+      //Add Image
+      OpenFileDialog dialog = new OpenFileDialog
+      {
+        Filter = "Image files (*.jpg, *.jpeg, *.png) | *.jpg; *.jpeg; *.png"
+      };
+      if (dialog.ShowDialog() == true)
+      {
+        Imager imager = new Imager();
+        imageBox.Source = imager.BitmapForImageSource(dialog.FileName);
+        imgInByteArr = imager.ImageToByteArray(dialog.FileName);
       }
     }
     #endregion
@@ -238,9 +252,39 @@ namespace DiaryApp
     //Search for entrys by Date
     public void GetEntrysByDate()
     {
-      //Convert date to string because I cant ignore the Timepart
-      dgManageEntrys.ItemsSource = lstEntry.Where(lst => lst.Date.ToString("dd.MMMM yyyy") == calendar.SelectedDate.Value.ToString("dd.MMMM yyyy")).ToList();
+      //Convert date to string because I cant ignore the Timepart in date
+      datgridEntrys.ItemsSource = lstEntry.Where(lst => lst.Date.ToString("dd.MMMM yyyy") == calendar.SelectedDate.Value.ToString("dd.MMMM yyyy")).ToList();
     }
+
+    //Filter all entrys by clicked tag. 
+    //If more than one is selectet, the range from the second or thirdone will be added to the existing list
+    public void GetEntrysByTag()
+    {
+      var query = lstEntry;
+      if ((bool)chkBxFamily.IsChecked == true)
+      {
+        query = lstEntry.Where(lst => lst.TagFamily).ToList();
+      }
+      if ((bool)chkBxFriends.IsChecked == true)
+      {
+        if (query != lstEntry)
+        {
+          query.AddRange(lstEntry.Where(lst => lst.TagFriends).ToList());
+        }else
+        query = lstEntry.Where(lst => lst.TagFriends).ToList();
+      }
+      if ((bool)chkBxBirthday.IsChecked == true)
+      {
+        if (query != lstEntry)
+        {
+          query.AddRange(lstEntry.Where(lst => lst.TagBirthday).ToList());
+        }else
+        query = lstEntry.Where(lst => lst.TagBirthday).ToList();
+      }
+      //Use of Distinct to get rid of double entrys from query
+      datgridEntrys.ItemsSource = query.Distinct();
+    }
+    #endregion
 
     public void ShowAll(DataGrid dgManageEntrys)
     {
@@ -256,45 +300,8 @@ namespace DiaryApp
       chkBxBirthday.IsChecked = false;
       calendar.SelectedDate = DateTime.Now;
       imageBox.Source = null;
-      dgManageEntrys.SelectedItem = null;
+      datgridEntrys.SelectedItem = null;
       imgInByteArr = null;
-    }
-
-    //Not really working. TODO
-    public void GetEntrysByTag()
-    {
-      if ((bool)chkBxFamily.IsChecked == true)
-      {
-        dgManageEntrys.ItemsSource = lstEntry.Where(lst => lst.TagFamily).ToList();
-      }
-      else if ((bool)chkBxFriends.IsChecked == true)
-      {
-        dgManageEntrys.ItemsSource = lstEntry.Where(lst => lst.TagFriends).ToList();
-      }
-      else if ((bool)chkBxBirthday.IsChecked == true)
-      {
-        dgManageEntrys.ItemsSource = lstEntry.Where(lst => lst.TagBirthday).ToList();
-      }
-      else
-      {
-        dgManageEntrys.ItemsSource = lstEntry;
-      }
-    }
-    #endregion
-
-    public void AddImage()
-    {
-      //Add Image
-      OpenFileDialog dialog = new OpenFileDialog
-      {
-        Filter = "Image files (*.jpg, *.jpeg, *.png) | *.jpg; *.jpeg; *.png"
-      };
-      if (dialog.ShowDialog() == true)
-      {
-        Imager imager = new Imager();
-        imageBox.Source = imager.BitmapForImageSource(dialog.FileName);
-        imgInByteArr = imager.ImageToByteArray(dialog.FileName);
-      }
     }
   }
 }

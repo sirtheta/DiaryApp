@@ -57,7 +57,7 @@ namespace DiaryApp
       new SignUp().ShowDialog();
     }
 
-    private void BtnLoginClose_Click(object sender, RoutedEventArgs e)
+    private void CloseLoginPopup(object sender, RoutedEventArgs e)
     {
       popupLogin.IsOpen = false;
     }

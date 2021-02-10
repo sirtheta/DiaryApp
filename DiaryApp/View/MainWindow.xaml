@@ -128,7 +128,7 @@
     <!--*************************************************
     LoginPopup
     ***************************************************-->
-    <Popup x:Name="popupLogin" IsOpen="{Binding IsChecked, ElementName=btnLogin}" AllowsTransparency="True" Placement="Center" Width="370" Height="320">
+    <Popup x:Name="popupLogin" IsOpen="{Binding IsChecked, ElementName=btnLogin}" AllowsTransparency="True" Placement="Center" Width="370" Height="320" MouseDown="CloseLoginPopup">
       <Border Margin="0,0,8,8" Background="White" BorderThickness="1">
         <Border.Effect>
           <DropShadowEffect BlurRadius="5" Opacity="0.4"/>
@@ -138,7 +138,7 @@
             <materialDesign:Card UniformCornerRadius="0" Grid.Row="0" Padding="10" Margin="0" Height="50" materialDesign:ShadowAssist.ShadowDepth="Depth3" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2">
               <StackPanel  Margin="0,0,0,0">
                 <TextBlock x:Name="txtPopupTitle" HorizontalAlignment="Center" VerticalAlignment="Stretch" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" FontSize="25" >Login</TextBlock>
-                <Button x:Name="btnLoginClose" fa:Awesome.Content="PowerOff" HorizontalAlignment="Right" Margin="0,-36,0,0" Width="54" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Close" Click="BtnLoginClose_Click" Height="45" />
+                <Button x:Name="btnLoginClose" fa:Awesome.Content="PowerOff" HorizontalAlignment="Right" Margin="0,-36,0,0" Width="54" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Close" Click="CloseLoginPopup" Height="45" />
               </StackPanel>
             </materialDesign:Card>
             <StackPanel Margin="25">
