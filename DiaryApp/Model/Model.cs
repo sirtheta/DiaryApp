@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net;
 
 namespace DiaryApp
 {
@@ -101,27 +102,35 @@ namespace DiaryApp
 
     public static void CreateTestEntrys()
     {
-      string testText = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
-
       using var db = new DiaryContext();
-      //add some test entrys to the EntryDb for TestUser 1 and 2
+      //add some test entrys to the EntryDb for TestUser 1 and 2 if db is empty
       if (!db.DiaryEntrys.Any())
       {
+        byte[] img;
+        string testText = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
+        using (WebClient webClient = new WebClient())
+        {
+          img = webClient.DownloadData("https://onaliternote.files.wordpress.com/2016/11/wp-1480230666843.jpg");
+        }
         List<DiaryEntryDb> lstTestEntrys = new List<DiaryEntryDb>()
           { new DiaryEntryDb
-            { Text = testText,
+            {
+              UserId = 1,
+              Text = testText,
               TagBirthday = true,
-              TagFriends = true, UserId = 1,
+              TagFriends = true,
+              ByteImage = img,
               Date = DateTime.Now
             }
           };
         lstTestEntrys.Add(new DiaryEntryDb
         {
+          UserId = 2,
           Text = "this is user Id 2 and not visible with userId 1.",
           TagFriends = true,
           TagBirthday = true,
           TagFamily = true,
-          UserId = 2,
+          ByteImage = img,
           Date = DateTime.Now.AddDays(-6)
         });
 
@@ -130,11 +139,12 @@ namespace DiaryApp
         {
           lstTestEntrys.Add(new DiaryEntryDb
           {
+            UserId = 1,
             Text = testText,
             TagFriends = true,
             TagBirthday = true,
             TagFamily = true,
-            UserId = 1,
+            ByteImage = img,
             Date = DateTime.Now.AddDays(-i)
           });
         }
