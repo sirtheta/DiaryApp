@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
 namespace DiaryApp
@@ -16,15 +15,6 @@ namespace DiaryApp
     readonly Model model = new Model();
     private IList<DiaryEntryDb> _EntriesAll = new List<DiaryEntryDb>();
     private ObservableCollection<DiaryEntryDb> _EntriesToShow = new ObservableCollection<DiaryEntryDb>();
-    public ObservableCollection<DiaryEntryDb> EntriesToShow
-    {
-      get => _EntriesToShow;
-      private set
-      {
-        _EntriesToShow = value;
-        OnPropertyChanged();
-      }
-    }
 
     //byte array to hold the Image
     private byte[] imgInByteArr;
@@ -43,6 +33,15 @@ namespace DiaryApp
     private SecureString _signInPassword;
 
     #region Properties
+    public ObservableCollection<DiaryEntryDb> EntriesToShow
+    {
+      get => _EntriesToShow;
+      private set
+      {
+        _EntriesToShow = value;
+        OnPropertyChanged();
+      }
+    }
     //property to get the full name of the user to in MainWindow
     public string LoggedInUserFullName
     {

@@ -13,7 +13,7 @@ namespace DiaryApp
 
     public MainWindow()
     {
-      InitializeComponent();      
+      InitializeComponent();
       control = new Control();
       DataContext = control;
       popupLogin.IsOpen = true;

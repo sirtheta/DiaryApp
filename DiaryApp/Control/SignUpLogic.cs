@@ -1,8 +1,6 @@
 ﻿using Notifications.Wpf.Core;
 using System.Security;
 using System.Text.RegularExpressions;
-using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace DiaryApp
 {
