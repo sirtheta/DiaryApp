@@ -2,86 +2,166 @@
 using Notifications.Wpf.Core;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace DiaryApp
 {
-  public class Control
+  class Control : AbstractPropertyChanged
   {
     readonly Model model = new Model();
-    List<DiaryEntryDb> lstEntry;
-
-    TextBox entryText;
-    CheckBox chkBxFamily;
-    CheckBox chkBxFriends;
-    CheckBox chkBxBirthday;
-    Calendar calendar;
-    DataGrid datgridEntrys;
-    Image imageBox;
-
-    //empty constructor needed to initialize MainWindow
-    public Control() { }
-
-    public Control(TextBox t_entryText,
-                   CheckBox t_chkBxFamily,
-                   CheckBox t_chkBxFriends,
-                   CheckBox t_chkBxBirthday,
-                   Calendar t_calendar,
-                   DataGrid t_dgManageEntrys,
-                   Image t_imageBox)
+    private IList<DiaryEntryDb> _EntriesAll = new List<DiaryEntryDb>();
+    private ObservableCollection<DiaryEntryDb> _EntriesToShow = new ObservableCollection<DiaryEntryDb>();
+    public ObservableCollection<DiaryEntryDb> EntriesToShow
     {
-      entryText = t_entryText;
-      chkBxFamily = t_chkBxFamily;
-      chkBxFriends = t_chkBxFriends;
-      chkBxBirthday = t_chkBxBirthday;
-      calendar = t_calendar;
-      datgridEntrys = t_dgManageEntrys;
-      imageBox = t_imageBox;
+      get => _EntriesToShow;
+      private set
+      {
+        _EntriesToShow = value;
+        OnPropertyChanged();
+      }
     }
 
-    //byte array hold the Image
+    //byte array to hold the Image
     private byte[] imgInByteArr;
+    //User ID
     private int loggedInUserId;
+
+    private string _loggedInUserFullName;
+    private string _entryText;
+    private bool _chkFamilyIsChecked;
+    private bool _chkFriendsIsChecked;
+    private bool _chkBirthdayIsChecked;
+    private DateTime _calendarSelectedDate;
+    private DiaryEntryDb _datagridSelectedItem;
+    private BitmapImage _imageBoxSource;
+    private string _signInUserName;
+    private SecureString _signInPassword;
 
     //property to get the full name of the user to in MainWindow
     public string LoggedInUserFullName
     {
-      get
+      get => _loggedInUserFullName;
+      set
       {
-        if (loggedInUserId != 0)
-        {
-          return model.FullName(loggedInUserId);
-        }
-        return null;
+        _loggedInUserFullName = value;
+        OnPropertyChanged();
       }
     }
 
-    //Propertis with Binding from MainView
-    public string ChkBxFamily { get { return "Family"; } }
-    public string ChkBxFriends { get { return "Friends"; } }
-    public string ChkBxBirthday { get { return "Birthday"; } }
+    public string EntryText
+    {
+      get => _entryText;
+      set
+      {
+        _entryText = value;
+        OnPropertyChanged();
+      }
+    }
 
+    public string ChkBxFamilyContent { get => "Family"; }
+    public bool FamilyIsChecked
+    {
+      get => _chkFamilyIsChecked;
+      set
+      {
+        _chkFamilyIsChecked = value;
+        OnPropertyChanged();
+      }
+    }
 
+    public string ChkBxFriendsContent { get => "Friends"; }
+    public bool FriendsIsChecked
+    {
+      get => _chkFriendsIsChecked;
+      set
+      {
+        _chkFriendsIsChecked = value;
+        OnPropertyChanged();
+      }
+    }
+
+    public string ChkBxBirthdayContent { get => "Birthday"; }
+    public bool BirthdayIsChecked
+    {
+      get => _chkBirthdayIsChecked;
+      set
+      {
+        _chkBirthdayIsChecked = value;
+        OnPropertyChanged();
+      }
+    }
+
+    public DateTime CalendarSelectedDate
+    {
+      get => _calendarSelectedDate;
+      set
+      {
+        _calendarSelectedDate = value;
+        OnPropertyChanged();
+      }
+    }
+    public DiaryEntryDb DatagridSelectedItem
+    {
+      get => _datagridSelectedItem;
+      set
+      {
+        _datagridSelectedItem = value;
+        OnPropertyChanged();
+      }
+    }
+    public BitmapImage ImageBoxSource
+    {
+      get => _imageBoxSource;
+      set
+      {
+        _imageBoxSource = value;
+        OnPropertyChanged();
+      }
+    }
+    //SignIn Binding
+    public string SignInUserName
+    {
+      get => _signInUserName;
+      set
+      {
+        _signInUserName = value;
+        OnPropertyChanged();
+      }
+    }
+    public SecureString SignInPassword
+    {
+      get => _signInPassword;
+      set
+      {
+        _signInPassword = value;
+        OnPropertyChanged();
+      }
+    }
 
     //**************************************************************************
     //Sign in/sign out section
     //**************************************************************************
     #region SignIn/out
 
-    public bool VerifyCredentials(TextBox userName, PasswordBox password)
+    public bool VerifyCredentials()
     {
       try
       {
-        var user = model.GetUser(userName.Text).Single();
+        var user = model.GetUser(SignInUserName).Single();
 
-        if (SecurePasswordHasher.Verify(password.Password, user.Password))
+        if (SecurePasswordHasher.Verify(Helper.ToNormalString(SignInPassword), user.Password))
         {
           loggedInUserId = user.UserId;
+          LoggedInUserFullName = model.FullName(loggedInUserId);
           LoadEntrysFromDb();
+          ShowAll();
           Helper.ShowNotification("Success", "Sign in successfull!", NotificationType.Success);
-          userName.Text = null;
-          password.Password = null;
+          SignInUserName = string.Empty;
+          SignInPassword = null;
           return true;
         }
         else
@@ -93,8 +173,8 @@ namespace DiaryApp
       catch (Exception)
       {
         Helper.ShowMessageBox("No such user! Sign up now!", MessageType.Error, MessageButtons.Ok);
-        userName.Text = null;
-        password.Password = null;
+        SignInUserName = string.Empty;
+        SignInPassword = null;
         return false;
       }
     }
@@ -102,17 +182,16 @@ namespace DiaryApp
     //Load all entrys from DB with the logged in User
     public void LoadEntrysFromDb()
     {
-      lstEntry = new List<DiaryEntryDb>(model.GetEntrysFromDb(loggedInUserId));
-      //Load lstEntry to Datagrid
-      datgridEntrys.ItemsSource = lstEntry;
+      _EntriesAll = new List<DiaryEntryDb>(model.GetEntrysFromDb(loggedInUserId));
     }
 
     public void SignOut()
     {
-      lstEntry.Clear();
+      _EntriesAll.Clear();
+      EntriesToShow.Clear();
       ClearControls();
-      datgridEntrys.ItemsSource = null;
       loggedInUserId = 0;
+      LoggedInUserFullName = string.Empty;
     }
     #endregion
 
@@ -124,48 +203,48 @@ namespace DiaryApp
     public void ShowSelectedItem()
     {
       //before displaying selected item, clear entire input area
-      entryText.Text = null;
-      chkBxFamily.IsChecked = false;
-      chkBxFriends.IsChecked = false;
-      chkBxBirthday.IsChecked = false;
-      calendar.SelectedDate = DateTime.Now;
-      imageBox.Source = null;
+      EntryText = string.Empty;
+      FamilyIsChecked = false;
+      FriendsIsChecked = false;
+      BirthdayIsChecked = false;
+      CalendarSelectedDate = DateTime.Now;
+      ImageBoxSource = null;
 
-      if (datgridEntrys.SelectedItem != null)
+      if (DatagridSelectedItem != null)
       {
         Imager imager = new Imager();
-        var selected = datgridEntrys.SelectedItem as DiaryEntryDb;
+        var selected = DatagridSelectedItem;
 
-        entryText.Text = selected.Text;
-        chkBxFamily.IsChecked = selected.TagFamily;
-        chkBxFriends.IsChecked = selected.TagFriends;
-        chkBxBirthday.IsChecked = selected.TagBirthday;
-        calendar.SelectedDate = selected.Date;
+        EntryText = selected.Text;
+        FamilyIsChecked = selected.TagFamily;
+        FriendsIsChecked = selected.TagFriends;
+        BirthdayIsChecked = selected.TagBirthday;
+        CalendarSelectedDate = selected.Date;
         imgInByteArr = selected.ByteImage;
-        imageBox.Source = imager.ImageFromByteArray(imgInByteArr);
+        ImageBoxSource = imager.ImageFromByteArray(imgInByteArr);
       }
     }
 
     public void SaveEntry()
     {
-      if (datgridEntrys.SelectedItem == null)
+      if (DatagridSelectedItem == null)
       {
-        if (entryText.Text != "")
+        if (!string.IsNullOrEmpty(EntryText))
         {
           var newEntry = new DiaryEntryDb()
           {
-            Text = entryText.Text,
-            Date = calendar.SelectedDate.Value,
-            TagFamily = (bool)chkBxFamily.IsChecked,
-            TagFriends = (bool)chkBxFriends.IsChecked,
-            TagBirthday = (bool)chkBxBirthday.IsChecked,
+            Text = EntryText,
+            Date = CalendarSelectedDate,
+            TagFamily = FamilyIsChecked,
+            TagFriends = FriendsIsChecked,
+            TagBirthday = BirthdayIsChecked,
             ByteImage = imgInByteArr,
             UserId = loggedInUserId
           };
 
           model.EntryToDb(newEntry);
-          lstEntry.Add(newEntry);
-          datgridEntrys.ItemsSource = lstEntry.OrderByDescending(d => d.Date).ToList();
+          _EntriesAll.Add(newEntry);
+          EntriesToShow = new ObservableCollection<DiaryEntryDb>(_EntriesAll.OrderByDescending(d => d.Date));
 
           Helper.ShowNotification("Success", "Your diary entry is saved successfull", NotificationType.Success);
           ClearControls();
@@ -176,50 +255,47 @@ namespace DiaryApp
         }
       }
       //If a entry is updated, update it in the database
-      else if (datgridEntrys.SelectedItem is DiaryEntryDb updateEntry)
+      else if (DatagridSelectedItem is DiaryEntryDb updateEntry)
       {
         var entry = new DiaryEntryDb()
         {
           EntryId = updateEntry.EntryId,
-          Text = entryText.Text,
-          Date = calendar.SelectedDate.Value,
-          TagFamily = (bool)chkBxFamily.IsChecked,
-          TagFriends = (bool)chkBxFriends.IsChecked,
-          TagBirthday = (bool)chkBxBirthday.IsChecked,
+          Text = EntryText,
+          Date = CalendarSelectedDate,
+          TagFamily = FamilyIsChecked,
+          TagFriends = FriendsIsChecked,
+          TagBirthday = BirthdayIsChecked,
           ByteImage = imgInByteArr,
           UserId = loggedInUserId
         };
 
         model.EntryToDb(entry);
-        //remove old entry from list and then add the updated one and order it by date
-        lstEntry.Remove(updateEntry);
-        lstEntry.Add(entry);
-        datgridEntrys.ItemsSource = lstEntry.OrderByDescending(d => d.Date).ToList();
+        _EntriesAll.Remove(updateEntry);
+        _EntriesAll.Add(entry);
+        EntriesToShow = new ObservableCollection<DiaryEntryDb>(_EntriesAll.OrderByDescending(d => d.Date));
 
         Helper.ShowNotification("Success", "Your diary entry successfully updated!", NotificationType.Success);
       }
-      //Update Datagrid
-      datgridEntrys.Items.Refresh();
     }
 
     public void DeleteSelectedEntry()
     {
-      if (datgridEntrys.SelectedItem != null)
+      if (DatagridSelectedItem != null)
       {
         if (Helper.ShowMessageBox("Delete selected entry?", MessageType.Confirmation, MessageButtons.YesNo))
         {
           //Cast selected Items to Enumerate with foreach
-          var entry = datgridEntrys.SelectedItems.Cast<DiaryEntryDb>().ToList();
-          foreach (var item in entry)
-          {
-            lstEntry.Remove(item);
-            model.DeleteEntryInDb(item);
-          }
+          var entry = DatagridSelectedItem;
+          //foreach (var item in entry)
+          // {
+          _EntriesAll.Remove(entry);
+          model.DeleteEntryInDb(entry);
+          // }
 
           Helper.ShowNotification("Success", "Entry Successfull deleted", NotificationType.Success);
           //Update Datagrid
-          datgridEntrys.ItemsSource = lstEntry.OrderByDescending(d => d.Date).ToList();
-          datgridEntrys.SelectedItem = null;
+          EntriesToShow = new ObservableCollection<DiaryEntryDb>(_EntriesAll.OrderByDescending(d => d.Date));
+          DatagridSelectedItem = null;
           ClearControls();
         }
       }
@@ -239,7 +315,7 @@ namespace DiaryApp
       if (dialog.ShowDialog() == true)
       {
         Imager imager = new Imager();
-        imageBox.Source = imager.BitmapForImageSource(dialog.FileName);
+        ImageBoxSource = imager.BitmapForImageSource(dialog.FileName);
         imgInByteArr = imager.ImageToByteArray(dialog.FileName);
       }
     }
@@ -252,55 +328,61 @@ namespace DiaryApp
     //Search for entrys by Date
     public void GetEntrysByDate()
     {
-      //Convert date to string because I cant ignore the Timepart in date
-      datgridEntrys.ItemsSource = lstEntry.Where(lst => lst.Date.ToString("dd.MMMM yyyy") == calendar.SelectedDate.Value.ToString("dd.MMMM yyyy")).ToList();
+      EntriesToShow = new ObservableCollection<DiaryEntryDb>(_EntriesAll.Where(lst => lst.Date.ToString("dd.MMMM yyyy") == CalendarSelectedDate.ToString("dd.MMMM yyyy")));
     }
 
     //Filter all entrys by clicked tag. 
-    //If more than one is selectet, the range from the second or thirdone will be added to the existing list
+    //If more than one tag is selected, the range from the second or third will be added to the existing list
     public void GetEntrysByTag()
     {
-      var query = lstEntry;
-      if ((bool)chkBxFamily.IsChecked == true)
+      var query = _EntriesAll.ToList();
+      if (FamilyIsChecked)
       {
-        query = lstEntry.Where(lst => lst.TagFamily).ToList();
+        query = _EntriesAll.Where(lst => lst.TagFamily).ToList();
       }
-      if ((bool)chkBxFriends.IsChecked == true)
+
+      if (FriendsIsChecked)
       {
-        if (query != lstEntry)
+        if (query != _EntriesAll.ToList())
         {
-          query.AddRange(lstEntry.Where(lst => lst.TagFriends).ToList());
-        }else
-        query = lstEntry.Where(lst => lst.TagFriends).ToList();
-      }
-      if ((bool)chkBxBirthday.IsChecked == true)
-      {
-        if (query != lstEntry)
+          query.AddRange(_EntriesAll.Where(lst => lst.TagFriends).ToList());
+        }
+        else
         {
-          query.AddRange(lstEntry.Where(lst => lst.TagBirthday).ToList());
-        }else
-        query = lstEntry.Where(lst => lst.TagBirthday).ToList();
+          query = _EntriesAll.Where(lst => lst.TagFriends).ToList();
+        }
       }
-      //Use of Distinct to get rid of double entrys from query
-      datgridEntrys.ItemsSource = query.Distinct();
+
+      if (BirthdayIsChecked)
+      {
+        if (query != _EntriesAll.ToList())
+        {
+          query.AddRange(_EntriesAll.Where(lst => lst.TagBirthday).ToList());
+        }
+        else
+        {
+          query = _EntriesAll.Where(lst => lst.TagBirthday).ToList();
+        }
+      }
+      EntriesToShow = new ObservableCollection<DiaryEntryDb>(query.Distinct());
     }
     #endregion
 
-    public void ShowAll(DataGrid dgManageEntrys)
+    public void ShowAll()
     {
       ClearControls();
-      dgManageEntrys.ItemsSource = lstEntry;
+      EntriesToShow = new ObservableCollection<DiaryEntryDb>(_EntriesAll);
     }
 
     public void ClearControls()
     {
-      entryText.Text = null;
-      chkBxFamily.IsChecked = false;
-      chkBxFriends.IsChecked = false;
-      chkBxBirthday.IsChecked = false;
-      calendar.SelectedDate = DateTime.Now;
-      imageBox.Source = null;
-      datgridEntrys.SelectedItem = null;
+      EntryText = string.Empty;
+      FamilyIsChecked = false;
+      FriendsIsChecked = false;
+      BirthdayIsChecked = false;
+      CalendarSelectedDate = DateTime.Now;
+      ImageBoxSource = null;
+      DatagridSelectedItem = null;
       imgInByteArr = null;
     }
   }

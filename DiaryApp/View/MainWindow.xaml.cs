@@ -13,21 +13,28 @@ namespace DiaryApp
 
     public MainWindow()
     {
-      InitializeComponent();
-      control = new Control(entryInputText, chkBxFamily, chkBxFriends, chkBxBirthday, calendar, dgManageEntrys, imageBox);
+      InitializeComponent();      
+      control = new Control();
+      DataContext = control;
       popupLogin.IsOpen = true;
+    }
+
+    private void PasswordChanged(object sender, RoutedEventArgs e)
+    {
+      if (this.DataContext != null) ((dynamic)this.DataContext).SignInPassword = ((PasswordBox)sender).SecurePassword;
     }
 
     private void SignIn()
     {
-      if (control.VerifyCredentials(txtBoxUserName, txtBoxPassword))
+      if (control.VerifyCredentials())
       {
         popupLogin.IsOpen = false;
         mainStackPanel.IsEnabled = true;
         btnLogin.Visibility = Visibility.Hidden;
         btnSignOut.Visibility = Visibility.Visible;
-        txtLoggedInUser.Text = control.LoggedInUserFullName;
       }
+      //Clear the Passwordbox field
+      pwBox.Password = null;
     }
 
     private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -49,7 +56,6 @@ namespace DiaryApp
       mainStackPanel.IsEnabled = false;
       btnLogin.Visibility = Visibility.Visible;
       btnSignOut.Visibility = Visibility.Hidden;
-      txtLoggedInUser.Text = "";
     }
 
     private void BtnSignUpLogin_Click(object sender, RoutedEventArgs e)
@@ -61,10 +67,10 @@ namespace DiaryApp
     {
       popupLogin.IsOpen = false;
     }
+
     private void ImageBox_MouseDown(object sender, MouseButtonEventArgs e)
     {
       imgPopup.IsOpen = true;
-      imageInPopup.Source = imageBox.Source;
     }
 
     private void ImgPopup_MouseDown(object sender, MouseButtonEventArgs e)
@@ -104,7 +110,7 @@ namespace DiaryApp
 
     private void BtnShowAll_Click(object sender, RoutedEventArgs e)
     {
-      control.ShowAll(dgManageEntrys);
+      control.ShowAll();
     }
 
     private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -114,7 +120,8 @@ namespace DiaryApp
 
     private void BtnClose_Click(object sender, RoutedEventArgs e)
     {
-      Application.Current.Shutdown();
+      this.WindowState = WindowState.Minimized;
+      //Application.Current.Shutdown();
     }
 
     //This method prevents the mous from captured inside calender

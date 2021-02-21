@@ -5,9 +5,8 @@ using System.Text.RegularExpressions;
 
 namespace DiaryApp
 {
-  public class DiaryEntryDb
+  class DiaryEntryDb
   {
-
     [Key]
     public int EntryId { get; set; }
     public string Text { get; set; }
@@ -26,11 +25,11 @@ namespace DiaryApp
       get
       {
         StringBuilder sb = new StringBuilder();
-        if (TagFamily == true)
+        if (TagFamily)
         {
           sb.Append("Family");
         }
-        if (TagFriends == true)
+        if (TagFriends)
         {
           if (sb.Length != 0)
           {
@@ -38,7 +37,7 @@ namespace DiaryApp
           }
           sb.Append("Friends");
         }
-        if (TagBirthday == true)
+        if (TagBirthday)
         {
           if (sb.Length != 0)
           {
