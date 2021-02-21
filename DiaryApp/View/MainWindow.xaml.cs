@@ -120,8 +120,7 @@ namespace DiaryApp
 
     private void BtnClose_Click(object sender, RoutedEventArgs e)
     {
-      this.WindowState = WindowState.Minimized;
-      //Application.Current.Shutdown();
+      Application.Current.Shutdown();
     }
 
     //This method prevents the mous from captured inside calender
