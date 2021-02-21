@@ -19,6 +19,7 @@ namespace DiaryApp
       popupLogin.IsOpen = true;
     }
 
+    //This passes the password to the Property in Control. Binding of Passwordbox is not possible
     private void PasswordChanged(object sender, RoutedEventArgs e)
     {
       if (this.DataContext != null) ((dynamic)this.DataContext).SignInPassword = ((PasswordBox)sender).SecurePassword;
@@ -116,7 +117,11 @@ namespace DiaryApp
     private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
       control.ShowSelectedItem();
+      //Not possible to bind SelectedItems to Control
+      control.SelectedItems = dgManageEntrys.SelectedItems;
     }
+
+
 
     private void BtnClose_Click(object sender, RoutedEventArgs e)
     {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using Notifications.Wpf.Core;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -41,6 +42,7 @@ namespace DiaryApp
     private string _signInUserName;
     private SecureString _signInPassword;
 
+    #region Properties
     //property to get the full name of the user to in MainWindow
     public string LoggedInUserFullName
     {
@@ -113,6 +115,7 @@ namespace DiaryApp
         OnPropertyChanged();
       }
     }
+    public IList SelectedItems { get; set; }
     public BitmapImage ImageBoxSource
     {
       get => _imageBoxSource;
@@ -141,6 +144,7 @@ namespace DiaryApp
         OnPropertyChanged();
       }
     }
+    #endregion
 
     //**************************************************************************
     //Sign in/sign out section
@@ -285,12 +289,12 @@ namespace DiaryApp
         if (Helper.ShowMessageBox("Delete selected entry?", MessageType.Confirmation, MessageButtons.YesNo))
         {
           //Cast selected Items to Enumerate with foreach
-          var entry = DatagridSelectedItem;
-          //foreach (var item in entry)
-          // {
-          _EntriesAll.Remove(entry);
-          model.DeleteEntryInDb(entry);
-          // }
+          var entry = SelectedItems.Cast<DiaryEntryDb>().ToList();
+          foreach (var item in entry)
+          {
+            _EntriesAll.Remove(item);
+            model.DeleteEntryInDb(item);
+          }
 
           Helper.ShowNotification("Success", "Entry Successfull deleted", NotificationType.Success);
           //Update Datagrid

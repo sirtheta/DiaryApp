@@ -18,13 +18,13 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="DiaryApp" Height="900" Width="900" ResizeMode="NoResize" WindowStyle="None" KeyDown="Window_KeyDown" SizeToContent="WidthAndHeight" >
+        Title="DiaryApp" Height="900" Width="900" ResizeMode="NoResize" WindowStyle="None" KeyDown="Window_KeyDown">
 
   <Grid>
     <notifications:NotificationArea Panel.ZIndex="10" 
               MaxItems="3"
               x:Name="WindowArea"
-              Position="BottomRight">
+              Position="BottomRight" Margin="0,0,1,1">
     </notifications:NotificationArea>
 
     <!--***************************************************
@@ -60,6 +60,7 @@
       Main Entry Area
       ***************************************************-->
       <Grid>
+        <!--Disable stackpanel to make all controls inactive. Enabled after successfull login-->
         <StackPanel x:Name="mainStackPanel" IsEnabled="False">
           <StackPanel>
             <StackPanel Orientation="Horizontal">
