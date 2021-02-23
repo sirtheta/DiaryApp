@@ -17,8 +17,8 @@ namespace DiaryApp
       using var db = new DiaryContext();
       if (!db.Users.Any())
       {
-        List<UserDb> lstUser = new List<UserDb>() { new UserDb { UserName = "1", FirstName = "User", LastName = "Example", Password = SecurePasswordHasher.Hash("1") } };
-        lstUser.Add(new UserDb { UserName = "2", FirstName = "User2", LastName = "Example2", Password = SecurePasswordHasher.Hash("2") });
+        List<UserModel> lstUser = new List<UserModel>() { new UserModel { UserName = "1", FirstName = "User", LastName = "Example", Password = SecurePasswordHasher.Hash("1") } };
+        lstUser.Add(new UserModel { UserName = "2", FirstName = "User2", LastName = "Example2", Password = SecurePasswordHasher.Hash("2") });
         db.Users.Add(lstUser[0]);
         db.Users.Add(lstUser[1]);
         db.SaveChanges();
@@ -38,8 +38,8 @@ namespace DiaryApp
         {
           img = webClient.DownloadData("https://onaliternote.files.wordpress.com/2016/11/wp-1480230666843.jpg");
         }
-        List<DiaryEntryDb> lstTestEntrys = new List<DiaryEntryDb>()
-          { new DiaryEntryDb
+        List<DiaryEntryModel> lstTestEntrys = new List<DiaryEntryModel>()
+          { new DiaryEntryModel
             {
               UserId = 1,
               Text = testText,
@@ -49,7 +49,7 @@ namespace DiaryApp
               Date = DateTime.Now
             }
           };
-        lstTestEntrys.Add(new DiaryEntryDb
+        lstTestEntrys.Add(new DiaryEntryModel
         {
           UserId = 2,
           Text = "this is user Id 2 and not visible with userId 1.",
@@ -63,7 +63,7 @@ namespace DiaryApp
         //more entrys
         for (int i = 6; i < 10; i++)
         {
-          lstTestEntrys.Add(new DiaryEntryDb
+          lstTestEntrys.Add(new DiaryEntryModel
           {
             UserId = 1,
             Text = testText,

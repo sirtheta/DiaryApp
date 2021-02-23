@@ -4,19 +4,13 @@ using System.Linq;
 
 namespace DiaryApp
 {
-  class DiaryContext : DbContext
-  {
-    public DbSet<DiaryEntryDb> DiaryEntrys { get; set; }
-    public DbSet<UserDb> Users { get; set; }
-  }
-
-  class Model
+  class DbController
   {
     //**************************************************************************
     //entry section
     //**************************************************************************
     //retrieve all entrys from database
-    public List<DiaryEntryDb> GetEntrysFromDb(int userId)
+    public List<DiaryEntryModel> GetEntrysFromDb(int userId)
     {
       using var db = new DiaryContext();
       return (from b in db.DiaryEntrys
@@ -26,7 +20,7 @@ namespace DiaryApp
     }
 
     //Save the Created Entry to Database
-    public void EntryToDb(DiaryEntryDb entry)
+    public void EntryToDb(DiaryEntryModel entry)
     {
       using var db = new DiaryContext();
       var result = db.DiaryEntrys.SingleOrDefault(e => e.EntryId == entry.EntryId);
@@ -42,7 +36,7 @@ namespace DiaryApp
     }
 
     //Delete selected entry from Database
-    public void DeleteEntryInDb(DiaryEntryDb entrys)
+    public void DeleteEntryInDb(DiaryEntryModel entrys)
     {
       using var db = new DiaryContext();
       db.Entry(entrys).State = EntityState.Deleted;
@@ -53,14 +47,14 @@ namespace DiaryApp
     //**************************************************************************
 
     //Save the Created Entry to Database
-    public void UserToDb(UserDb user)
+    public void UserToDb(UserModel user)
     {
       using var db = new DiaryContext();
       db.Users.Add(user);
       db.SaveChanges();
     }
 
-    public List<UserDb> GetUser(string userName)
+    public List<UserModel> GetUserName(string userName)
     {
       using var db = new DiaryContext();
       return (from b in db.Users
@@ -69,11 +63,11 @@ namespace DiaryApp
     }
 
     //Get the username from database
-    public string FullName(int userId)
+    public string GetFullName(int userId)
     {
       using var db = new DiaryContext();
       var query = (from b in db.Users where b.UserId == userId select b).SingleOrDefault();
-      return $"{query.FirstName} {query.LastName}";
+      return query.FullName;
     }
   }
 }

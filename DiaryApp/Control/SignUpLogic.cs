@@ -6,7 +6,7 @@ namespace DiaryApp
 {
   class SignUpLogic : AbstractPropertyChanged
   {
-    readonly Model model = new Model();
+    readonly DbController dbController = new DbController();
 
     private string _lastName;
     private string _firstName;
@@ -66,7 +66,7 @@ namespace DiaryApp
 
     public bool SignUp()
     {
-      var iUser = model.GetUser(UserName).Count;
+      var iUser = dbController.GetUserName(UserName).Count;
       if (iUser == 0 && CheckPassword())
       {
         CreateNewUser();
@@ -84,14 +84,14 @@ namespace DiaryApp
 
     private void CreateNewUser()
     {
-      var newUser = new UserDb()
+      var newUser = new UserModel()
       {
         LastName = LastName,
         FirstName = FirstName,
         UserName = UserName,
         Password = SecurePasswordHasher.Hash(Helper.ToNormalString(Password))
       };
-      model.UserToDb(newUser);
+      dbController.UserToDb(newUser);
     }
 
     private bool CheckPassword()

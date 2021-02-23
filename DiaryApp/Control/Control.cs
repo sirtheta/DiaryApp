@@ -10,30 +10,32 @@ using System.Windows.Media.Imaging;
 
 namespace DiaryApp
 {
+  //Inherit from AbstractPropertyChanged to use the OnPropertyChanged method
   class Control : AbstractPropertyChanged
   {
-    readonly Model model = new Model();
-    private IList<DiaryEntryDb> _EntriesAll = new List<DiaryEntryDb>();
-    private ObservableCollection<DiaryEntryDb> _EntriesToShow = new ObservableCollection<DiaryEntryDb>();
+    readonly DbController dbController = new DbController();
+    private IList<DiaryEntryModel> _EntriesAll = new List<DiaryEntryModel>();
+    private ObservableCollection<DiaryEntryModel> _EntriesToShow = new ObservableCollection<DiaryEntryModel>();
 
     //byte array to hold the Image
     private byte[] imgInByteArr;
     //User ID
     private int loggedInUserId;
 
+    //Definitions for properties
     private string _loggedInUserFullName;
     private string _entryText;
     private bool _chkFamilyIsChecked;
     private bool _chkFriendsIsChecked;
     private bool _chkBirthdayIsChecked;
     private DateTime _calendarSelectedDate;
-    private DiaryEntryDb _datagridSelectedItem;
+    private DiaryEntryModel _datagridSelectedItem;
     private BitmapImage _imageBoxSource;
     private string _signInUserName;
     private SecureString _signInPassword;
 
     #region Properties
-    public ObservableCollection<DiaryEntryDb> EntriesToShow
+    public ObservableCollection<DiaryEntryModel> EntriesToShow
     {
       get => _EntriesToShow;
       private set
@@ -105,7 +107,7 @@ namespace DiaryApp
         OnPropertyChanged();
       }
     }
-    public DiaryEntryDb DatagridSelectedItem
+    public DiaryEntryModel DatagridSelectedItem
     {
       get => _datagridSelectedItem;
       set
@@ -154,12 +156,12 @@ namespace DiaryApp
     {
       try
       {
-        var user = model.GetUser(SignInUserName).Single();
+        var user = dbController.GetUserName(SignInUserName).Single();
 
         if (SecurePasswordHasher.Verify(Helper.ToNormalString(SignInPassword), user.Password))
         {
           loggedInUserId = user.UserId;
-          LoggedInUserFullName = model.FullName(loggedInUserId);
+          LoggedInUserFullName = dbController.GetFullName(loggedInUserId);
           LoadEntrysFromDb();
           ShowAll();
           Helper.ShowNotification("Success", "Sign in successfull!", NotificationType.Success);
@@ -185,7 +187,7 @@ namespace DiaryApp
     //Load all entrys from DB with the logged in User
     public void LoadEntrysFromDb()
     {
-      _EntriesAll = new List<DiaryEntryDb>(model.GetEntrysFromDb(loggedInUserId));
+      _EntriesAll = new List<DiaryEntryModel>(dbController.GetEntrysFromDb(loggedInUserId));
     }
 
     public void SignOut()
@@ -205,14 +207,6 @@ namespace DiaryApp
     //If item is selected in Datagrid, show it
     public void ShowSelectedItem()
     {
-      //before displaying selected item, clear entire input area
-      EntryText = string.Empty;
-      FamilyIsChecked = false;
-      FriendsIsChecked = false;
-      BirthdayIsChecked = false;
-      CalendarSelectedDate = DateTime.Now;
-      ImageBoxSource = null;
-
       if (DatagridSelectedItem != null)
       {
         Imager imager = new Imager();
@@ -234,7 +228,7 @@ namespace DiaryApp
       {
         if (!string.IsNullOrEmpty(EntryText))
         {
-          var newEntry = new DiaryEntryDb()
+          var newEntry = new DiaryEntryModel()
           {
             Text = EntryText,
             Date = CalendarSelectedDate,
@@ -245,9 +239,9 @@ namespace DiaryApp
             UserId = loggedInUserId
           };
 
-          model.EntryToDb(newEntry);
+          dbController.EntryToDb(newEntry);
           _EntriesAll.Add(newEntry);
-          EntriesToShow = new ObservableCollection<DiaryEntryDb>(_EntriesAll.OrderByDescending(d => d.Date));
+          EntriesToShow = new ObservableCollection<DiaryEntryModel>(_EntriesAll.OrderByDescending(d => d.Date));
 
           Helper.ShowNotification("Success", "Your diary entry is saved successfull", NotificationType.Success);
           ClearControls();
@@ -258,9 +252,9 @@ namespace DiaryApp
         }
       }
       //If a entry is updated, update it in the database
-      else if (DatagridSelectedItem is DiaryEntryDb updateEntry)
+      else if (DatagridSelectedItem is DiaryEntryModel updateEntry)
       {
-        var entry = new DiaryEntryDb()
+        var entry = new DiaryEntryModel()
         {
           EntryId = updateEntry.EntryId,
           Text = EntryText,
@@ -272,10 +266,10 @@ namespace DiaryApp
           UserId = loggedInUserId
         };
 
-        model.EntryToDb(entry);
+        dbController.EntryToDb(entry);
         _EntriesAll.Remove(updateEntry);
         _EntriesAll.Add(entry);
-        EntriesToShow = new ObservableCollection<DiaryEntryDb>(_EntriesAll.OrderByDescending(d => d.Date));
+        EntriesToShow = new ObservableCollection<DiaryEntryModel>(_EntriesAll.OrderByDescending(d => d.Date));
 
         Helper.ShowNotification("Success", "Your diary entry successfully updated!", NotificationType.Success);
       }
@@ -288,16 +282,16 @@ namespace DiaryApp
         if (Helper.ShowMessageBox("Delete selected entry?", MessageType.Confirmation, MessageButtons.YesNo))
         {
           //Cast selected Items to Enumerate with foreach
-          var entry = SelectedItems.Cast<DiaryEntryDb>().ToList();
+          var entry = SelectedItems.Cast<DiaryEntryModel>().ToList();
           foreach (var item in entry)
           {
             _EntriesAll.Remove(item);
-            model.DeleteEntryInDb(item);
+            dbController.DeleteEntryInDb(item);
           }
 
           Helper.ShowNotification("Success", "Entry Successfull deleted", NotificationType.Success);
           //Update Datagrid
-          EntriesToShow = new ObservableCollection<DiaryEntryDb>(_EntriesAll.OrderByDescending(d => d.Date));
+          EntriesToShow = new ObservableCollection<DiaryEntryModel>(_EntriesAll.OrderByDescending(d => d.Date));
           DatagridSelectedItem = null;
           ClearControls();
         }
@@ -331,14 +325,15 @@ namespace DiaryApp
     //Search for entrys by Date
     public void GetEntrysByDate()
     {
-      EntriesToShow = new ObservableCollection<DiaryEntryDb>(_EntriesAll.Where(lst => lst.Date.ToString("dd.MMMM yyyy") == CalendarSelectedDate.ToString("dd.MMMM yyyy")));
+      EntriesToShow = new ObservableCollection<DiaryEntryModel>(_EntriesAll.Where(lst => lst.Date.ToString("dd.MMMM yyyy") == CalendarSelectedDate.ToString("dd.MMMM yyyy")));
     }
 
     //Filter all entrys by clicked tag. 
     //If more than one tag is selected, the range from the second or third will be added to the existing list
+    //To remove duplicate, use Distinct at the end
     public void GetEntrysByTag()
     {
-      var query = _EntriesAll.ToList();
+      var query = new List<DiaryEntryModel>();
       if (FamilyIsChecked)
       {
         query = _EntriesAll.Where(lst => lst.TagFamily).ToList();
@@ -346,7 +341,7 @@ namespace DiaryApp
 
       if (FriendsIsChecked)
       {
-        if (query != _EntriesAll.ToList())
+        if (query.Count != 0)
         {
           query.AddRange(_EntriesAll.Where(lst => lst.TagFriends).ToList());
         }
@@ -358,7 +353,7 @@ namespace DiaryApp
 
       if (BirthdayIsChecked)
       {
-        if (query != _EntriesAll.ToList())
+        if (query.Count != 0)
         {
           query.AddRange(_EntriesAll.Where(lst => lst.TagBirthday).ToList());
         }
@@ -367,14 +362,20 @@ namespace DiaryApp
           query = _EntriesAll.Where(lst => lst.TagBirthday).ToList();
         }
       }
-      EntriesToShow = new ObservableCollection<DiaryEntryDb>(query.Distinct());
+
+      if (!BirthdayIsChecked && !FamilyIsChecked && !FriendsIsChecked)
+      {
+        query = _EntriesAll.Where(lst => !lst.TagBirthday && !lst.TagFriends && !lst.TagFamily).ToList();
+      }
+
+      EntriesToShow = new ObservableCollection<DiaryEntryModel>(query.Distinct());
     }
     #endregion
 
     public void ShowAll()
     {
       ClearControls();
-      EntriesToShow = new ObservableCollection<DiaryEntryDb>(_EntriesAll);
+      EntriesToShow = new ObservableCollection<DiaryEntryModel>(_EntriesAll);
     }
 
     public void ClearControls()

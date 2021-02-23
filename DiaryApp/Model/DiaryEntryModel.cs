@@ -1,11 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace DiaryApp
 {
-  class DiaryEntryDb
+  class DiaryEntryModel
   {
     [Key]
     public int EntryId { get; set; }
@@ -18,7 +17,7 @@ namespace DiaryApp
 
     //Add foreignkey from UserDb to Entry
     public int UserId { get; set; }
-    public virtual UserDb UserDb { get; set; }
+    public virtual UserModel UserDb { get; set; }
 
     public string TagText
     {
@@ -45,7 +44,7 @@ namespace DiaryApp
           }
           sb.Append("Birthday");
         }
-        return Regex.Replace(sb.ToString(), "[^A-Za-z0-9, ]", "");
+        return sb.ToString();
       }
     }
   }

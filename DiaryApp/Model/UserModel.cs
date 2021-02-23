@@ -2,7 +2,7 @@
 
 namespace DiaryApp
 {
-  public class UserDb
+  public class UserModel
   {
     [Key]
     public int UserId { get; set; }
@@ -10,5 +10,10 @@ namespace DiaryApp
     public string Password { get; set; }
     public string LastName { get; set; }
     public string FirstName { get; set; }
+
+    public string FullName
+    {
+      get => $"{FirstName} {LastName}";
+    }
   }
 }
