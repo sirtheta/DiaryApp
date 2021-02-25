@@ -16,7 +16,7 @@ namespace DiaryApp
       InitializeComponent();
       control = new Control();
       DataContext = control;
-      control.OnLoad();
+      control.OnMainWindowLoad();
     }
 
     //This passes the password to the Property in Control. Binding of Passwordbox is not possible for security reason
@@ -63,41 +63,6 @@ namespace DiaryApp
     private void ImgPopup_MouseDown(object sender, MouseButtonEventArgs e)
     {
       imgPopup.IsOpen = false;
-    }
-
-    private void BtnSaveEntry_Click(object sender, RoutedEventArgs e)
-    {
-      control.SaveEntry();
-    }
-
-    private void BtnAddImage_Click(object sender, RoutedEventArgs e)
-    {
-      control.AddImage();
-    }
-
-    private void BtnNew_Click(object sender, RoutedEventArgs e)
-    {
-      control.ClearControls();
-    }
-
-    private void BtnDeleteSelected_Click(object sender, RoutedEventArgs e)
-    {
-      control.DeleteSelectedEntry();
-    }
-
-    private void BtnSearchTag_Click(object sender, RoutedEventArgs e)
-    {
-      control.GetEntrysByTag();
-    }
-
-    private void BtnSearchDate_Click(object sender, RoutedEventArgs e)
-    {
-      control.GetEntrysByDate();
-    }
-
-    private void BtnShowAll_Click(object sender, RoutedEventArgs e)
-    {
-      control.ShowAll();
     }
 
     private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)

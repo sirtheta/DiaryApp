@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace DiaryApp
 {
-  class SignUpControl : AbstractPropertyChanged
+  class SignUpControl : ControlBase
   {
     readonly DbController dbController = new DbController();
 

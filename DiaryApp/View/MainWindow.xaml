@@ -49,7 +49,7 @@
             <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" FontSize="25" ><Run Text="Diary App"/></TextBlock>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
               <Button x:Name="btnSignIn" Visibility="{Binding Path=BtnSignInVisibility, UpdateSourceTrigger=PropertyChanged}" Command="{Binding Path=OpenSignInPopup}" fa:Awesome.Content="SignIn" HorizontalAlignment="Left" Margin="0,-5,-25,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Sign in" Height="45" />
-              <Button x:Name="btnSignOut" Visibility="{Binding Path=BtnSignOutVisibility, UpdateSourceTrigger=PropertyChanged}" Command="{Binding SignOutCommand}" fa:Awesome.Content="SignOut" HorizontalAlignment="Left" Margin="0,-5,20,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Sign out" Height="45" />
+              <Button x:Name="btnSignOut" Visibility="{Binding Path=BtnSignOutVisibility, UpdateSourceTrigger=PropertyChanged}" Command="{Binding Path=SignOutCommand}" fa:Awesome.Content="SignOut" HorizontalAlignment="Left" Margin="0,-5,20,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Sign out" Height="45" />
               <Button x:Name="btnClose" fa:Awesome.Content="PowerOff" HorizontalAlignment="Right" Margin="0,-5,0,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Close" Click="BtnClose_Click" Height="45" />
             </StackPanel>
           </Grid>
@@ -64,9 +64,9 @@
         <StackPanel x:Name="mainStackPanel" IsEnabled="{Binding Path=MainStackPanelVisibility, UpdateSourceTrigger=PropertyChanged}">
           <StackPanel>
             <StackPanel Orientation="Horizontal">
-              <Button x:Name="btnSaveEntry" Margin="10" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignRaisedButton}" fa:Awesome.Content="Save" FontSize="25" ToolTip="Save Entry" Click="BtnSaveEntry_Click"/>
-              <Button x:Name="btnAddImage" Margin="10" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignRaisedButton}" fa:Awesome.Content="Image" FontSize="25" ToolTip="Add Image" Click="BtnAddImage_Click"/>
-              <Button x:Name="btNew"  Margin="10" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignRaisedButton}" Content="New" FontSize="18" ToolTip="Add new entry" Click="BtnNew_Click"/>
+              <Button x:Name="btnSaveEntry" Margin="10" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=SaveEntryCommand}" fa:Awesome.Content="Save" FontSize="25" ToolTip="Save Entry"/>
+              <Button x:Name="btnAddImage" Margin="10" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=AddImageCommand}" fa:Awesome.Content="Image" FontSize="25" ToolTip="Add Image"/>
+              <Button x:Name="btNew"  Margin="10" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=NewCommand}" Content="New" FontSize="18" ToolTip="Add new entry"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
               <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,0,0,0">
@@ -87,10 +87,10 @@
             Search and delete Buttons
             ***************************************************-->
             <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Margin="20" HorizontalAlignment="Left" >
-              <Button x:Name="btnDeleteEntry" Margin="0,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" fa:Awesome.Content="Trash" FontSize="25" ToolTip="Delete selected entry" Click="BtnDeleteSelected_Click"/>
-              <Button x:Name="btnSearchByTag" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Search by tag" FontSize="18" ToolTip="Search by tag" Click="BtnSearchTag_Click"/>
-              <Button x:Name="btnSearchByDate" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Search by date" FontSize="18" ToolTip="Search by date" Click="BtnSearchDate_Click"/>
-              <Button x:Name="btnShowwAll" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Show all" FontSize="18" ToolTip="Show all" Click="BtnShowAll_Click"/>
+              <Button x:Name="btnDeleteEntry" Margin="0,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=DeleteCommand}" fa:Awesome.Content="Trash" FontSize="25" ToolTip="Delete selected entry" />
+              <Button x:Name="btnSearchByTag" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=SearchByTagCommand}" Content="Search by tag" FontSize="18" ToolTip="Search by tag" />
+              <Button x:Name="btnSearchByDate" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=SearchByDateCommand}" Content="Search by date" FontSize="18" ToolTip="Search by date" />
+              <Button x:Name="btnShowwAll" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=ShowAllCommand}" Content="Show all" FontSize="18" ToolTip="Show all" />
             </StackPanel>
           </StackPanel>
 

@@ -21,9 +21,7 @@ namespace DiaryApp
     /// <param name="CanExecute">Execution status logic</param>
     public RelayCommand(Action<T> Execute, Predicate<T> CanExecute)
     {
-      if (Execute == null) throw new ArgumentNullException("Execute");
-
-      _Execute = Execute;
+      _Execute = Execute ?? throw new ArgumentNullException("Execute");
       _CanExecute = CanExecute;
     }
     #endregion

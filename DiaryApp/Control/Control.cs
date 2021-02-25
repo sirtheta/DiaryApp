@@ -13,9 +13,10 @@ using System.Windows.Media.Imaging;
 namespace DiaryApp
 {
   //Inherit from AbstractPropertyChanged to use the OnPropertyChanged method
-  class Control : AbstractPropertyChanged
+  class Control : ControlBase
   {
     readonly DbController dbController = new DbController();
+    #region Members
     private IList<DiaryEntryModel> _EntriesAll = new List<DiaryEntryModel>();
     private ObservableCollection<DiaryEntryModel> _EntriesToShow = new ObservableCollection<DiaryEntryModel>();
 
@@ -39,6 +40,7 @@ namespace DiaryApp
     private DiaryEntryModel _datagridSelectedItem;
     private BitmapImage _imageBoxSource;
     private SecureString _signInPassword;
+    #endregion
 
     #region Properties
     public ObservableCollection<DiaryEntryModel> EntriesToShow
@@ -194,25 +196,64 @@ namespace DiaryApp
     //Section for button ICommands
     //**************************************************************************
     #region ICommand
-    public ICommand OpenSignInPopup
-    {
-      get => new RelayCommand<object>(ExecuteOpenPopup, CanExecute);
-    }
+    public ICommand OpenSignInPopup { get => new RelayCommand<object>(ExecuteOpenLoginPopup, CanExecute);}
 
     public ICommand SignOutCommand
     {
       get => new RelayCommand<object>(ExecuteSignOut, CanExecute);
     }
 
-    private void ExecuteOpenPopup(object Parameter) => PopupSignInIsOpen = true;
+    public ICommand SaveEntryCommand
+    {
+      get => new RelayCommand<object>(ExecuteSaveEntry, CanExecute);
+    }
 
-    private void ExecuteSignOut(object Parameter) => SignOut();
+    public ICommand AddImageCommand
+    {
+      get => new RelayCommand<object>(ExecuteAddImage, CanExecute);
+    }
 
-    private bool CanExecute(object Parameter) => true;
+    public ICommand NewCommand
+    {
+      get => new RelayCommand<object>(ExecuteNew, CanExecute);
+    }
+
+    public ICommand DeleteCommand
+    {
+      get => new RelayCommand<object>(ExecuteDelete, CanExecute);
+    }
+
+    public ICommand SearchByTagCommand
+    {
+      get => new RelayCommand<object>(ExecuteSearchByTagCommand, CanExecute);
+    }
+
+    public ICommand SearchByDateCommand
+    {
+      get => new RelayCommand<object>(ExecuteSearchByDateCommand, CanExecute);
+    }
+
+    public ICommand ShowAllCommand
+    {
+      get => new RelayCommand<object>(ExecuteShowAll, CanExecute);
+    }
     #endregion
 
+    #region ExecuteCommands
+    private void ExecuteOpenLoginPopup(object Parameter) => PopupSignInIsOpen = true;
+    private void ExecuteSignOut(object Parameter) => SignOut();
+    private void ExecuteSaveEntry(object Parameter) => SaveEntry();
+    private void ExecuteAddImage(object Parameter) => AddImage();
+    private void ExecuteNew(object Parameter) => ClearControls();
+    private void ExecuteDelete(object Parameter) => DeleteSelectedEntry();
+    private void ExecuteSearchByTagCommand(object Parameter) => GetEntrysByTag();
+    private void ExecuteSearchByDateCommand(object Parameter) => GetEntrysByDate();
+    private void ExecuteShowAll(object Parameter) => ShowAll();
+    #endregion
+
+
     //Is executed when the window is loaded
-    public void OnLoad()
+    public void OnMainWindowLoad()
     {
       PopupSignInIsOpen = true;
       BtnSignOutVisibility = Visibility.Hidden;
