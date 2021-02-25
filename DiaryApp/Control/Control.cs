@@ -196,7 +196,7 @@ namespace DiaryApp
     //Section for button ICommands
     //**************************************************************************
     #region ICommand
-    public ICommand OpenSignInPopup { get => new RelayCommand<object>(ExecuteOpenLoginPopup, CanExecute);}
+    public ICommand OpenSignInPopupCommand { get => new RelayCommand<object>(ExecuteOpenLoginPopup, CanExecute); }
 
     public ICommand SignOutCommand
     {
@@ -330,23 +330,6 @@ namespace DiaryApp
     //Entry Save and delete section
     //**************************************************************************
     #region SaveDelete
-    //If item is selected in Datagrid, show it
-    public void ShowSelectedItem()
-    {
-      if (DatagridSelectedItem != null)
-      {
-        Imager imager = new Imager();
-        var selected = DatagridSelectedItem;
-
-        EntryText = selected.Text;
-        FamilyIsChecked = selected.TagFamily;
-        FriendsIsChecked = selected.TagFriends;
-        BirthdayIsChecked = selected.TagBirthday;
-        CalendarSelectedDate = selected.Date;
-        imgInByteArr = selected.ByteImage;
-        ImageBoxSource = imager.ImageFromByteArray(imgInByteArr);
-      }
-    }
 
     public void SaveEntry()
     {
@@ -398,6 +381,7 @@ namespace DiaryApp
         EntriesToShow = new ObservableCollection<DiaryEntryModel>(_EntriesAll.OrderByDescending(d => d.Date));
 
         Helper.ShowNotification("Success", "Your diary entry successfully updated!", NotificationType.Success);
+        ClearControls();
       }
     }
 
@@ -451,7 +435,7 @@ namespace DiaryApp
     //Search for entrys by Date
     public void GetEntrysByDate()
     {
-      EntriesToShow = new ObservableCollection<DiaryEntryModel>(_EntriesAll.Where(lst => lst.Date.ToString("dd.MMMM yyyy") == CalendarSelectedDate.ToString("dd.MMMM yyyy")));
+      EntriesToShow = new ObservableCollection<DiaryEntryModel>(_EntriesAll.Where(lst => lst.Date.ToString("dd.MM yyyy") == CalendarSelectedDate.ToString("dd.MM yyyy")));
     }
 
     //Filter all entrys by clicked tag. 
@@ -494,14 +478,54 @@ namespace DiaryApp
         query = _EntriesAll.Where(lst => !lst.TagBirthday && !lst.TagFriends && !lst.TagFamily).ToList();
       }
 
-      EntriesToShow = new ObservableCollection<DiaryEntryModel>(query.Distinct());
+      EntriesToShow = new ObservableCollection<DiaryEntryModel>(query.Distinct().OrderByDescending(d => d.Date));
+    }
+
+    //Search for dates withtout entrys. Display all found dates in the datagrid.
+    //By selecting one of the dates, you can add a new entry on that specific date
+    public void GetEntrysWithoutDate(List<DateTime> _calendarDateRange)
+    {
+      var onlyDateList = new List<DiaryEntryModel>();
+
+      foreach (var entry in _EntriesAll)
+      {
+        _calendarDateRange.Remove(entry.Date.Date);
+      }
+      foreach (var item in _calendarDateRange)
+      {
+        var onlyDate = new DiaryEntryModel()
+        {
+          Date = item
+        };
+        onlyDateList.Add(onlyDate);
+      }
+      EntriesToShow = new ObservableCollection<DiaryEntryModel>(onlyDateList.OrderByDescending(d => d.Date));
+      ClearControls();
     }
     #endregion
+
+    //If item is selected in Datagrid, show it
+    public void ShowSelectedItem()
+    {
+      if (DatagridSelectedItem != null)
+      {
+        Imager imager = new Imager();
+        var selected = DatagridSelectedItem;
+
+        EntryText = selected.Text;
+        FamilyIsChecked = selected.TagFamily;
+        FriendsIsChecked = selected.TagFriends;
+        BirthdayIsChecked = selected.TagBirthday;
+        CalendarSelectedDate = selected.Date;
+        imgInByteArr = selected.ByteImage;
+        ImageBoxSource = imager.ImageFromByteArray(imgInByteArr);
+      }
+    }
 
     public void ShowAll()
     {
       ClearControls();
-      EntriesToShow = new ObservableCollection<DiaryEntryModel>(_EntriesAll);
+      EntriesToShow = new ObservableCollection<DiaryEntryModel>(_EntriesAll.OrderByDescending(d => d.Date));
     }
 
     public void ClearControls()
@@ -510,7 +534,7 @@ namespace DiaryApp
       FamilyIsChecked = false;
       FriendsIsChecked = false;
       BirthdayIsChecked = false;
-      CalendarSelectedDate = DateTime.Now;
+      CalendarSelectedDate = DateTime.Today;
       ImageBoxSource = null;
       DatagridSelectedItem = null;
       imgInByteArr = null;

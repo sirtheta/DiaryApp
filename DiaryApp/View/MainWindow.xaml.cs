@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -65,11 +66,17 @@ namespace DiaryApp
       imgPopup.IsOpen = false;
     }
 
+    private void BtnSearchDateWithoutEntry_Click(object sender, RoutedEventArgs e)
+    {
+      //Not possible to bind SelectedDates to Control     
+      control.GetEntrysWithoutDate(calendar.SelectedDates.ToList());
+    }
+
     private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-      control.ShowSelectedItem();
       //Not possible to bind SelectedItems to Control
       control.SelectedItems = dgManageEntrys.SelectedItems;
+      control.ShowSelectedItem();
     }
 
     private void BtnClose_Click(object sender, RoutedEventArgs e)

@@ -46,7 +46,7 @@ namespace DiaryApp
               TagBirthday = true,
               TagFriends = true,
               ByteImage = img,
-              Date = DateTime.Now
+              Date = DateTime.Today
             }
           };
         lstTestEntrys.Add(new DiaryEntryModel
@@ -57,7 +57,7 @@ namespace DiaryApp
           TagBirthday = true,
           TagFamily = true,
           ByteImage = img,
-          Date = DateTime.Now.AddDays(-6)
+          Date = DateTime.Today.AddDays(-6)
         });
 
         //more entrys
@@ -71,7 +71,7 @@ namespace DiaryApp
             TagBirthday = true,
             TagFamily = true,
             ByteImage = img,
-            Date = DateTime.Now.AddDays(-i)
+            Date = DateTime.Today.AddDays(-i)
           });
         }
 

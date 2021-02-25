@@ -21,6 +21,7 @@
         Title="DiaryApp" Height="900" Width="900" ResizeMode="NoResize" WindowStyle="None" KeyDown="Window_KeyDown">
 
   <Grid>
+    <!--difines the area to show the totification toast-->
     <notifications:NotificationArea Panel.ZIndex="10" 
               MaxItems="3"
               x:Name="WindowArea"
@@ -48,7 +49,7 @@
             </StackPanel>
             <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" FontSize="25" ><Run Text="Diary App"/></TextBlock>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-              <Button x:Name="btnSignIn" Visibility="{Binding Path=BtnSignInVisibility, UpdateSourceTrigger=PropertyChanged}" Command="{Binding Path=OpenSignInPopup}" fa5:Awesome.Content="Solid_SignInAlt" HorizontalAlignment="Left" Margin="0,-5,-25,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Sign in" Height="45" />
+              <Button x:Name="btnSignIn" Visibility="{Binding Path=BtnSignInVisibility, UpdateSourceTrigger=PropertyChanged}" Command="{Binding Path=OpenSignInPopupCommand}" fa5:Awesome.Content="Solid_SignInAlt" HorizontalAlignment="Left" Margin="0,-5,-25,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Sign in" Height="45" />
               <Button x:Name="btnSignOut" Visibility="{Binding Path=BtnSignOutVisibility, UpdateSourceTrigger=PropertyChanged}" Command="{Binding Path=SignOutCommand}" fa5:Awesome.Content="Solid_SignOutAlt" HorizontalAlignment="Left" Margin="0,-5,20,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Sign out" Height="45" />
               <Button x:Name="btnClose" fa5:Awesome.Content="Solid_PowerOff" HorizontalAlignment="Right" Margin="0,-5,0,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Close" Click="BtnClose_Click" Height="45" />
             </StackPanel>
@@ -66,7 +67,7 @@
             <StackPanel Orientation="Horizontal">
               <Button x:Name="btnSaveEntry" Margin="10" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=SaveEntryCommand}" fa5:Awesome.Content="Regular_Save" FontSize="25" ToolTip="Save Entry"/>
               <Button x:Name="btnAddImage" Margin="10" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=AddImageCommand}" fa5:Awesome.Content="Regular_Image" FontSize="25" ToolTip="Add Image"/>
-              <Button x:Name="btNew"  Margin="10" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=NewCommand}" Content="New" FontSize="18" ToolTip="Add new entry"/>
+              <Button x:Name="btNew" Margin="10" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=NewCommand}" Content="New" FontSize="18" ToolTip="Add new entry"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
               <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,0,0,0">
@@ -81,7 +82,7 @@
                 <CheckBox x:Name="chkBxBirthday" IsChecked="{Binding Path=BirthdayIsChecked, UpdateSourceTrigger=PropertyChanged}" Content="{Binding ChkBxBirthdayContent}"  Style="{DynamicResource MaterialDesignCheckBox}" FontSize="15"/>
                 <Image x:Name="imageBox" Source="{Binding Path=ImageBoxSource, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Height="261" Margin="0,10,0,0" Width="254" Stretch="Uniform" MouseDown="ImageBox_MouseDown" />
               </StackPanel>
-              <Calendar x:Name="calendar" DisplayDateEnd="{x:Static sys:DateTime.Today}" SelectedDate="{Binding Path=CalendarSelectedDate, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,10,0" ToolTip="Select date" Style="{DynamicResource MaterialDesignCalendarPortrait}"/>
+              <Calendar x:Name="calendar" DisplayDateEnd="{x:Static sys:DateTime.Today}" SelectedDate="{Binding Path=CalendarSelectedDate, UpdateSourceTrigger=PropertyChanged}" SelectionMode="SingleRange" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,10,0" ToolTip="Select date" Style="{DynamicResource MaterialDesignCalendarPortrait}"/>
             </StackPanel>
             <!--**************************************************
             Search and delete Buttons
@@ -90,10 +91,10 @@
               <Button x:Name="btnDeleteEntry" Margin="0,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=DeleteCommand}" fa5:Awesome.Content="Regular_TrashAlt" FontSize="23" ToolTip="Delete selected entry" />
               <Button x:Name="btnSearchByTag" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=SearchByTagCommand}" Content="Search by tag" FontSize="18" ToolTip="Search by tag" />
               <Button x:Name="btnSearchByDate" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=SearchByDateCommand}" Content="Search by date" FontSize="18" ToolTip="Search by date" />
+              <Button x:Name="btnSearchDateWithoutEntry" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Show dates without entry" FontSize="18" ToolTip="Show all" Click="BtnSearchDateWithoutEntry_Click" />
               <Button x:Name="btnShowwAll" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=ShowAllCommand}" Content="Show all" FontSize="18" ToolTip="Show all" />
             </StackPanel>
           </StackPanel>
-
           <!--*************************************************
           Manage Entry GridView
           ***************************************************-->

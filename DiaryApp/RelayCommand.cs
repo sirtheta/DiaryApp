@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace DiaryApp
@@ -28,6 +29,7 @@ namespace DiaryApp
 
 
     #region ICommand Members
+    [DebuggerStepThrough]
     public bool CanExecute(object Parameter) => _CanExecute == null ? true : _CanExecute((T)Parameter);
 
 
