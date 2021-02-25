@@ -45,27 +45,6 @@ namespace DiaryApp
       //Clear the Passwordbox field, not possible with binding
       pwBox.Password = null;
     }
-
-    private void BtnSignUpLogin_Click(object sender, RoutedEventArgs e)
-    {
-      new SignUp().ShowDialog();
-    }
-
-    private void CloseLoginPopup(object sender, RoutedEventArgs e)
-    {
-      popupSignIn.IsOpen = false;
-    }
-
-    private void ImageBox_MouseDown(object sender, MouseButtonEventArgs e)
-    {
-      imgPopup.IsOpen = true;
-    }
-
-    private void ImgPopup_MouseDown(object sender, MouseButtonEventArgs e)
-    {
-      imgPopup.IsOpen = false;
-    }
-
     private void BtnSearchDateWithoutEntry_Click(object sender, RoutedEventArgs e)
     {
       //Not possible to bind SelectedDates to Control 
@@ -80,10 +59,15 @@ namespace DiaryApp
       control.ShowSelectedItem();
     }
 
-    private void BtnClose_Click(object sender, RoutedEventArgs e)
-    {
-      Application.Current.Shutdown();
-    }
+    private void BtnSignUpLogin_Click(object sender, RoutedEventArgs e) => new SignUp().ShowDialog();
+
+    private void CloseLoginPopup(object sender, RoutedEventArgs e) => popupSignIn.IsOpen = false;
+
+    private void ImageBox_MouseDown(object sender, MouseButtonEventArgs e) => imgPopup.IsOpen = true;
+
+    private void ImgPopup_MouseDown(object sender, MouseButtonEventArgs e) => imgPopup.IsOpen = false;
+
+    private void BtnClose_Click(object sender, RoutedEventArgs e) => Application.Current.Shutdown();
 
     //This method prevents the mous from captured inside calender
     //-->Problem without: One have to cklick twice onto button in order to fire the click event
@@ -97,10 +81,7 @@ namespace DiaryApp
     }
 
     //To drag by click and drag in header
-    private void CardHeader_MouseDown(object sender, MouseButtonEventArgs e)
-    {
-      DragMove();
-    }
+    private void CardHeader_MouseDown(object sender, MouseButtonEventArgs e) => DragMove();
 
     //private void BtnDarkSwitch_Click(object sender, RoutedEventArgs e)
     //{

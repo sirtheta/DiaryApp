@@ -252,7 +252,6 @@ namespace DiaryApp
     private void ExecuteShowAll(object Parameter) => ShowAll();
     #endregion
 
-
     //Is executed when the window is loaded
     public void OnMainWindowLoad()
     {
@@ -488,7 +487,7 @@ namespace DiaryApp
     public void GetEntrysWithoutDate()
     {
 
-      if (CalendarSelectedRange.Count > 1 )
+      if (CalendarSelectedRange.Count > 1)
       {
         var onlyDateList = new List<DiaryEntryModel>();
         var calendarSelectedDateRange = CalendarSelectedRange;
@@ -543,7 +542,7 @@ namespace DiaryApp
       EntryText = string.Empty;
       FamilyIsChecked = false;
       FriendsIsChecked = false;
-      BirthdayIsChecked = false;      
+      BirthdayIsChecked = false;
       ImageBoxSource = null;
       DatagridSelectedItem = null;
       imgInByteArr = null;
