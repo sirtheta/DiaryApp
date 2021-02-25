@@ -48,8 +48,8 @@
             </StackPanel>
             <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" FontSize="25" ><Run Text="Diary App"/></TextBlock>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-              <ToggleButton x:Name="btnLogin" fa:Awesome.Content="SignIn" HorizontalAlignment="Left" Margin="0,-5,-25,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Sign in" Height="45" />
-              <Button x:Name="btnSignOut" Visibility="Hidden" fa:Awesome.Content="SignOut" HorizontalAlignment="Left" Margin="0,-5,20,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Sign out" Height="45" Click="BtnSignOut_Click" />
+              <Button x:Name="btnSignIn" Visibility="{Binding Path=BtnSignInVisibility, UpdateSourceTrigger=PropertyChanged}" Command="{Binding Path=OpenSignInPopup}" fa:Awesome.Content="SignIn" HorizontalAlignment="Left" Margin="0,-5,-25,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Sign in" Height="45" />
+              <Button x:Name="btnSignOut" Visibility="{Binding Path=BtnSignOutVisibility, UpdateSourceTrigger=PropertyChanged}" Command="{Binding SignOutCommand}" fa:Awesome.Content="SignOut" HorizontalAlignment="Left" Margin="0,-5,20,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Sign out" Height="45" />
               <Button x:Name="btnClose" fa:Awesome.Content="PowerOff" HorizontalAlignment="Right" Margin="0,-5,0,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Close" Click="BtnClose_Click" Height="45" />
             </StackPanel>
           </Grid>
@@ -61,12 +61,12 @@
       ***************************************************-->
       <Grid>
         <!--Disable stackpanel to make all controls inactive. Enabled after successfull login-->
-        <StackPanel x:Name="mainStackPanel" IsEnabled="False">
+        <StackPanel x:Name="mainStackPanel" IsEnabled="{Binding Path=MainStackPanelVisibility, UpdateSourceTrigger=PropertyChanged}">
           <StackPanel>
             <StackPanel Orientation="Horizontal">
               <Button x:Name="btnSaveEntry" Margin="10" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignRaisedButton}" fa:Awesome.Content="Save" FontSize="25" ToolTip="Save Entry" Click="BtnSaveEntry_Click"/>
               <Button x:Name="btnAddImage" Margin="10" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignRaisedButton}" fa:Awesome.Content="Image" FontSize="25" ToolTip="Add Image" Click="BtnAddImage_Click"/>
-              <Button x:Name="btClear"  Margin="10" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Clear" FontSize="18" ToolTip="Clear input" Click="BtnClear_Click"/>
+              <Button x:Name="btNew"  Margin="10" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignRaisedButton}" Content="New" FontSize="18" ToolTip="Add new entry" Click="BtnNew_Click"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
               <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,0,0,0">
@@ -125,9 +125,9 @@
     </Popup>
 
     <!--*************************************************
-    LoginPopup
+    SignInPopup
     ***************************************************-->
-    <Popup x:Name="popupLogin" IsOpen="{Binding IsChecked, ElementName=btnLogin}" AllowsTransparency="True" Placement="Center" Width="370" Height="320">
+    <Popup x:Name="popupSignIn" IsOpen="{Binding Path=PopupSignInIsOpen, UpdateSourceTrigger=PropertyChanged}" AllowsTransparency="True" Placement="Center" Width="370" Height="320">
       <Border Margin="0,0,8,8" Background="White" BorderThickness="1">
         <Border.Effect>
           <DropShadowEffect BlurRadius="5" Opacity="0.4"/>
@@ -144,7 +144,7 @@
               <TextBox x:Name="txtBoxUserName" Text="{Binding Path=SignInUserName, UpdateSourceTrigger=PropertyChanged}" Margin="20,0,0,0" materialDesign:HintAssist.Hint="Username" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" FontSize="20" Grid.Row="1"/>
               <PasswordBox x:Name="pwBox" PasswordChanged="PasswordChanged" Margin="20,0,0,0" materialDesign:HintAssist.Hint="Password" Style="{DynamicResource MaterialDesignFloatingHintPasswordBox}" FontSize="20" Grid.Row="1"/>
               <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button x:Name="btnPopupLogin" IsEnabled="{Binding Path=Text.Length, ElementName=txtBoxUserName}" Margin="15 20" fa:Awesome.Content="SignIn" FontSize="18" ToolTip="Login" Click="BtnPopupLogin_Click"/>
+                <Button x:Name="btnPopupSignIn" IsEnabled="{Binding Path=Text.Length, ElementName=txtBoxUserName}" Margin="15 20" fa:Awesome.Content="SignIn" FontSize="18" ToolTip="Login" Click="BtnPopupLogin_Click"/>
               </StackPanel>
               <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Label Content="No login? " Style="{DynamicResource MaterialDesignLabel}" FontSize="13"/>

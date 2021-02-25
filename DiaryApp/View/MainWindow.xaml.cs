@@ -16,47 +16,33 @@ namespace DiaryApp
       InitializeComponent();
       control = new Control();
       DataContext = control;
-      popupLogin.IsOpen = true;
+      control.OnLoad();
     }
 
-    //This passes the password to the Property in Control. Binding of Passwordbox is not possible
+    //This passes the password to the Property in Control. Binding of Passwordbox is not possible for security reason
     private void PasswordChanged(object sender, RoutedEventArgs e)
     {
-      if (this.DataContext != null) ((dynamic)this.DataContext).SignInPassword = ((PasswordBox)sender).SecurePassword;
-    }
-
-    private void SignIn()
-    {
-      if (control.VerifyCredentials())
+      if (this.DataContext != null)
       {
-        popupLogin.IsOpen = false;
-        mainStackPanel.IsEnabled = true;
-        btnLogin.Visibility = Visibility.Hidden;
-        btnSignOut.Visibility = Visibility.Visible;
+        ((dynamic)this.DataContext).SignInPassword = ((PasswordBox)sender).SecurePassword;
       }
-      //Clear the Passwordbox field
-      pwBox.Password = null;
     }
 
     private void Window_KeyDown(object sender, KeyEventArgs e)
     {
-      if (e.Key == Key.Enter && popupLogin.IsOpen == true)
+      if (e.Key == Key.Enter && popupSignIn.IsOpen == true)
       {
-        SignIn();
+        control.SignIn();
+        //Clear the Passwordbox field, not possible with binding
+        pwBox.Password = null;
       }
     }
 
     private void BtnPopupLogin_Click(object sender, RoutedEventArgs e)
     {
-      SignIn();
-    }
-
-    private void BtnSignOut_Click(object sender, RoutedEventArgs e)
-    {
-      control.SignOut();
-      mainStackPanel.IsEnabled = false;
-      btnLogin.Visibility = Visibility.Visible;
-      btnSignOut.Visibility = Visibility.Hidden;
+      control.SignIn();
+      //Clear the Passwordbox field, not possible with binding
+      pwBox.Password = null;
     }
 
     private void BtnSignUpLogin_Click(object sender, RoutedEventArgs e)
@@ -66,7 +52,7 @@ namespace DiaryApp
 
     private void CloseLoginPopup(object sender, RoutedEventArgs e)
     {
-      popupLogin.IsOpen = false;
+      popupSignIn.IsOpen = false;
     }
 
     private void ImageBox_MouseDown(object sender, MouseButtonEventArgs e)
@@ -89,7 +75,7 @@ namespace DiaryApp
       control.AddImage();
     }
 
-    private void BtnClear_Click(object sender, RoutedEventArgs e)
+    private void BtnNew_Click(object sender, RoutedEventArgs e)
     {
       control.ClearControls();
     }
@@ -121,8 +107,6 @@ namespace DiaryApp
       control.SelectedItems = dgManageEntrys.SelectedItems;
     }
 
-
-
     private void BtnClose_Click(object sender, RoutedEventArgs e)
     {
       Application.Current.Shutdown();
@@ -139,6 +123,7 @@ namespace DiaryApp
       }
     }
 
+    //To drag by click and drag in header
     private void CardHeader_MouseDown(object sender, MouseButtonEventArgs e)
     {
       DragMove();

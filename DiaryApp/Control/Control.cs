@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security;
+using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace DiaryApp
@@ -25,13 +27,17 @@ namespace DiaryApp
     //Definitions for properties
     private string _loggedInUserFullName;
     private string _entryText;
+    private string _signInUserName;
     private bool _chkFamilyIsChecked;
     private bool _chkFriendsIsChecked;
     private bool _chkBirthdayIsChecked;
+    private bool _popupSignInIsOpen;
+    private bool _mainStackPanelVisibility;
+    private Visibility _btnLoginVisibility;
+    private Visibility _btnSignOutVisibility;
     private DateTime _calendarSelectedDate;
     private DiaryEntryModel _datagridSelectedItem;
     private BitmapImage _imageBoxSource;
-    private string _signInUserName;
     private SecureString _signInPassword;
 
     #region Properties
@@ -98,6 +104,15 @@ namespace DiaryApp
       }
     }
 
+    public bool MainStackPanelVisibility
+    {
+      get => _mainStackPanelVisibility;
+      set
+      {
+        _mainStackPanelVisibility = value;
+        OnPropertyChanged();
+      }
+    }
     public DateTime CalendarSelectedDate
     {
       get => _calendarSelectedDate;
@@ -126,6 +141,7 @@ namespace DiaryApp
         OnPropertyChanged();
       }
     }
+
     //SignIn Binding
     public string SignInUserName
     {
@@ -145,19 +161,89 @@ namespace DiaryApp
         OnPropertyChanged();
       }
     }
+    public bool PopupSignInIsOpen
+    {
+      get => _popupSignInIsOpen;
+      set
+      {
+        _popupSignInIsOpen = value;
+        OnPropertyChanged();
+      }
+    }
+    public Visibility BtnSignInVisibility
+    {
+      get => _btnLoginVisibility;
+      set
+      {
+        _btnLoginVisibility = value;
+        OnPropertyChanged();
+      }
+    }
+    public Visibility BtnSignOutVisibility
+    {
+      get => _btnSignOutVisibility;
+      set
+      {
+        _btnSignOutVisibility = value;
+        OnPropertyChanged();
+      }
+    }
     #endregion
+
+    //**************************************************************************
+    //Section for button ICommands
+    //**************************************************************************
+    #region ICommand
+    public ICommand OpenSignInPopup
+    {
+      get => new RelayCommand<object>(ExecuteOpenPopup, CanExecute);
+    }
+
+    public ICommand SignOutCommand
+    {
+      get => new RelayCommand<object>(ExecuteSignOut, CanExecute);
+    }
+
+    private void ExecuteOpenPopup(object Parameter) => PopupSignInIsOpen = true;
+
+    private void ExecuteSignOut(object Parameter) => SignOut();
+
+    private bool CanExecute(object Parameter) => true;
+    #endregion
+
+    //Is executed when the window is loaded
+    public void OnLoad()
+    {
+      PopupSignInIsOpen = true;
+      BtnSignOutVisibility = Visibility.Hidden;
+    }
 
     //**************************************************************************
     //Sign in/sign out section
     //**************************************************************************
     #region SignIn/out
 
-    public bool VerifyCredentials()
+    public void SignIn()
+    {
+      if (VerifyCredentials())
+      {
+        MainStackPanelVisibility = true;
+        BtnSignOutVisibility = Visibility.Visible;
+        BtnSignInVisibility = Visibility.Hidden;
+        PopupSignInIsOpen = false;
+      }
+
+      SignInUserName = string.Empty;
+      SignInPassword = null;
+    }
+
+    private bool VerifyCredentials()
     {
       try
       {
         var user = dbController.GetUserName(SignInUserName).Single();
 
+        //verify entered password with the stored password in DB using securePasswordHasher
         if (SecurePasswordHasher.Verify(Helper.ToNormalString(SignInPassword), user.Password))
         {
           loggedInUserId = user.UserId;
@@ -165,8 +251,6 @@ namespace DiaryApp
           LoadEntrysFromDb();
           ShowAll();
           Helper.ShowNotification("Success", "Sign in successfull!", NotificationType.Success);
-          SignInUserName = string.Empty;
-          SignInPassword = null;
           return true;
         }
         else
@@ -177,15 +261,13 @@ namespace DiaryApp
       }
       catch (Exception)
       {
-        Helper.ShowMessageBox("No such user! Sign up now!", MessageType.Error, MessageButtons.Ok);
-        SignInUserName = string.Empty;
-        SignInPassword = null;
+        Helper.ShowMessageBox("No such user! You should sign up now!", MessageType.Error, MessageButtons.Ok);
         return false;
       }
     }
 
     //Load all entrys from DB with the logged in User
-    public void LoadEntrysFromDb()
+    private void LoadEntrysFromDb()
     {
       _EntriesAll = new List<DiaryEntryModel>(dbController.GetEntrysFromDb(loggedInUserId));
     }
@@ -197,6 +279,9 @@ namespace DiaryApp
       ClearControls();
       loggedInUserId = 0;
       LoggedInUserFullName = string.Empty;
+      MainStackPanelVisibility = false;
+      BtnSignInVisibility = Visibility.Visible;
+      BtnSignOutVisibility = Visibility.Hidden;
     }
     #endregion
 

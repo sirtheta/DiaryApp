@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace DiaryApp
 {
-  class SignUpLogic : AbstractPropertyChanged
+  class SignUpControl : AbstractPropertyChanged
   {
     readonly DbController dbController = new DbController();
 
@@ -64,6 +64,10 @@ namespace DiaryApp
       }
     }
 
+    #region Methods
+    //**************************************************************************
+    //Methods
+    //**************************************************************************
     public bool SignUp()
     {
       var iUser = dbController.GetUserName(UserName).Count;
@@ -117,6 +121,7 @@ namespace DiaryApp
       }
       return true;
     }
+    #endregion
   }
 }
 

@@ -9,28 +9,34 @@ namespace DiaryApp
   /// </summary>
   public partial class SignUp : Window
   {
-    readonly SignUpLogic signUpLogic;
+    readonly SignUpControl signUpControl;
 
     public SignUp()
     {
       InitializeComponent();
-      signUpLogic = new SignUpLogic();
-      DataContext = signUpLogic;
+      signUpControl = new SignUpControl();
+      DataContext = signUpControl;
     }
 
-    //This passes the password to the Property in Control. Binding of Passwordbox is not possible
+    //This passes the password to the Property in Control. Binding of Passwordbox is not possible for security reason
     private void PasswordChanged(object sender, RoutedEventArgs e)
     {
-      if (this.DataContext != null) ((dynamic)this.DataContext).Password = ((PasswordBox)sender).SecurePassword;
+      if (this.DataContext != null)
+      {
+        ((dynamic)this.DataContext).SignInPassword = ((PasswordBox)sender).SecurePassword;
+      }
     }
     private void PasswordConfirmChanged(object sender, RoutedEventArgs e)
     {
-      if (this.DataContext != null) ((dynamic)this.DataContext).PasswordConfirm = ((PasswordBox)sender).SecurePassword;
+      if (this.DataContext != null)
+      {
+        ((dynamic)this.DataContext).SignInPassword = ((PasswordBox)sender).SecurePassword;
+      }
     }
 
     private void SignUp_Click(object sender, RoutedEventArgs e)
     {
-      if (signUpLogic.SignUp())
+      if (signUpControl.SignUp())
       {
         Close();
       }
