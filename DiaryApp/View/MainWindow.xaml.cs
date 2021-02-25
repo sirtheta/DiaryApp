@@ -68,8 +68,9 @@ namespace DiaryApp
 
     private void BtnSearchDateWithoutEntry_Click(object sender, RoutedEventArgs e)
     {
-      //Not possible to bind SelectedDates to Control     
-      control.GetEntrysWithoutDate(calendar.SelectedDates.ToList());
+      //Not possible to bind SelectedDates to Control 
+      control.CalendarSelectedRange = calendar.SelectedDates.ToList();
+      control.GetEntrysWithoutDate();
     }
 
     private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)

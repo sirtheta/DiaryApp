@@ -124,6 +124,7 @@ namespace DiaryApp
         OnPropertyChanged();
       }
     }
+    public List<DateTime> CalendarSelectedRange { get; set; }
     public DiaryEntryModel DatagridSelectedItem
     {
       get => _datagridSelectedItem;
@@ -257,6 +258,7 @@ namespace DiaryApp
     {
       PopupSignInIsOpen = true;
       BtnSignOutVisibility = Visibility.Hidden;
+      CalendarSelectedDate = DateTime.Today;
     }
 
     //**************************************************************************
@@ -313,7 +315,7 @@ namespace DiaryApp
       _EntriesAll = new List<DiaryEntryModel>(dbController.GetEntrysFromDb(loggedInUserId));
     }
 
-    public void SignOut()
+    private void SignOut()
     {
       _EntriesAll.Clear();
       EntriesToShow.Clear();
@@ -331,7 +333,7 @@ namespace DiaryApp
     //**************************************************************************
     #region SaveDelete
 
-    public void SaveEntry()
+    private void SaveEntry()
     {
       if (DatagridSelectedItem == null)
       {
@@ -385,7 +387,7 @@ namespace DiaryApp
       }
     }
 
-    public void DeleteSelectedEntry()
+    private void DeleteSelectedEntry()
     {
       if (DatagridSelectedItem != null)
       {
@@ -412,7 +414,7 @@ namespace DiaryApp
       }
     }
 
-    public void AddImage()
+    private void AddImage()
     {
       //Add Image
       OpenFileDialog dialog = new OpenFileDialog
@@ -433,7 +435,7 @@ namespace DiaryApp
     //**************************************************************************
     #region Search
     //Search for entrys by Date
-    public void GetEntrysByDate()
+    private void GetEntrysByDate()
     {
       EntriesToShow = new ObservableCollection<DiaryEntryModel>(_EntriesAll.Where(lst => lst.Date.ToString("dd.MM yyyy") == CalendarSelectedDate.ToString("dd.MM yyyy")));
     }
@@ -441,7 +443,7 @@ namespace DiaryApp
     //Filter all entrys by clicked tag. 
     //If more than one tag is selected, the range from the second or third will be added to the existing list
     //To remove duplicate, use Distinct at the end
-    public void GetEntrysByTag()
+    private void GetEntrysByTag()
     {
       var query = new List<DiaryEntryModel>();
       if (FamilyIsChecked)
@@ -483,24 +485,32 @@ namespace DiaryApp
 
     //Search for dates withtout entrys. Display all found dates in the datagrid.
     //By selecting one of the dates, you can add a new entry on that specific date
-    public void GetEntrysWithoutDate(List<DateTime> _calendarDateRange)
+    public void GetEntrysWithoutDate()
     {
-      var onlyDateList = new List<DiaryEntryModel>();
 
-      foreach (var entry in _EntriesAll)
+      if (CalendarSelectedRange.Count > 1 )
       {
-        _calendarDateRange.Remove(entry.Date.Date);
-      }
-      foreach (var item in _calendarDateRange)
-      {
-        var onlyDate = new DiaryEntryModel()
+        var onlyDateList = new List<DiaryEntryModel>();
+        var calendarSelectedDateRange = CalendarSelectedRange;
+        foreach (var entry in _EntriesAll)
         {
-          Date = item
-        };
-        onlyDateList.Add(onlyDate);
+          calendarSelectedDateRange.Remove(entry.Date.Date);
+        }
+        foreach (var item in calendarSelectedDateRange)
+        {
+          var onlyDate = new DiaryEntryModel()
+          {
+            Date = item
+          };
+          onlyDateList.Add(onlyDate);
+        }
+        EntriesToShow = new ObservableCollection<DiaryEntryModel>(onlyDateList.OrderByDescending(d => d.Date));
+        ClearControls();
       }
-      EntriesToShow = new ObservableCollection<DiaryEntryModel>(onlyDateList.OrderByDescending(d => d.Date));
-      ClearControls();
+      else
+      {
+        Helper.ShowMessageBox("Please specify range to search for in the calendar.", MessageType.Warning, MessageButtons.Ok);
+      }
     }
     #endregion
 
@@ -522,19 +532,18 @@ namespace DiaryApp
       }
     }
 
-    public void ShowAll()
+    private void ShowAll()
     {
       ClearControls();
       EntriesToShow = new ObservableCollection<DiaryEntryModel>(_EntriesAll.OrderByDescending(d => d.Date));
     }
 
-    public void ClearControls()
+    private void ClearControls()
     {
       EntryText = string.Empty;
       FamilyIsChecked = false;
       FriendsIsChecked = false;
-      BirthdayIsChecked = false;
-      CalendarSelectedDate = DateTime.Today;
+      BirthdayIsChecked = false;      
       ImageBoxSource = null;
       DatagridSelectedItem = null;
       imgInByteArr = null;
