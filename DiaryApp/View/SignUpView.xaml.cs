@@ -30,7 +30,7 @@ namespace DiaryApp
     {
       if (this.DataContext != null)
       {
-        ((dynamic)this.DataContext).SignInPassword = ((PasswordBox)sender).SecurePassword;
+        ((dynamic)this.DataContext).SignInPasswordConfirm = ((PasswordBox)sender).SecurePassword;
       }
     }
 
