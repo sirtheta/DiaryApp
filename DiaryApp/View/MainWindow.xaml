@@ -96,10 +96,10 @@
             </StackPanel>
           </StackPanel>
           <!--*************************************************
-          Manage Entry GridView
+          Manage Entry DataGrid
           ***************************************************-->
           <Grid Margin="0,10,0,0" Height="360">
-            <DataGrid x:Name="dgManageEntrys" ItemsSource="{Binding Path=EntriesToShow, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding Path=DatagridSelectedItem, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" CanUserAddRows="False" Style="{DynamicResource MaterialDesignDataGrid}" SelectionChanged="DataGrid_SelectionChanged" Width="900">
+            <DataGrid x:Name="dgManageEntrys" ItemsSource="{Binding Path=EntriesToShow, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding Path=DatagridSelectedItem, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" Style="{DynamicResource MaterialDesignDataGrid}" SelectionChanged="DataGrid_SelectionChanged" Width="900">
               <DataGrid.Columns>
                 <DataGridTextColumn Header="Date" IsReadOnly="True" Binding="{Binding Date, StringFormat=\{0:dd.MM.yyyy\}}" SortDirection="Descending" />
                 <DataGridTextColumn Header="Tag" IsReadOnly="True" Binding="{Binding TagText}" />
