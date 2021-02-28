@@ -1,9 +1,9 @@
-﻿using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Jpeg;
-using SixLabors.ImageSharp.Processing;
-using System;
+﻿using System;
 using System.IO;
 using System.Windows.Media.Imaging;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Processing;
 
 namespace DiaryApp
 {
@@ -32,7 +32,7 @@ namespace DiaryApp
       }
       return null;
     }
-    
+
     public byte[] ImageToByteArray(string fileUri, int width = 1024, int height = 1024)
     {
       using Image image = Image.Load(fileUri);
@@ -50,7 +50,7 @@ namespace DiaryApp
           resizeMaxWidth = 0;
           resizeMaxHeight = height;
         }
-        image.Mutate(x => x.Resize(resizeMaxWidth, resizeMaxHeight)); 
+        image.Mutate(x => x.Resize(resizeMaxWidth, resizeMaxHeight));
       }
 
       using var ms = new MemoryStream();

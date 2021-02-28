@@ -1,7 +1,4 @@
-﻿using MaterialDesignMessageBox;
-using Microsoft.Win32;
-using Notifications.Wpf.Core;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,6 +7,9 @@ using System.Security;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using MaterialDesignMessageBox;
+using Microsoft.Win32;
+using Notifications.Wpf.Core;
 
 namespace DiaryApp
 {
@@ -74,7 +74,10 @@ namespace DiaryApp
       }
     }
 
-    public string ChkBxFamilyContent { get => "Family"; }
+    public string ChkBxFamilyContent
+    {
+      get => "Family";
+    }
     public bool FamilyIsChecked
     {
       get => _chkFamilyIsChecked;
@@ -85,7 +88,10 @@ namespace DiaryApp
       }
     }
 
-    public string ChkBxFriendsContent { get => "Friends"; }
+    public string ChkBxFriendsContent
+    {
+      get => "Friends";
+    }
     public bool FriendsIsChecked
     {
       get => _chkFriendsIsChecked;
@@ -96,7 +102,10 @@ namespace DiaryApp
       }
     }
 
-    public string ChkBxBirthdayContent { get => "Birthday"; }
+    public string ChkBxBirthdayContent
+    {
+      get => "Birthday";
+    }
     public bool BirthdayIsChecked
     {
       get => _chkBirthdayIsChecked;
@@ -125,8 +134,14 @@ namespace DiaryApp
         OnPropertyChanged();
       }
     }
-    public IList CalendarSelectedRange { get; set; }
-    public IList DatagridSelectedItems { get; set; }
+    public IList CalendarSelectedRange
+    {
+      get; set;
+    }
+    public IList DatagridSelectedItems
+    {
+      get; set;
+    }
     public DiaryEntryModel DatagridSelectedItem
     {
       get => _datagridSelectedItem;
