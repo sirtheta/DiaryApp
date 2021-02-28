@@ -18,10 +18,10 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="DiaryApp" Height="900" Width="900" ResizeMode="NoResize" WindowStyle="None" KeyDown="Window_KeyDown">
+        Title="DiaryApp" Height="900" Width="900" ResizeMode="CanMinimize" KeyDown="Window_KeyDown">
 
   <Grid>
-    <!--difines the area to show the totification toast-->
+    <!--defines the area to show the totification toast-->
     <notifications:NotificationArea Panel.ZIndex="10" 
               MaxItems="3"
               x:Name="WindowArea"
@@ -29,15 +29,10 @@
     </notifications:NotificationArea>
 
     <!--***************************************************
-      Definition of MainWindow with DiaryEntry area
-      ***************************************************-->
+    Definition of MainWindow with DiaryEntry area
+    ***************************************************-->
     <StackPanel>
       <Grid>
-        <Grid.RowDefinitions>
-          <RowDefinition Height="auto"/>
-          <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
         <!--***************************************************
         Header
         ***************************************************-->
@@ -51,7 +46,7 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
               <Button x:Name="btnSignIn" Visibility="{Binding Path=BtnSignInVisibility, UpdateSourceTrigger=PropertyChanged}" Command="{Binding Path=OpenSignInPopupCommand}" fa5:Awesome.Content="Solid_SignInAlt" HorizontalAlignment="Left" Margin="0,-5,-25,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Sign in" Height="45" />
               <Button x:Name="btnSignOut" Visibility="{Binding Path=BtnSignOutVisibility, UpdateSourceTrigger=PropertyChanged}" Command="{Binding Path=SignOutCommand}" fa5:Awesome.Content="Solid_SignOutAlt" HorizontalAlignment="Left" Margin="0,-5,20,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Sign out" Height="45" />
-              <Button x:Name="btnClose" fa5:Awesome.Content="Solid_PowerOff" HorizontalAlignment="Right" Margin="0,-5,0,0" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Close" Click="BtnClose_Click" Height="45" />
+              <Button x:Name="btnClose"  HorizontalAlignment="Right" Margin="0,-5,0,0" Command="{Binding Path=CloseApplicationCommand}" Style="{DynamicResource MaterialDesignToolForegroundButton}" fa5:Awesome.Content="Solid_PowerOff" FontSize="25" ToolTip="Close" Height="45" />
             </StackPanel>
           </Grid>
         </materialDesign:Card>
@@ -80,9 +75,9 @@
                 <CheckBox x:Name="chkBxFamily" IsChecked="{Binding Path=FamilyIsChecked, UpdateSourceTrigger=PropertyChanged}" Content="{Binding ChkBxFamilyContent}" Style="{DynamicResource MaterialDesignCheckBox}" FontSize="15"/>
                 <CheckBox x:Name="chkBxFriends" IsChecked="{Binding Path=FriendsIsChecked, UpdateSourceTrigger=PropertyChanged}" Content="{Binding ChkBxFriendsContent}"  Style="{DynamicResource MaterialDesignCheckBox}" FontSize="15"/>
                 <CheckBox x:Name="chkBxBirthday" IsChecked="{Binding Path=BirthdayIsChecked, UpdateSourceTrigger=PropertyChanged}" Content="{Binding ChkBxBirthdayContent}"  Style="{DynamicResource MaterialDesignCheckBox}" FontSize="15"/>
-                <Image x:Name="imageBox" Source="{Binding Path=ImageBoxSource, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Height="261" Margin="0,10,0,0" Width="254" Stretch="Uniform" MouseDown="ImageBox_MouseDown" />
+                <Image x:Name="imageBox" Source="{Binding Path=ImageBoxSource, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Margin="0,10,0,0" Height="260" Width="260" MouseDown="ImageBox_MouseDown" />
               </StackPanel>
-              <Calendar x:Name="calendar" DisplayDateEnd="{x:Static sys:DateTime.Today}" SelectedDate="{Binding Path=CalendarSelectedDate, UpdateSourceTrigger=PropertyChanged}" SelectionMode="SingleRange" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,10,0" ToolTip="Select date" Style="{DynamicResource MaterialDesignCalendarPortrait}"/>
+              <Calendar x:Name="calendar" DisplayDateEnd="{x:Static sys:DateTime.Today}" SelectedDate="{Binding Path=CalendarSelectedDate, UpdateSourceTrigger=PropertyChanged}" SelectedDatesChanged="Calendar_SelectionChanged" SelectionMode="SingleRange" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,10,0" ToolTip="Select date" Style="{DynamicResource MaterialDesignCalendarPortrait}"/>
             </StackPanel>
             <!--**************************************************
             Search and delete Buttons
@@ -91,7 +86,7 @@
               <Button x:Name="btnDeleteEntry" Margin="0,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=DeleteCommand}" fa5:Awesome.Content="Regular_TrashAlt" FontSize="23" ToolTip="Delete selected entry" />
               <Button x:Name="btnSearchByTag" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=SearchByTagCommand}" Content="Search by tag" FontSize="18" ToolTip="Search by tag" />
               <Button x:Name="btnSearchByDate" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=SearchByDateCommand}" Content="Search by date" FontSize="18" ToolTip="Search by date" />
-              <Button x:Name="btnSearchDateWithoutEntry" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Content="Show dates without entry" FontSize="18" ToolTip="Show all" Click="BtnSearchDateWithoutEntry_Click" />
+              <Button x:Name="btnSearchDateWithoutEntry" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=SearchDatesWithoutEntryCommand}" Content="Show dates without entry" FontSize="18" ToolTip="Show all"/>
               <Button x:Name="btnShowwAll" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=ShowAllCommand}" Content="Show all" FontSize="18" ToolTip="Show all" />
             </StackPanel>
           </StackPanel>
@@ -115,14 +110,14 @@
     Imagepopup (lightbox) when clicking on image
     ***************************************************-->
     <Popup Name="imgPopup" HorizontalAlignment="Left" Placement="Center" AllowsTransparency="True"  MaxWidth="1024" MaxHeight="900" MouseDown="ImgPopup_MouseDown" >
-      <Grid>
-        <Border Margin="0,0,8,8" Background="White" BorderThickness="1">
-          <Border.Effect>
-            <DropShadowEffect BlurRadius="5" Opacity="0.4"/>
-          </Border.Effect>
-          <Image x:Name="imageInPopup" Source="{Binding Path=ImageBoxSource, UpdateSourceTrigger=PropertyChanged}"/>
-        </Border>
-      </Grid>
+      <Border Margin="0,0,8,8" Background="White" BorderThickness="1">
+        <Border.Effect>
+          <DropShadowEffect BlurRadius="5" Opacity="0.4"/>
+        </Border.Effect>
+        <Grid>
+          <Image x:Name="imageInPopup" Source="{Binding Path=ImageBoxSource, UpdateSourceTrigger=PropertyChanged}" MaxHeight="900" MaxWidth="1024"/>
+        </Grid>
+      </Border>
     </Popup>
 
     <!--*************************************************
@@ -138,18 +133,18 @@
             <materialDesign:Card UniformCornerRadius="0" Grid.Row="0" Padding="10" Margin="0" Height="50" materialDesign:ShadowAssist.ShadowDepth="Depth3" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2">
               <StackPanel  Margin="0,0,0,0">
                 <TextBlock x:Name="txtPopupTitle" HorizontalAlignment="Center" VerticalAlignment="Stretch" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" FontSize="25" >Sign in</TextBlock>
-                <Button x:Name="btnSignInClose" fa5:Awesome.Content="Solid_PowerOff" HorizontalAlignment="Right" Margin="0,-36,0,0" Width="54" Style="{DynamicResource MaterialDesignToolForegroundButton}" FontSize="25" ToolTip="Close" Click="CloseLoginPopup" Height="45" />
+                <Button x:Name="btnSignInClose"  HorizontalAlignment="Right" Margin="0,-36,0,0" Width="54" Command="{Binding Path=CloseSignInPopupCommand}" Style="{DynamicResource MaterialDesignToolForegroundButton}" fa5:Awesome.Content="Solid_PowerOff" FontSize="25" ToolTip="Close" Height="45" />
               </StackPanel>
             </materialDesign:Card>
             <StackPanel Margin="25">
               <TextBox x:Name="txtBoxUserName" Text="{Binding Path=SignInUserName, UpdateSourceTrigger=PropertyChanged}" Margin="20,0,0,0" materialDesign:HintAssist.Hint="Username" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" FontSize="20" Grid.Row="1"/>
               <PasswordBox x:Name="pwBox" PasswordChanged="PasswordChanged" Margin="20,0,0,0" materialDesign:HintAssist.Hint="Password" Style="{DynamicResource MaterialDesignFloatingHintPasswordBox}" FontSize="20" Grid.Row="1"/>
               <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button x:Name="btnPopupSignIn" IsEnabled="{Binding Path=Text.Length, ElementName=txtBoxUserName}" Margin="15 20" fa5:Awesome.Content="Solid_SignInAlt" FontSize="18" ToolTip="Login" Click="BtnPopupLogin_Click"/>
+                <Button x:Name="btnPopupSignIn" IsEnabled="{Binding Path=Text.Length, ElementName=txtBoxUserName}" Style="{DynamicResource MaterialDesignRaisedButton}" Margin="15 20" fa5:Awesome.Content="Solid_SignInAlt" FontSize="18" ToolTip="Sign in" Click="BtnPopupLogin_Click"/>
               </StackPanel>
               <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Label Content="No login? " Style="{DynamicResource MaterialDesignLabel}" FontSize="13"/>
-                <Button x:Name="btnSignUp" Margin="-15 -4 0 0" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Sign up" Content="Sign up now" Click="BtnSignUpLogin_Click" />
+                <Button x:Name="btnSignUp" Margin="-15 -4 0 0" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding Path=OpenSignUpWindowCommand}" ToolTip="Sign up" Content="Sign up now"/>
               </StackPanel>
             </StackPanel>
           </StackPanel>

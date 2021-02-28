@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -16,6 +17,9 @@ namespace DiaryApp
       InitializeComponent();
       signUpControl = new SignUpControl();
       DataContext = signUpControl;
+      //To close the window from signUpControl
+      if (signUpControl.CloseAction == null)
+        signUpControl.CloseAction = new Action(this.Close);
     }
 
     //This passes the password to the Property in Control. Binding of Passwordbox is not possible for security reason
@@ -33,22 +37,20 @@ namespace DiaryApp
         ((dynamic)this.DataContext).SignInPasswordConfirm = ((PasswordBox)sender).SecurePassword;
       }
     }
-
+    
+    //Clear the Passwordbox fields after Login. No Binding possible
     private void SignUp_Click(object sender, RoutedEventArgs e)
     {
       if (signUpControl.SignUp())
       {
         Close();
       }
-      //Clear the Passwordbox fields
+      
       pwBox.Password = null;
       pwBoxConfirm.Password = null;
     }
-    private void BtnClose_Click(object sender, RoutedEventArgs e)
-    {
-      Close();
-    }
 
+    //To drag the window by click and drag in header
     private void CardHeader_MouseDown(object sender, MouseButtonEventArgs e)
     {
       DragMove();

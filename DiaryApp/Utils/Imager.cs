@@ -32,22 +32,26 @@ namespace DiaryApp
       }
       return null;
     }
-    public byte[] ImageToByteArray(string fileUri)
+    
+    public byte[] ImageToByteArray(string fileUri, int width = 1024, int height = 1024)
     {
       using Image image = Image.Load(fileUri);
-      int width;
-      int height;
-      if (image.Width > image.Height)
+      int resizeMaxWidth;
+      int resizeMaxHeight;
+      if (image.Width > width || image.Height > height)
       {
-        width = 1024;
-        height = 0;
+        if (image.Width > image.Height)
+        {
+          resizeMaxWidth = width;
+          resizeMaxHeight = 0;
+        }
+        else
+        {
+          resizeMaxWidth = 0;
+          resizeMaxHeight = height;
+        }
+        image.Mutate(x => x.Resize(resizeMaxWidth, resizeMaxHeight)); 
       }
-      else
-      {
-        width = 0;
-        height = 1024;
-      }
-      image.Mutate(x => x.Resize(width, height));
 
       using var ms = new MemoryStream();
       image.Save(ms, new JpegEncoder());

@@ -8,8 +8,6 @@ namespace DiaryApp
   //**************************************************************************
   //Create test entrys
   //**************************************************************************
-  #region CreateTestEntrys
-
   static class DatabaseInitializer
   {
     public static void CreateTestUser()
@@ -24,7 +22,6 @@ namespace DiaryApp
         db.SaveChanges();
       }
     }
-
 
     public static void CreateTestEntrys()
     {
@@ -83,5 +80,4 @@ namespace DiaryApp
       }
     }
   }
-  #endregion
 }

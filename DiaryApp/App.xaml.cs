@@ -11,7 +11,7 @@ namespace DiaryApp
     protected override void OnStartup(StartupEventArgs e)
     {
       base.OnStartup(e);
-      //If Database propertys has changed, drop the table and create an empty db
+      //If Database model has changed, drop the table and create an empty db
       Database.SetInitializer(new DropCreateDatabaseIfModelChanges<DiaryContext>());
       DatabaseInitializer.CreateTestUser();
       DatabaseInitializer.CreateTestEntrys();

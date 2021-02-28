@@ -1,6 +1,9 @@
-﻿using Notifications.Wpf.Core;
+﻿using MaterialDesignMessageBox;
+using Notifications.Wpf.Core;
+using System;
 using System.Security;
 using System.Text.RegularExpressions;
+using System.Windows.Input;
 
 namespace DiaryApp
 {
@@ -64,6 +67,14 @@ namespace DiaryApp
       }
     }
 
+    public Action CloseAction { get; set; }
+
+    public ICommand CloseApplicationCommand
+    {
+      get => new RelayCommand<object>(ExecuteCloseWindow);
+    }
+    private void ExecuteCloseWindow(object Parameter) => CloseAction();
+
     //**************************************************************************
     //Methods
     //**************************************************************************
@@ -100,7 +111,6 @@ namespace DiaryApp
 
     private bool CheckPassword()
     {
-      Regex regex = new Regex(@"^(?=(.*\d){2})(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).{8,}$");
       if (SignInPassword == null || SignInPasswordConfirm == null)
       {
         return false;
@@ -112,6 +122,7 @@ namespace DiaryApp
         SignInPasswordConfirm = null;
         return false;
       }
+      Regex regex = new Regex(@"^(?=(.*\d){2})(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).{8,}$");
       if (!regex.IsMatch(Helper.ToNormalString(SignInPassword)))
       {
         Helper.ShowMessageBox("The entered password does not meet the requirements. Requirements: minimum 8 characters, 1 lowercase, 1 uppercase, 1 digit and 1 special character.", MessageType.Error, MessageButtons.Ok);

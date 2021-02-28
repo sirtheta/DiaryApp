@@ -19,7 +19,7 @@ namespace DiaryApp
 
     }
 
-    //Save the Created Entry to Database
+    //Save or Update the Created Entry to Database
     public void EntryToDb(DiaryEntryModel entry)
     {
       using var db = new DiaryContext();
@@ -35,18 +35,18 @@ namespace DiaryApp
       db.SaveChanges();
     }
 
-    //Delete selected entry from Database
+    //Delete entry from Database
     public void DeleteEntryInDb(DiaryEntryModel entrys)
     {
       using var db = new DiaryContext();
       db.Entry(entrys).State = EntityState.Deleted;
       db.SaveChanges();
     }
+
     //**************************************************************************
     //user section
     //**************************************************************************
-
-    //Save the Created Entry to Database
+    //Save the user to Database
     public void UserToDb(UserModel user)
     {
       using var db = new DiaryContext();
@@ -62,7 +62,7 @@ namespace DiaryApp
               select b).ToList();
     }
 
-    //Get the username from database
+    //Get the full name from database
     public string GetFullName(int userId)
     {
       using var db = new DiaryContext();

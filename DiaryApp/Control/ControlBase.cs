@@ -11,7 +11,5 @@ namespace DiaryApp
     {
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-
-    public bool CanExecute(object Parameter) => true;
   }
 }
