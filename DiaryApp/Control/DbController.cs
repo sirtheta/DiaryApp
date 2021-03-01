@@ -54,7 +54,7 @@ namespace DiaryApp
       db.SaveChanges();
     }
 
-    public List<UserModel> GetUserName(string userName)
+    public List<UserModel> GetUserFromDb(string userName)
     {
       using var db = new DiaryContext();
       return (from b in db.Users

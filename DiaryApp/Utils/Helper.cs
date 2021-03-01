@@ -1,8 +1,8 @@
-﻿using Notifications.Wpf.Core;
+﻿using MaterialDesignMessageBox;
+using Notifications.Wpf.Core;
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
-using MaterialDesignMessageBox;
 
 namespace DiaryApp
 {

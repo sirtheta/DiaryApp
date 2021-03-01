@@ -37,15 +37,11 @@ namespace DiaryApp
         ((dynamic)this.DataContext).SignInPasswordConfirm = ((PasswordBox)sender).SecurePassword;
       }
     }
-    
+
     //Clear the Passwordbox fields after Login. No Binding possible
     private void SignUp_Click(object sender, RoutedEventArgs e)
     {
-      if (signUpControl.SignUp())
-      {
-        Close();
-      }
-      
+      signUpControl.SignUp();
       pwBox.Password = null;
       pwBoxConfirm.Password = null;
     }

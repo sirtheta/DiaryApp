@@ -79,22 +79,20 @@ namespace DiaryApp
     //Methods
     //**************************************************************************
     #region Methods
-    public bool SignUp()
+    public void SignUp()
     {
-      var iUser = dbController.GetUserName(UserName).Count == 0;
+      var iUser = dbController.GetUserFromDb(UserName).Count == 0;
       if (iUser && CheckPassword())
       {
-        CreateNewUser();
+        CloseAction();
         Helper.ShowNotification("Success", "Sign up successfull!", NotificationType.Success);
-        return true;
+        CreateNewUser();
       }
       else if (!iUser)
       {
-        Helper.ShowMessageBox("User already exists!", MessageType.Error, MessageButtons.Ok);
         UserName = string.Empty;
-        return false;
+        Helper.ShowMessageBox("User already exists!", MessageType.Error, MessageButtons.Ok);
       }
-      else return false;
     }
 
     private void CreateNewUser()
@@ -130,6 +128,7 @@ namespace DiaryApp
         SignInPasswordConfirm = null;
         return false;
       }
+      //return true if every check passes
       return true;
     }
     #endregion

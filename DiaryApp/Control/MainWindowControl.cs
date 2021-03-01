@@ -1,4 +1,7 @@
-﻿using System;
+﻿using MaterialDesignMessageBox;
+using Microsoft.Win32;
+using Notifications.Wpf.Core;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,9 +10,6 @@ using System.Security;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using MaterialDesignMessageBox;
-using Microsoft.Win32;
-using Notifications.Wpf.Core;
 
 namespace DiaryApp
 {
@@ -22,7 +22,7 @@ namespace DiaryApp
     //byte array to hold the Image
     private byte[] imgInByteArr;
     //User ID
-    private int loggedInUserId;
+    private int signedInUserId;
 
     //Definitions for properties
     private string _loggedInUserFullName;
@@ -54,7 +54,7 @@ namespace DiaryApp
       }
     }
     //property to get the full name of the user to in MainWindow
-    public string LoggedInUserFullName
+    public string SignedInUserFullName
     {
       get => _loggedInUserFullName;
       set
@@ -210,10 +210,7 @@ namespace DiaryApp
     }
     #endregion
 
-    //**************************************************************************
-    //Section for button ICommands
-    //**************************************************************************
-    #region ICommand
+    #region ICommands
     public ICommand OpenSignInPopupCommand
     {
       get => new RelayCommand<object>(ExecuteOpenLoginPopup);
@@ -286,13 +283,13 @@ namespace DiaryApp
     private void ExecuteOpenSignUpWindow(object Parameter) => new SignUp().ShowDialog();
     private void ExecuteCloseApplication(object Parameter) => Application.Current.Shutdown();
     private void ExecuteSignOut(object Parameter) => SignOut();
-    private void ExecuteSaveEntry(object Parameter) => SaveEntry();
+    private void ExecuteSaveEntry(object Parameter) => SaveOrUpdateEntry();
     private void ExecuteAddImage(object Parameter) => AddImage();
     private void ExecuteNew(object Parameter) => ShowAll();
     private void ExecuteDelete(object Parameter) => DeleteSelectedEntry();
     private void ExecuteSearchByTagCommand(object Parameter) => GetEntrysByTag();
     private void ExecuteSearchByDateCommand(object Parameter) => GetEntrysByDate();
-    private void ExecuteSearchDatesWithoutEntryCommand(object Parameter) => GetEntrysWithoutDate();
+    private void ExecuteSearchDatesWithoutEntryCommand(object Parameter) => GetDatesWithoutEntry();
     private void ExecuteShowAll(object Parameter) => ShowAll();
     #endregion
 
@@ -305,57 +302,47 @@ namespace DiaryApp
     }
 
     //**************************************************************************
-    //Sign in/sign out section
+    //Methods
     //**************************************************************************
     #region SignIn/out
 
     public void SignIn()
     {
-      if (VerifyCredentials())
+      var user = dbController.GetUserFromDb(SignInUserName).SingleOrDefault();
+      if (user == null)
       {
-        MainStackPanelVisibility = true;
-        BtnSignOutVisibility = Visibility.Visible;
-        BtnSignInVisibility = Visibility.Hidden;
-        PopupSignInIsOpen = false;
+        Helper.ShowMessageBox("No such user! You should sign up now!", MessageType.Error, MessageButtons.Ok);
       }
-
+      //verify entered password with the stored password in DB using securePasswordHasher
+      else if (SecurePasswordHasher.Verify(Helper.ToNormalString(SignInPassword), user.Password))
+      {
+        Verified(user);
+        Helper.ShowNotification("Success", "Sign in successfull!", NotificationType.Success);
+      }
+      else
+      {
+        Helper.ShowMessageBox("Login incorrect, try again!", MessageType.Error, MessageButtons.Ok);
+      }
       SignInUserName = string.Empty;
       SignInPassword = null;
     }
 
-    private bool VerifyCredentials()
+    private void Verified(UserModel user)
     {
-      try
-      {
-        var user = dbController.GetUserName(SignInUserName).Single();
-
-        //verify entered password with the stored password in DB using securePasswordHasher
-        if (SecurePasswordHasher.Verify(Helper.ToNormalString(SignInPassword), user.Password))
-        {
-          loggedInUserId = user.UserId;
-          LoggedInUserFullName = dbController.GetFullName(loggedInUserId);
-          LoadEntrysFromDb();
-          ShowAll();
-          Helper.ShowNotification("Success", "Sign in successfull!", NotificationType.Success);
-          return true;
-        }
-        else
-        {
-          Helper.ShowMessageBox("Login incorrect, try again!", MessageType.Error, MessageButtons.Ok);
-          return false;
-        }
-      }
-      catch (Exception)
-      {
-        Helper.ShowMessageBox("No such user! You should sign up now!", MessageType.Error, MessageButtons.Ok);
-        return false;
-      }
+      signedInUserId = user.UserId;
+      MainStackPanelVisibility = true;
+      BtnSignOutVisibility = Visibility.Visible;
+      BtnSignInVisibility = Visibility.Hidden;
+      PopupSignInIsOpen = false;
+      SignedInUserFullName = dbController.GetFullName(signedInUserId);
+      LoadEntrysFromDb();
+      ShowAll();
     }
 
     //Load all entrys from DB with the logged in User
     private void LoadEntrysFromDb()
     {
-      _entriesAll = new List<DiaryEntryModel>(dbController.GetEntrysFromDb(loggedInUserId));
+      _entriesAll = new List<DiaryEntryModel>(dbController.GetEntrysFromDb(signedInUserId));
     }
 
     private void SignOut()
@@ -363,42 +350,25 @@ namespace DiaryApp
       _entriesAll.Clear();
       EntriesToShow.Clear();
       ClearControls();
-      loggedInUserId = 0;
-      LoggedInUserFullName = string.Empty;
+      signedInUserId = 0;
+      SignedInUserFullName = string.Empty;
       MainStackPanelVisibility = false;
       BtnSignInVisibility = Visibility.Visible;
       BtnSignOutVisibility = Visibility.Hidden;
     }
     #endregion
 
-    //**************************************************************************
-    //Entry Save and delete section
-    //**************************************************************************
     #region SaveDelete
 
-    private void SaveEntry()
+    private void SaveOrUpdateEntry()
     {
       if (DatagridSelectedItem == null)
       {
         if (!string.IsNullOrEmpty(EntryText))
         {
-          var newEntry = new DiaryEntryModel()
-          {
-            Text = EntryText,
-            Date = CalendarSelectedDate,
-            TagFamily = FamilyIsChecked,
-            TagFriends = FriendsIsChecked,
-            TagBirthday = BirthdayIsChecked,
-            ByteImage = imgInByteArr,
-            UserId = loggedInUserId
-          };
-
-          dbController.EntryToDb(newEntry);
-          _entriesAll.Add(newEntry);
-          EntriesToShow = new ObservableCollection<DiaryEntryModel>(_entriesAll.OrderByDescending(d => d.Date));
-
+          SaveEntry();
+          ShowAll();
           Helper.ShowNotification("Success", "Your diary entry is saved successfull", NotificationType.Success);
-          ClearControls();
         }
         else
         {
@@ -408,26 +378,46 @@ namespace DiaryApp
       //If a entry is updated, update it in the database
       else if (DatagridSelectedItem is DiaryEntryModel updateEntry)
       {
-        var entry = new DiaryEntryModel()
-        {
-          EntryId = updateEntry.EntryId,
-          Text = EntryText,
-          Date = CalendarSelectedDate,
-          TagFamily = FamilyIsChecked,
-          TagFriends = FriendsIsChecked,
-          TagBirthday = BirthdayIsChecked,
-          ByteImage = imgInByteArr,
-          UserId = loggedInUserId
-        };
-
-        dbController.EntryToDb(entry);
-        _entriesAll.Remove(updateEntry);
-        _entriesAll.Add(entry);
-        EntriesToShow = new ObservableCollection<DiaryEntryModel>(_entriesAll.OrderByDescending(d => d.Date));
-
+        UpdateEntry(updateEntry);
+        ShowAll();
         Helper.ShowNotification("Success", "Your diary entry successfully updated!", NotificationType.Success);
-        ClearControls();
       }
+    }
+
+    private void SaveEntry()
+    {
+      var newEntry = new DiaryEntryModel()
+      {
+        Text = EntryText,
+        Date = CalendarSelectedDate,
+        TagFamily = FamilyIsChecked,
+        TagFriends = FriendsIsChecked,
+        TagBirthday = BirthdayIsChecked,
+        ByteImage = imgInByteArr,
+        UserId = signedInUserId
+      };
+
+      dbController.EntryToDb(newEntry);
+      _entriesAll.Add(newEntry);
+    }
+
+    private void UpdateEntry(DiaryEntryModel updateEntry)
+    {
+      var entry = new DiaryEntryModel()
+      {
+        EntryId = updateEntry.EntryId,
+        Text = EntryText,
+        Date = CalendarSelectedDate,
+        TagFamily = FamilyIsChecked,
+        TagFriends = FriendsIsChecked,
+        TagBirthday = BirthdayIsChecked,
+        ByteImage = imgInByteArr,
+        UserId = signedInUserId
+      };
+
+      dbController.EntryToDb(entry);
+      _entriesAll.Remove(updateEntry);
+      _entriesAll.Add(entry);
     }
 
     private void DeleteSelectedEntry()
@@ -436,19 +426,10 @@ namespace DiaryApp
       {
         if (Helper.ShowMessageBox("Delete selected entry?", MessageType.Confirmation, MessageButtons.YesNo))
         {
-          //Cast selected Items to Enumerate with foreach
-          var entry = DatagridSelectedItems.Cast<DiaryEntryModel>().ToList();
-          foreach (var item in entry)
-          {
-            _entriesAll.Remove(item);
-            dbController.DeleteEntryInDb(item);
-          }
-
+          DeleteEntry();
           Helper.ShowNotification("Success", "Entry Successfull deleted", NotificationType.Success);
           //Update Datagrid
-          EntriesToShow = new ObservableCollection<DiaryEntryModel>(_entriesAll.OrderByDescending(d => d.Date));
-          DatagridSelectedItem = null;
-          ClearControls();
+          ShowAll();
         }
       }
       else
@@ -457,25 +438,28 @@ namespace DiaryApp
       }
     }
 
+    private void DeleteEntry()
+    {
+      //Cast selected Items to Enumerate with foreach
+      var entry = DatagridSelectedItems.Cast<DiaryEntryModel>().ToList();
+      foreach (var item in entry)
+      {
+        _entriesAll.Remove(item);
+        dbController.DeleteEntryInDb(item);
+      }
+    }
+
     private void AddImage()
     {
-      //Add Image
-      OpenFileDialog dialog = new OpenFileDialog
+      var fileUri = LoadImage();
+      if (fileUri != null)
       {
-        Filter = "Image files (*.jpg, *.jpeg, *.png) | *.jpg; *.jpeg; *.png"
-      };
-      if (dialog.ShowDialog() == true)
-      {
-        Imager imager = new Imager();
-        ImageBoxSource = imager.BitmapForImageSource(dialog.FileName);
-        imgInByteArr = imager.ImageToByteArray(dialog.FileName);
+        ProcessImage(fileUri);
+        DisplayImage();
       }
     }
     #endregion
 
-    //**************************************************************************
-    //Search entry section
-    //**************************************************************************
     #region Search
     //Search for entrys by Date
     private void GetEntrysByDate()
@@ -522,13 +506,13 @@ namespace DiaryApp
       {
         query = _entriesAll.Where(lst => !lst.TagBirthday && !lst.TagFriends && !lst.TagFamily).ToList();
       }
-
-      EntriesToShow = new ObservableCollection<DiaryEntryModel>(query.Distinct().OrderByDescending(d => d.Date));
+      Show(query);
+      //EntriesToShow = new ObservableCollection<DiaryEntryModel>(query.Distinct().OrderByDescending(d => d.Date));
     }
 
     //Search for dates withtout entrys. Display all found dates in the datagrid.
     //By selecting one of the dates, you can add a new entry on that specific date
-    private void GetEntrysWithoutDate()
+    private void GetDatesWithoutEntry()
     {
 
       if (CalendarSelectedRange.Count > 1)
@@ -548,13 +532,18 @@ namespace DiaryApp
           };
           onlyDateList.Add(onlyDate);
         }
-        EntriesToShow = new ObservableCollection<DiaryEntryModel>(onlyDateList.OrderByDescending(d => d.Date));
-        ClearControls();
+        Show(onlyDateList);
       }
       else
       {
         Helper.ShowMessageBox("Please specify range to search for in the calendar.", MessageType.Warning, MessageButtons.Ok);
       }
+    }
+
+    private void Show(List<DiaryEntryModel> entry)
+    {
+      ClearControls();
+      EntriesToShow = new ObservableCollection<DiaryEntryModel>(entry.OrderByDescending(d => d.Date));
     }
     #endregion
 
@@ -563,16 +552,13 @@ namespace DiaryApp
     {
       if (DatagridSelectedItem != null)
       {
-        Imager imager = new Imager();
-        var selected = DatagridSelectedItem;
-
-        EntryText = selected.Text;
-        FamilyIsChecked = selected.TagFamily;
-        FriendsIsChecked = selected.TagFriends;
-        BirthdayIsChecked = selected.TagBirthday;
-        CalendarSelectedDate = selected.Date;
-        imgInByteArr = selected.ByteImage;
-        ImageBoxSource = imager.ImageFromByteArray(imgInByteArr);
+        EntryText = DatagridSelectedItem.Text;
+        FamilyIsChecked = DatagridSelectedItem.TagFamily;
+        FriendsIsChecked = DatagridSelectedItem.TagFriends;
+        BirthdayIsChecked = DatagridSelectedItem.TagBirthday;
+        CalendarSelectedDate = DatagridSelectedItem.Date;
+        imgInByteArr = DatagridSelectedItem.ByteImage;
+        DisplayImage();
       }
     }
 
@@ -592,5 +578,37 @@ namespace DiaryApp
       DatagridSelectedItem = null;
       imgInByteArr = null;
     }
+
+    #region Image
+    //Load the image uri from file with file dialog
+    private string LoadImage()
+    {
+      //Load image with dialog
+      OpenFileDialog dialog = new OpenFileDialog
+      {
+        Filter = "Image files (*.jpg, *.jpeg, *.png) | *.jpg; *.jpeg; *.png"
+      };
+      if (dialog.ShowDialog() == true)
+      {
+        return dialog.FileName;
+      }
+      return null;
+    }
+
+    //call the imageconverter, standard max size is 1024
+    //specify if needed
+    private void ProcessImage(string fileUri)
+    {
+      Imager imager = new Imager();
+      imgInByteArr = imager.ImageToByteArray(fileUri);
+    }
+
+    //Display image in GUI
+    private void DisplayImage()
+    {
+      Imager imager = new Imager();
+      ImageBoxSource = imager.ImageFromByteArray(imgInByteArr);
+    }
+    #endregion
   }
 }

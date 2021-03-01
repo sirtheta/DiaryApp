@@ -40,7 +40,7 @@
           <Grid>
             <StackPanel Orientation="Horizontal">
               <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" FontSize="20" ><Run Text="Welcome"/></TextBlock>
-              <TextBlock x:Name="txtLoggedInUser" Text="{Binding Path=LoggedInUserFullName, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" FontSize="20"/>
+              <TextBlock x:Name="txtLoggedInUser" Text="{Binding Path=SignedInUserFullName, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" FontSize="20"/>
             </StackPanel>
             <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" FontSize="25" ><Run Text="Diary App"/></TextBlock>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

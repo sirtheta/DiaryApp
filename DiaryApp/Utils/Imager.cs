@@ -1,23 +1,13 @@
-﻿using System;
-using System.IO;
-using System.Windows.Media.Imaging;
-using SixLabors.ImageSharp;
+﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
+using System.IO;
+using System.Windows.Media.Imaging;
 
 namespace DiaryApp
 {
   class Imager
   {
-    public BitmapImage BitmapForImageSource(string fileUri)
-    {
-      BitmapImage bitmap = new BitmapImage();
-      bitmap.BeginInit();
-      bitmap.UriSource = new Uri(fileUri);
-      bitmap.EndInit();
-      return bitmap;
-    }
-
     public BitmapImage ImageFromByteArray(byte[] array)
     {
       if (array != null)
@@ -36,26 +26,28 @@ namespace DiaryApp
     public byte[] ImageToByteArray(string fileUri, int width = 1024, int height = 1024)
     {
       using Image image = Image.Load(fileUri);
-      int resizeMaxWidth;
-      int resizeMaxHeight;
       if (image.Width > width || image.Height > height)
-      {
-        if (image.Width > image.Height)
-        {
-          resizeMaxWidth = width;
-          resizeMaxHeight = 0;
-        }
-        else
-        {
-          resizeMaxWidth = 0;
-          resizeMaxHeight = height;
-        }
-        image.Mutate(x => x.Resize(resizeMaxWidth, resizeMaxHeight));
-      }
-
+        ResizeImage(image, width, height);
       using var ms = new MemoryStream();
       image.Save(ms, new JpegEncoder());
       return ms.ToArray();
+    }
+
+    private void ResizeImage(Image image, int width, int height)
+    {
+      int resizeMaxWidth;
+      int resizeMaxHeight;
+      if (image.Width > image.Height)
+      {
+        resizeMaxWidth = width;
+        resizeMaxHeight = 0;
+      }
+      else
+      {
+        resizeMaxWidth = 0;
+        resizeMaxHeight = height;
+      }
+      image.Mutate(x => x.Resize(resizeMaxWidth, resizeMaxHeight));
     }
   }
 }
