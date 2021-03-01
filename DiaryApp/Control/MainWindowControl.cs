@@ -309,12 +309,8 @@ namespace DiaryApp
     public void SignIn()
     {
       var user = dbController.GetUserFromDb(SignInUserName).SingleOrDefault();
-      if (user == null)
-      {
-        Helper.ShowMessageBox("No such user! You should sign up now!", MessageType.Error, MessageButtons.Ok);
-      }
       //verify entered password with the stored password in DB using securePasswordHasher
-      else if (SecurePasswordHasher.Verify(Helper.ToNormalString(SignInPassword), user.Password))
+      if (user != null && SecurePasswordHasher.Verify(Helper.ToNormalString(SignInPassword), user.Password))
       {
         Verified(user);
         Helper.ShowNotification("Success", "Sign in successfull!", NotificationType.Success);
