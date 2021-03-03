@@ -85,13 +85,13 @@ namespace DiaryApp
       if (iUser && CheckPassword())
       {
         CloseAction();
-        Helper.ShowNotification("Success", "Sign up successfull!", NotificationType.Success);
+        ShowNotification("Success", "Sign up successfull!", NotificationType.Success);
         CreateNewUser();
       }
       else if (!iUser)
       {
         UserName = string.Empty;
-        Helper.ShowMessageBox("User already exists!", MessageType.Error, MessageButtons.Ok);
+        ShowMessageBox("User already exists!", MessageType.Error, MessageButtons.Ok);
       }
     }
 
@@ -115,7 +115,7 @@ namespace DiaryApp
       }
       if (Helper.ToNormalString(SignInPassword) != Helper.ToNormalString(SignInPasswordConfirm))
       {
-        Helper.ShowMessageBox("Passwords are not matching!", MessageType.Error, MessageButtons.Ok);
+        ShowMessageBox("Passwords are not matching!", MessageType.Error, MessageButtons.Ok);
         SignInPassword = null;
         SignInPasswordConfirm = null;
         return false;
@@ -123,7 +123,7 @@ namespace DiaryApp
       Regex regex = new Regex(@"^(?=(.*\d){2})(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).{8,}$");
       if (!regex.IsMatch(Helper.ToNormalString(SignInPassword)))
       {
-        Helper.ShowMessageBox("The entered password does not meet the requirements. Requirements: minimum 8 characters, 1 lowercase, 1 uppercase, 1 digit and 1 special character.", MessageType.Error, MessageButtons.Ok);
+        ShowMessageBox("The entered password does not meet the requirements. Requirements: minimum 8 characters, 1 lowercase, 1 uppercase, 1 digit and 1 special character.", MessageType.Error, MessageButtons.Ok);
         SignInPassword = null;
         SignInPasswordConfirm = null;
         return false;

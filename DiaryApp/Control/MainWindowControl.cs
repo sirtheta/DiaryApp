@@ -313,11 +313,11 @@ namespace DiaryApp
       if (user != null && SecurePasswordHasher.Verify(Helper.ToNormalString(SignInPassword), user.Password))
       {
         Verified(user);
-        Helper.ShowNotification("Success", "Sign in successfull!", NotificationType.Success);
+        ShowNotification("Success", "Sign in successfull!", NotificationType.Success);
       }
       else
       {
-        Helper.ShowMessageBox("Login incorrect, try again!", MessageType.Error, MessageButtons.Ok);
+        ShowMessageBox("Login incorrect, try again!", MessageType.Error, MessageButtons.Ok);
       }
       SignInUserName = string.Empty;
       SignInPassword = null;
@@ -364,11 +364,11 @@ namespace DiaryApp
         {
           SaveEntry();
           ShowAll();
-          Helper.ShowNotification("Success", "Your diary entry is saved successfull", NotificationType.Success);
+          ShowNotification("Success", "Your diary entry is saved successfull", NotificationType.Success);
         }
         else
         {
-          Helper.ShowMessageBox("No text to Save. Please write your diarytext before saving!", MessageType.Error, MessageButtons.Ok);
+          ShowMessageBox("No text to Save. Please write your diarytext before saving!", MessageType.Error, MessageButtons.Ok);
         }
       }
       //If a entry is updated, update it in the database
@@ -376,7 +376,7 @@ namespace DiaryApp
       {
         UpdateEntry(updateEntry);
         ShowAll();
-        Helper.ShowNotification("Success", "Your diary entry successfully updated!", NotificationType.Success);
+        ShowNotification("Success", "Your diary entry successfully updated!", NotificationType.Success);
       }
     }
 
@@ -420,17 +420,17 @@ namespace DiaryApp
     {
       if (DatagridSelectedItem != null)
       {
-        if (Helper.ShowMessageBox("Delete selected entry?", MessageType.Confirmation, MessageButtons.YesNo))
+        if (ShowMessageBox("Delete selected entry?", MessageType.Confirmation, MessageButtons.YesNo))
         {
           DeleteEntry();
-          Helper.ShowNotification("Success", "Entry Successfull deleted", NotificationType.Success);
+          ShowNotification("Success", "Entry Successfull deleted", NotificationType.Success);
           //Update Datagrid
           ShowAll();
         }
       }
       else
       {
-        Helper.ShowNotification("Error", "No entry selected!", NotificationType.Error);
+        ShowNotification("Error", "No entry selected!", NotificationType.Error);
       }
     }
 
@@ -532,7 +532,7 @@ namespace DiaryApp
       }
       else
       {
-        Helper.ShowMessageBox("Please specify range to search for in the calendar.", MessageType.Warning, MessageButtons.Ok);
+        ShowMessageBox("Please specify range to search for in the calendar.", MessageType.Warning, MessageButtons.Ok);
       }
     }
 
