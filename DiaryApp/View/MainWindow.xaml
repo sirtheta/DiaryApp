@@ -8,6 +8,7 @@
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:DiaryApp" 
+        d:DataContext="{d:DesignInstance Type=local:MainWindowControl}"
         x:Class="DiaryApp.MainWindow"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"      
@@ -18,7 +19,7 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="DiaryApp" Height="900" Width="900" ResizeMode="CanMinimize" KeyDown="Window_KeyDown">
+        Title="DiaryApp" Height="920" Width="900" ResizeMode="CanMinimize" KeyDown="Window_KeyDown">
 
   <Grid>
     <!--defines the area to show the totification toast-->
@@ -93,12 +94,12 @@
           <!--*************************************************
           Manage Entry DataGrid
           ***************************************************-->
-          <Grid Margin="0,10,0,0" Height="360">
-            <DataGrid x:Name="dgManageEntrys" ItemsSource="{Binding Path=EntriesToShow, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding Path=DatagridSelectedItem, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" Style="{DynamicResource MaterialDesignDataGrid}" SelectionChanged="DataGrid_SelectionChanged" Width="900">
+          <Grid Margin="0,10,0,0" Height="350">
+            <DataGrid x:Name="dgManageEntrys" ItemsSource="{Binding Path=EntriesToShow, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding Path=DatagridSelectedItem, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" Style="{DynamicResource MaterialDesignDataGrid}" SelectionChanged="DataGrid_SelectionChanged" HorizontalAlignment="Left" Width="883" Height="330">
               <DataGrid.Columns>
                 <DataGridTextColumn Header="Date" IsReadOnly="True" Binding="{Binding Date, StringFormat=\{0:dd.MM.yyyy\}}" SortDirection="Descending" />
                 <DataGridTextColumn Header="Tag" IsReadOnly="True" Binding="{Binding TagText}" />
-                <DataGridTextColumn Header="Text" IsReadOnly="True" MaxWidth="200" Binding="{Binding Text}" />
+                <DataGridTextColumn Header="Text" IsReadOnly="True" MaxWidth="100" Binding="{Binding Text}" />
               </DataGrid.Columns>
             </DataGrid>
           </Grid>
