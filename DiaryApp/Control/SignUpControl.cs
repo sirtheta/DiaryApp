@@ -102,7 +102,7 @@ namespace DiaryApp
         LastName = LastName,
         FirstName = FirstName,
         UserName = UserName,
-        Password = SecurePasswordHasher.Hash(Helper.ToNormalString(SignInPassword))
+        Password = SecurePasswordHasher.Hash(ToNormalString(SignInPassword))
       };
       dbController.UserToDb(newUser);
     }
@@ -113,7 +113,7 @@ namespace DiaryApp
       {
         return false;
       }
-      if (Helper.ToNormalString(SignInPassword) != Helper.ToNormalString(SignInPasswordConfirm))
+      if (ToNormalString(SignInPassword) != ToNormalString(SignInPasswordConfirm))
       {
         ShowMessageBox("Passwords are not matching!", MessageType.Error, MessageButtons.Ok);
         SignInPassword = null;
@@ -121,7 +121,7 @@ namespace DiaryApp
         return false;
       }
       Regex regex = new Regex(@"^(?=(.*\d){2})(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).{8,}$");
-      if (!regex.IsMatch(Helper.ToNormalString(SignInPassword)))
+      if (!regex.IsMatch(ToNormalString(SignInPassword)))
       {
         ShowMessageBox("The entered password does not meet the requirements. Requirements: minimum 8 characters, 1 lowercase, 1 uppercase, 1 digit and 1 special character.", MessageType.Error, MessageButtons.Ok);
         SignInPassword = null;

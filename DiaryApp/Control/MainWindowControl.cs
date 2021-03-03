@@ -310,7 +310,7 @@ namespace DiaryApp
     {
       var user = dbController.GetUserFromDb(SignInUserName).SingleOrDefault();
       //verify entered password with the stored password in DB using securePasswordHasher
-      if (user != null && SecurePasswordHasher.Verify(Helper.ToNormalString(SignInPassword), user.Password))
+      if (user != null && SecurePasswordHasher.Verify(ToNormalString(SignInPassword), user.Password))
       {
         Verified(user);
         ShowNotification("Success", "Sign in successfull!", NotificationType.Success);
