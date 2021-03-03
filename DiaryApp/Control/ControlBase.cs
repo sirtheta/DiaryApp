@@ -17,12 +17,12 @@ namespace DiaryApp
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    public bool ShowMessageBox(string messageStr, MessageType type, MessageButtons buttons)
+    internal static bool ShowMessageBox(string messageStr, MessageType type, MessageButtons buttons)
     {
       return (bool)new CustomMessageBox(messageStr, type, buttons).ShowDialog();
     }
 
-    public void ShowNotification(string titel, string message, NotificationType type)
+    internal static void ShowNotification(string titel, string message, NotificationType type)
     {
       var notificationManager = new NotificationManager();
       notificationManager.ShowAsync(new NotificationContent { Title = titel, Message = message, Type = type },
@@ -30,7 +30,7 @@ namespace DiaryApp
     }
 
     //Converts the SecureString to a normal string
-    protected internal string ToNormalString(SecureString input)
+    internal protected static string ToNormalString(SecureString input)
     {
       IntPtr strptr = IntPtr.Zero;
       try
