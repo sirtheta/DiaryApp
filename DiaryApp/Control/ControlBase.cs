@@ -1,4 +1,4 @@
-﻿using MaterialDesignMessageBox;
+﻿using MaterialDesignMessageBoxSirTheta;
 using Notifications.Wpf.Core;
 using System;
 using System.ComponentModel;
@@ -19,7 +19,7 @@ namespace DiaryApp
 
     internal static bool ShowMessageBox(string messageStr, MessageType type, MessageButtons buttons)
     {
-      return (bool)new CustomMessageBox(messageStr, type, buttons).ShowDialog();
+      return (bool)new MaterialDesignMessageBox(messageStr, type, buttons).ShowDialog();
     }
 
     internal static void ShowNotification(string titel, string message, NotificationType type)

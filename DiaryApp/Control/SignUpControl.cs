@@ -1,4 +1,4 @@
-﻿using MaterialDesignMessageBox;
+﻿using MaterialDesignMessageBoxSirTheta;
 using Notifications.Wpf.Core;
 using System;
 using System.Security;

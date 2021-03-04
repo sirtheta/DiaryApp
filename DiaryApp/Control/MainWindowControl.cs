@@ -1,4 +1,4 @@
-﻿using MaterialDesignMessageBox;
+﻿using MaterialDesignMessageBoxSirTheta;
 using Microsoft.Win32;
 using Notifications.Wpf.Core;
 using System;
@@ -16,7 +16,7 @@ namespace DiaryApp
   //Inherit from AbstractPropertyChanged to use the OnPropertyChanged method
   class MainWindowControl : ControlBase
   {
-    readonly DbController dbController = new DbController();
+    readonly DbController dbController = new();
     #region Members
 
     //byte array to hold the Image
@@ -376,7 +376,7 @@ namespace DiaryApp
       {
         UpdateEntry(updateEntry);
         ShowAll();
-        ShowNotification("Success", "Your diary entry successfully updated!", NotificationType.Success);
+        ShowNotification("Success", "Your diary entry is updated!", NotificationType.Success);
       }
     }
 
