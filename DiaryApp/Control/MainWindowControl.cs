@@ -125,6 +125,7 @@ namespace DiaryApp
         OnPropertyChanged();
       }
     }
+
     public DateTime CalendarSelectedDate
     {
       get => _calendarSelectedDate;
@@ -134,14 +135,11 @@ namespace DiaryApp
         OnPropertyChanged();
       }
     }
-    public IList CalendarSelectedRange
-    {
-      get; set;
-    }
-    public IList DatagridSelectedItems
-    {
-      get; set;
-    }
+
+    public IList CalendarSelectedRange { get; set; }
+
+    public IList DatagridSelectedItems { get; set; }
+
     public DiaryEntryModel DatagridSelectedItem
     {
       get => _datagridSelectedItem;
@@ -152,6 +150,7 @@ namespace DiaryApp
         ShowSelectedItem();
       }
     }
+
     public BitmapImage ImageBoxSource
     {
       get => _imageBoxSource;
@@ -536,11 +535,6 @@ namespace DiaryApp
       }
     }
 
-    private void Show(List<DiaryEntryModel> entry)
-    {
-      ClearControls();
-      EntriesToShow = new ObservableCollection<DiaryEntryModel>(entry.OrderByDescending(d => d.Date));
-    }
     #endregion
 
     //If item is selected in Datagrid, show it
@@ -562,6 +556,12 @@ namespace DiaryApp
     {
       ClearControls();
       EntriesToShow = new ObservableCollection<DiaryEntryModel>(_entriesAll.OrderByDescending(d => d.Date));
+    }
+
+    private void Show(List<DiaryEntryModel> entry)
+    {
+      ClearControls();
+      EntriesToShow = new ObservableCollection<DiaryEntryModel>(entry.OrderByDescending(d => d.Date));
     }
 
     private void ClearControls()
