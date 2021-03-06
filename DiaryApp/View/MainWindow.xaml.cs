@@ -46,25 +46,23 @@ namespace DiaryApp
     }
 
     //Not possible to bind SelectedDates to Control 
-    private void Calendar_SelectionChanged(object sender, SelectionChangedEventArgs e) => control.CalendarSelectedRange = calendar.SelectedDates;
+    private void Calendar_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      control.CalendarSelectedRange = calendar.SelectedDates;
+      //prevents the mouse captured inside calender that one not have to click
+      //twice on another control in order to use it
+      Mouse.Capture(null);
+    }
 
     //Not possible to bind SelectedItems to Control
-    private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) => control.DatagridSelectedItems = dgManageEntrys.SelectedItems;
+    private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      control.DatagridSelectedItems = dgManageEntrys.SelectedItems;
+    }
 
     private void ImageBox_MouseDown(object sender, MouseButtonEventArgs e) => imgPopup.IsOpen = true;
 
     private void ImgPopup_MouseDown(object sender, MouseButtonEventArgs e) => imgPopup.IsOpen = false;
-
-    //This method prevents the mous from captured inside calender
-    //-->Problem without: One have to cklick twice onto button in order to fire the click event
-    protected override void OnPreviewMouseUp(MouseButtonEventArgs e)
-    {
-      base.OnPreviewMouseUp(e);
-      if (Mouse.Captured is Calendar || Mouse.Captured is System.Windows.Controls.Primitives.CalendarItem)
-      {
-        Mouse.Capture(null);
-      }
-    }
 
     //To drag the window by click and drag in header
     private void CardHeader_MouseDown(object sender, MouseButtonEventArgs e) => DragMove();
