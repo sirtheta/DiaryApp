@@ -8,22 +8,22 @@ namespace DiaryApp
 {
   class Imager
   {
-    public BitmapImage ImageFromByteArray(byte[] array)
+    public static BitmapImage ImageFromByteArray(byte[] array)
     {
       if (array != null)
       {
         var image = new BitmapImage();
         using var ms = new MemoryStream(array);
-        image.BeginInit();
+        image.BeginInit(); 
         image.CacheOption = BitmapCacheOption.OnLoad;
         image.StreamSource = ms;
-        image.EndInit();
+        image.EndInit();        
         return image;
       }
       return null;
     }
 
-    public byte[] ImageToByteArray(string fileUri, int width = 1024, int height = 1024)
+    public static byte[] ImageToByteArray(string fileUri, int width = 1024, int height = 1024)
     {
       using Image image = Image.Load(fileUri);
       if (image.Width > width || image.Height > height)
@@ -33,7 +33,7 @@ namespace DiaryApp
       return ms.ToArray();
     }
 
-    private void ResizeImage(Image image, int width, int height)
+    private static void ResizeImage(Image image, int width, int height)
     {
       int resizeMaxWidth;
       int resizeMaxHeight;

@@ -603,15 +603,13 @@ namespace DiaryApp
     //specify if needed
     private void ProcessImage(string fileUri)
     {
-      Imager imager = new Imager();
-      imgInByteArr = imager.ImageToByteArray(fileUri);
+      imgInByteArr = Imager.ImageToByteArray(fileUri);
     }
 
     //Display image in GUI
     private void DisplayImage()
     {
-      Imager imager = new Imager();
-      ImageBoxSource = imager.ImageFromByteArray(imgInByteArr);
+      ImageBoxSource = Imager.ImageFromByteArray(imgInByteArr);
     }
     #endregion
   }
