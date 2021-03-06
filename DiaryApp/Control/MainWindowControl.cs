@@ -17,14 +17,11 @@ namespace DiaryApp
   class MainWindowControl : ControlBase
   {
     readonly DbController dbController = new();
-    #region Members
 
-    //byte array to hold the Image
+    #region Members
     private byte[] imgInByteArr;
-    //User ID
     private int signedInUserId;
 
-    //Definitions for properties
     private string _loggedInUserFullName;
     private string _entryText;
     private string _signInUserName;
@@ -36,6 +33,7 @@ namespace DiaryApp
     private Visibility _btnLoginVisibility;
     private Visibility _btnSignOutVisibility;
     private List<DiaryEntryModel> _entriesAll;
+    private IList _calendarSelectedRange;
     private ObservableCollection<DiaryEntryModel> _entriesToShow;
     private DateTime _calendarSelectedDate;
     private DiaryEntryModel _datagridSelectedItem;
@@ -136,7 +134,17 @@ namespace DiaryApp
       }
     }
 
-    public IList CalendarSelectedRange { get; set; }
+    public IList CalendarSelectedRange
+    {
+      get => _calendarSelectedRange;
+      set
+      {
+        _calendarSelectedRange = value;
+        //prevents the mouse captured inside calender that one not have to click
+        //twice on another control in order to use it
+        Mouse.Capture(null);
+      }
+    }
 
     public IList DatagridSelectedItems { get; set; }
 
@@ -367,7 +375,7 @@ namespace DiaryApp
         }
         else
         {
-          ShowMessageBox("No text to Save. Please write your diarytext before saving!", MessageType.Error, MessageButtons.Ok);
+          ShowMessageBox("No text to save. Please write your diarytext before saving!", MessageType.Error, MessageButtons.Ok);
         }
       }
       //If a entry is updated, update it in the database

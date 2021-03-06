@@ -24,7 +24,7 @@
         </Window.InputBindings>
 
   <Grid>
-    <!--defines the area to show the totification toast-->
+    <!--defines the area where to show the totification toast-->
     <notifications:NotificationArea Panel.ZIndex="10" 
               MaxItems="3"
               x:Name="WindowArea"

@@ -49,9 +49,6 @@ namespace DiaryApp
     private void Calendar_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
       control.CalendarSelectedRange = calendar.SelectedDates;
-      //prevents the mouse captured inside calender that one not have to click
-      //twice on another control in order to use it
-      Mouse.Capture(null);
     }
 
     //Not possible to bind SelectedItems to Control
@@ -64,7 +61,7 @@ namespace DiaryApp
 
     private void ImgPopup_MouseDown(object sender, MouseButtonEventArgs e) => imgPopup.IsOpen = false;
 
-    //To drag the window by click and drag in header
+    //To drag the window by click and drag in headercard
     private void CardHeader_MouseDown(object sender, MouseButtonEventArgs e) => DragMove();
 
     //private void BtnDarkSwitch_Click(object sender, RoutedEventArgs e)
