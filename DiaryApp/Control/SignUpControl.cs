@@ -9,7 +9,6 @@ namespace DiaryApp
 {
   class SignUpControl : ControlBase
   {
-    readonly DbController dbController = new DbController();
 
     private string _lastName;
     private string _firstName;
@@ -81,7 +80,7 @@ namespace DiaryApp
     #region Methods
     public void SignUp()
     {
-      var iUser = dbController.GetUserFromDb(UserName).Count == 0;
+      var iUser = DbController.GetUserFromDb(UserName).Count == 0;
       if (iUser && CheckPassword())
       {
         CloseAction();
@@ -104,7 +103,7 @@ namespace DiaryApp
         UserName = UserName,
         Password = SecurePasswordHasher.Hash(ToNormalString(SignInPassword))
       };
-      dbController.UserToDb(newUser);
+      DbController.UserToDb(newUser);
     }
 
     private bool CheckPassword()

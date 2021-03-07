@@ -16,7 +16,6 @@ namespace DiaryApp
   //Inherit from AbstractPropertyChanged to use the OnPropertyChanged method
   class MainWindowControl : ControlBase
   {
-    readonly DbController dbController = new();
 
     #region Members
     private byte[] imgInByteArr;
@@ -33,8 +32,8 @@ namespace DiaryApp
     private Visibility _btnLoginVisibility;
     private Visibility _btnSignOutVisibility;
     private List<DiaryEntryModel> _entriesAll;
-    private IList _calendarSelectedRange;
     private ObservableCollection<DiaryEntryModel> _entriesToShow;
+    private IList _calendarSelectedRange;
     private DateTime _calendarSelectedDate;
     private DiaryEntryModel _datagridSelectedItem;
     private BitmapImage _imageBoxSource;
@@ -315,7 +314,7 @@ namespace DiaryApp
 
     public void SignIn()
     {
-      var user = dbController.GetUserFromDb(SignInUserName).SingleOrDefault();
+      var user = DbController.GetUserFromDb(SignInUserName).SingleOrDefault();
       //verify entered password with the stored password in DB using securePasswordHasher
       if (user != null && SecurePasswordHasher.Verify(ToNormalString(SignInPassword), user.Password))
       {
@@ -337,7 +336,7 @@ namespace DiaryApp
       BtnSignOutVisibility = Visibility.Visible;
       BtnSignInVisibility = Visibility.Hidden;
       PopupSignInIsOpen = false;
-      SignedInUserFullName = dbController.GetFullName(signedInUserId);
+      SignedInUserFullName = DbController.GetFullName(signedInUserId);
       LoadEntrysFromDb();
       ShowAll();
     }
@@ -345,14 +344,14 @@ namespace DiaryApp
     //Load all entrys from DB with the logged in User
     private void LoadEntrysFromDb()
     {
-      _entriesAll = new List<DiaryEntryModel>(dbController.GetEntrysFromDb(signedInUserId));
+      _entriesAll = new List<DiaryEntryModel>(DbController.GetEntrysFromDb(signedInUserId));
     }
 
     private void SignOut()
     {
+      ClearControls();
       _entriesAll.Clear();
       EntriesToShow.Clear();
-      ClearControls();
       signedInUserId = 0;
       SignedInUserFullName = string.Empty;
       MainStackPanelVisibility = false;
@@ -400,7 +399,7 @@ namespace DiaryApp
         UserId = signedInUserId
       };
 
-      dbController.EntryToDb(newEntry);
+      DbController.EntryToDb(newEntry);
       _entriesAll.Add(newEntry);
     }
 
@@ -418,7 +417,7 @@ namespace DiaryApp
         UserId = signedInUserId
       };
 
-      dbController.EntryToDb(entry);
+      DbController.EntryToDb(entry);
       _entriesAll.Remove(updateEntry);
       _entriesAll.Add(entry);
     }
@@ -448,7 +447,7 @@ namespace DiaryApp
       foreach (var item in entry)
       {
         _entriesAll.Remove(item);
-        dbController.DeleteEntryInDb(item);
+        DbController.DeleteEntryInDb(item);
       }
     }
 
@@ -510,7 +509,6 @@ namespace DiaryApp
         query = _entriesAll.Where(lst => !lst.TagBirthday && !lst.TagFriends && !lst.TagFamily).ToList();
       }
       Show(query);
-      //EntriesToShow = new ObservableCollection<DiaryEntryModel>(query.Distinct().OrderByDescending(d => d.Date));
     }
 
     //Search for dates withtout entrys. Display all found dates in the datagrid.

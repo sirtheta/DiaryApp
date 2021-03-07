@@ -14,10 +14,10 @@ namespace DiaryApp
       {
         var image = new BitmapImage();
         using var ms = new MemoryStream(array);
-        image.BeginInit(); 
+        image.BeginInit();
         image.CacheOption = BitmapCacheOption.OnLoad;
         image.StreamSource = ms;
-        image.EndInit();        
+        image.EndInit();
         return image;
       }
       return null;

@@ -2,7 +2,7 @@
 
 namespace DiaryApp
 {
-  public class UserModel
+  class UserModel
   {
     [Key]
     public int UserId { get; set; }

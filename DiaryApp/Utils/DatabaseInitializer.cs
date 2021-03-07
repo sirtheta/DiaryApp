@@ -58,7 +58,7 @@ namespace DiaryApp
         });
 
         //more entrys
-        for (int i = 6; i < 10; i++)
+        for (int i = 6; i < 50; i++)
         {
           lstTestEntrys.Add(new DiaryEntryModel
           {
