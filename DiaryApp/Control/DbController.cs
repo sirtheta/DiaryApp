@@ -16,7 +16,6 @@ namespace DiaryApp
       return (from b in db.DiaryEntrys
               where b.UserId == userId
               select b).ToList();
-
     }
 
     //Save or Update the Created Entry to Database

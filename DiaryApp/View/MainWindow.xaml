@@ -18,10 +18,10 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="DiaryApp" Height="920" Width="900" ResizeMode="CanMinimize" KeyDown="Window_KeyDown">
-        <Window.InputBindings>
-          <KeyBinding Command="{Binding SaveEntryCommand}" Modifiers="Ctrl" Key="S"/>
-        </Window.InputBindings>
+        Title="DiaryApp" Height="800" Width="900" ResizeMode="CanMinimize" KeyDown="Window_KeyDown">
+  <Window.InputBindings>
+    <KeyBinding Command="{Binding SaveEntryCommand}" Modifiers="Ctrl" Key="S"/>
+  </Window.InputBindings>
 
   <Grid>
     <!--defines the area where to show the totification toast-->
@@ -96,8 +96,11 @@
           <!--*************************************************
           Manage Entry DataGrid
           ***************************************************-->
-          <Grid Margin="0,10,0,0" Height="350">
-            <DataGrid x:Name="dgManageEntrys" ItemsSource="{Binding Path=EntriesToShow, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding Path=DatagridSelectedItem, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" Style="{DynamicResource MaterialDesignDataGrid}" SelectionChanged="DataGrid_SelectionChanged" HorizontalAlignment="Left" Width="883" Height="330">
+          <Grid Margin="0,-17,0,0" Height="249">
+            <DataGrid x:Name="dgManageEntrys" ItemsSource="{Binding Path=EntriesToShow, UpdateSourceTrigger=PropertyChanged}" 
+                      SelectedItem="{Binding Path=DatagridSelectedItem, UpdateSourceTrigger=PropertyChanged}" 
+                      AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" Style="{DynamicResource MaterialDesignDataGrid}" 
+                      SelectionChanged="DataGrid_SelectionChanged" HorizontalAlignment="Left" VerticalAlignment="Top" Width="883" Height="249">
               <DataGrid.Columns>
                 <DataGridTextColumn Header="Date" IsReadOnly="True" Binding="{Binding Date, StringFormat=\{0:dd.MM.yyyy\}}" SortDirection="Descending" />
                 <DataGridTextColumn Header="Tag" IsReadOnly="True" Binding="{Binding TagText}" />
