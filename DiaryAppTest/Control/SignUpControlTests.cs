@@ -53,19 +53,20 @@ namespace DiaryApp.Tests
       Assert.IsFalse(_signUpControl.CheckPasswordMatch());
     }
 
-    [TestMethod("User Duplicate: true")]
-    public void CheckUserDuplicateTest()
-    {
-      _signUpControl.UserName = "gibberish";
-      Assert.IsTrue(_signUpControl.CheckUserDuplicate());
-    }
+    //TODO, Test with DB.
+    //[TestMethod("User Duplicate: true")]
+    //public void CheckUserDuplicateTest()
+    //{
+    //  _signUpControl.UserName = "gibberish";
+    //  Assert.IsTrue(_signUpControl.CheckUserDuplicate());
+    //}
 
-    [TestMethod("User Duplicate: false")]
-    public void CheckUserDuplicateTestFalse()
-    {
-      _signUpControl.UserName = "1";
-      Assert.IsFalse(_signUpControl.CheckUserDuplicate());
-    }
+    //[TestMethod("User Duplicate: false")]
+    //public void CheckUserDuplicateTestFalse()
+    //{
+    //  _signUpControl.UserName = "1";
+    //  Assert.IsFalse(_signUpControl.CheckUserDuplicate());
+    //}
 
     private SecureString ConvertToSecureString(string password)
     {
