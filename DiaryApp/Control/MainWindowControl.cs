@@ -424,7 +424,7 @@ namespace DiaryApp
 
     private void DeleteSelectedEntry()
     {
-      if (DatagridSelectedItem != null)
+      if (DatagridSelectedItem != null && DatagridSelectedItem.EntryId != 0)
       {
         if (ShowMessageBox("Delete selected entry?", MessageType.Confirmation, MessageButtons.YesNo))
         {
@@ -584,10 +584,11 @@ namespace DiaryApp
     #region Image
     //Load the image uri from file with file dialog
     private string LoadImage()
-    {
+    {      
       //Load image with dialog
       OpenFileDialog dialog = new OpenFileDialog
       {
+        InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
         Filter = "Image files (*.jpg, *.jpeg, *.png) | *.jpg; *.jpeg; *.png"
       };
       if (dialog.ShowDialog() == true)
