@@ -9,7 +9,7 @@ using System.Security;
 namespace DiaryApp
 {
   //Baseclass for Control
-  abstract class ControlBase : INotifyPropertyChanged
+  public abstract class ControlBase : INotifyPropertyChanged
   {
     public event PropertyChangedEventHandler PropertyChanged;
     protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -26,7 +26,7 @@ namespace DiaryApp
     {
       var notificationManager = new NotificationManager();
       notificationManager.ShowAsync(new NotificationContent { Title = titel, Message = message, Type = type },
-              areaName: "WindowArea");
+              areaName: "WindowArea", expirationTime: new TimeSpan(0,0,2));
     }
 
     //Converts the SecureString to a normal string

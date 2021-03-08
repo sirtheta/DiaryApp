@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace DiaryApp
 {
-  class SignUpControl : ControlBase
+  public class SignUpControl : ControlBase
   {
 
     private string _lastName;
@@ -78,20 +78,69 @@ namespace DiaryApp
     //Methods
     //**************************************************************************
     #region Methods
-    public void SignUp()
+    private bool SignUpGUIHandler()
     {
-      var iUser = DbController.GetUserFromDb(UserName).Count == 0;
-      if (iUser && CheckPassword())
+      if (!CheckUserDuplicate())
+      {
+        ShowMessageBox("User already exists!", MessageType.Error, MessageButtons.Ok);
+        UserName = string.Empty;
+        return false;
+      }
+      else if (!CheckPasswordMatch())
+      {
+        ShowMessageBox("Passwords are not matching!", MessageType.Error, MessageButtons.Ok);
+        return false;
+      }
+      else if (!CheckPwdWithRegex())
+      {
+        ShowMessageBox("The entered password does not meet the requirements. " +
+          "Requirements: minimum 8 characters, 1 lowercase, 1 uppercase, 1 digit " +
+          "and 1 special character.", MessageType.Error, MessageButtons.Ok);
+        return false;
+      }
+      else
       {
         CloseAction();
         ShowNotification("Success", "Sign up successfull!", NotificationType.Success);
+        return true;
+      }
+    }
+
+    public void SignUp()
+    {
+      if (SignUpGUIHandler())
+      {
         CreateNewUser();
       }
-      else if (!iUser)
+    }
+
+    public bool CheckUserDuplicate()
+    {
+      return DbController.GetUserFromDb(UserName).Count == 0;
+    }
+
+    public bool CheckPwdWithRegex()
+    {
+      Regex regex = new Regex(@"^(?=(.*\d){2})(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).{8,}$");
+      if (!regex.IsMatch(ToNormalString(SignInPassword)))
       {
-        UserName = string.Empty;
-        ShowMessageBox("User already exists!", MessageType.Error, MessageButtons.Ok);
+        return false;
       }
+      return true;
+    }
+
+    public bool CheckPasswordMatch()
+    {
+      if (SignInPassword == null || SignInPasswordConfirm == null)
+      {
+        return false;
+      }
+      if (ToNormalString(SignInPassword) != ToNormalString(SignInPasswordConfirm))
+      {
+        return false;
+      }
+      //return true if every check passes
+      return true;
     }
 
     private void CreateNewUser()
@@ -104,31 +153,6 @@ namespace DiaryApp
         Password = SecurePasswordHasher.Hash(ToNormalString(SignInPassword))
       };
       DbController.UserToDb(newUser);
-    }
-
-    private bool CheckPassword()
-    {
-      if (SignInPassword == null || SignInPasswordConfirm == null)
-      {
-        return false;
-      }
-      if (ToNormalString(SignInPassword) != ToNormalString(SignInPasswordConfirm))
-      {
-        ShowMessageBox("Passwords are not matching!", MessageType.Error, MessageButtons.Ok);
-        SignInPassword = null;
-        SignInPasswordConfirm = null;
-        return false;
-      }
-      Regex regex = new Regex(@"^(?=(.*\d){2})(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).{8,}$");
-      if (!regex.IsMatch(ToNormalString(SignInPassword)))
-      {
-        ShowMessageBox("The entered password does not meet the requirements. Requirements: minimum 8 characters, 1 lowercase, 1 uppercase, 1 digit and 1 special character.", MessageType.Error, MessageButtons.Ok);
-        SignInPassword = null;
-        SignInPasswordConfirm = null;
-        return false;
-      }
-      //return true if every check passes
-      return true;
     }
     #endregion
   }
