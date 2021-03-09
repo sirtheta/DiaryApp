@@ -49,7 +49,10 @@ namespace DiaryApp
     //To drag the window by click and drag in header
     private void CardHeader_MouseDown(object sender, MouseButtonEventArgs e)
     {
-      DragMove();
+      if (e.LeftButton == MouseButtonState.Pressed)
+      {
+        DragMove();
+      }
     }
   }
 }

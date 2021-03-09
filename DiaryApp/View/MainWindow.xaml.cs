@@ -62,7 +62,13 @@ namespace DiaryApp
     private void ImgPopup_MouseDown(object sender, MouseButtonEventArgs e) => imgPopup.IsOpen = false;
 
     //To drag the window by click and drag in headercard
-    private void CardHeader_MouseDown(object sender, MouseButtonEventArgs e) => DragMove();
+    private void CardHeader_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+      if (e.LeftButton == MouseButtonState.Pressed)
+      {
+        DragMove();
+      }
+    }
 
     //private void BtnDarkSwitch_Click(object sender, RoutedEventArgs e)
     //{
