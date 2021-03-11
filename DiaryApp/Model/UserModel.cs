@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace DiaryApp
 {
-  class UserModel
+  internal class UserModel
   {
     [Key]
     public int UserId { get; set; }

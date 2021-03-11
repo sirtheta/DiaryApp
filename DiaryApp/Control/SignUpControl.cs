@@ -1,15 +1,17 @@
 ﻿using MaterialDesignMessageBoxSirTheta;
 using Notifications.Wpf.Core;
 using System;
+using System.Runtime.CompilerServices;
 using System.Security;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 
+[assembly: InternalsVisibleTo("DiaryApp.Test", AllInternalsVisible = true)]
+
 namespace DiaryApp
 {
-  public class SignUpControl : ControlBase
+  internal class SignUpControl : ControlBase
   {
-
     private string _lastName;
     private string _firstName;
     private string _userName;
@@ -114,12 +116,12 @@ namespace DiaryApp
       }
     }
 
-    public bool CheckUserDuplicate()
+    internal bool CheckUserDuplicate()
     {
       return DbController.GetUserFromDb(UserName).Count == 0;
     }
 
-    public bool CheckPwdWithRegex()
+    internal bool CheckPwdWithRegex()
     {
       Regex regex = new Regex(@"^(?=(.*\d){2})(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).{8,}$");
       if (!regex.IsMatch(ToNormalString(SignInPassword)))
@@ -129,7 +131,7 @@ namespace DiaryApp
       return true;
     }
 
-    public bool CheckPasswordMatch()
+    internal bool CheckPasswordMatch()
     {
       if (SignInPassword == null || SignInPasswordConfirm == null)
       {

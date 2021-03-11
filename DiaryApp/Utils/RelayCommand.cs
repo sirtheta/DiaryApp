@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace DiaryApp
 {
-  public class RelayCommand<T> : ICommand
+  class RelayCommand<T> : ICommand
   {
     #region Members
     readonly Action<T> _Execute = null;

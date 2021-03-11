@@ -1,14 +1,19 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 using System.Security;
 
-namespace DiaryApp.Tests
+namespace DiaryApp.Test
 {
   [TestClass()]
   public class SignUpControlTests
   {
+
     SignUpControl _signUpControl = new SignUpControl();
-    
+
     [TestMethod("Password Regex Test true")]
     public void CheckPwdWithRegexTest()
     {      
@@ -37,7 +42,7 @@ namespace DiaryApp.Tests
       Assert.IsFalse(_signUpControl.CheckPwdWithRegex());
     }
 
-    [TestMethod("Password Match Test: true")]
+    [TestMethod("Password Match Test: true")]   
     public void CheckPasswordMatchTestTrue()
     {
       _signUpControl.SignInPassword = ConvertToSecureString("5T!kq*o4f");
@@ -54,19 +59,21 @@ namespace DiaryApp.Tests
     }
 
     //TODO, Test with DB.
-    //[TestMethod("User Duplicate: true")]
-    //public void CheckUserDuplicateTest()
-    //{
-    //  _signUpControl.UserName = "gibberish";
-    //  Assert.IsTrue(_signUpControl.CheckUserDuplicate());
-    //}
+    [TestMethod("User Duplicate: new user")]
+    public void CheckUserDuplicateTest()
+    {
+      PrepareData();
+      _signUpControl.UserName = "gibberish";
+      Assert.IsTrue(_signUpControl.CheckUserDuplicate());
+    }
 
-    //[TestMethod("User Duplicate: false")]
-    //public void CheckUserDuplicateTestFalse()
-    //{
-    //  _signUpControl.UserName = "1";
-    //  Assert.IsFalse(_signUpControl.CheckUserDuplicate());
-    //}
+    [TestMethod("User Duplicate: existing user")]
+    public void CheckUserDuplicateTestFalse()
+    {
+      PrepareData();
+      _signUpControl.UserName = "Tester";
+      Assert.IsFalse(_signUpControl.CheckUserDuplicate());
+    }
 
     private SecureString ConvertToSecureString(string password)
     {
@@ -82,7 +89,17 @@ namespace DiaryApp.Tests
       return securePassword;
     }
 
-
+    private void PrepareData()
+    {
+      using (var model = new DiaryContext())
+      {
+        var user1 = new UserModel { UserName = "Tester" };
+        var user2 = new UserModel { UserName = "Tester2" };
+        model.Users.Add(user1);
+        model.Users.Add(user2);
+        model.SaveChanges();
+      }
+    }
 
   }
 }

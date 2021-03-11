@@ -1,13 +1,12 @@
 ﻿using System.Data.Common;
 using System.Data.Entity.Infrastructure;
 
-namespace DiaryAppTest
+namespace DiaryApp.Test
 {
   public class EffortProviderFactory : IDbConnectionFactory
   {
-    private static readonly object _lock = new object();
-
     private static DbConnection _connection;
+    private readonly static object _lock = new object();
 
     public static void ResetDb()
     {

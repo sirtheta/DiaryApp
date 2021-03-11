@@ -9,7 +9,7 @@ using System.Security;
 namespace DiaryApp
 {
   //Baseclass for Control
-  public abstract class ControlBase : INotifyPropertyChanged
+  abstract class ControlBase : INotifyPropertyChanged
   {
     public event PropertyChangedEventHandler PropertyChanged;
     protected void OnPropertyChanged([CallerMemberName] string propertyName = null)

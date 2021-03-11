@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 using System.Text;
 
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace DiaryApp
 {
-  class DiaryEntryModel
+  internal class DiaryEntryModel
   {
     [Key]
     public int EntryId { get; set; }
