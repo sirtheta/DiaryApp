@@ -82,30 +82,29 @@ namespace DiaryApp
     #region Methods
     private bool SignUpGUIHandler()
     {
+      var retVal = false;
       if (!CheckUserDuplicate())
       {
         ShowMessageBox("User already exists!", MessageType.Error, MessageButtons.Ok);
         UserName = string.Empty;
-        return false;
       }
       else if (!CheckPasswordMatch())
       {
         ShowMessageBox("Passwords are not matching!", MessageType.Error, MessageButtons.Ok);
-        return false;
       }
       else if (!CheckPwdWithRegex())
       {
         ShowMessageBox("The entered password does not meet the requirements. " +
           "Requirements: minimum 8 characters, 1 lowercase, 1 uppercase, 1 digit " +
           "and 1 special character.", MessageType.Error, MessageButtons.Ok);
-        return false;
       }
       else
       {
         CloseAction();
         ShowNotification("Success", "Sign up successfull!", NotificationType.Success);
-        return true;
+        retVal = true;
       }
+      return retVal;
     }
 
     public void SignUp()
@@ -145,7 +144,7 @@ namespace DiaryApp
       return true;
     }
 
-    private void CreateNewUser()
+    internal void CreateNewUser()
     {
       var newUser = new UserModel()
       {

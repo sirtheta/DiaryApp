@@ -585,6 +585,7 @@ namespace DiaryApp
     //Load the image uri from file with file dialog
     private string LoadImage()
     {      
+      string retVal = null;
       //Load image with dialog
       OpenFileDialog dialog = new OpenFileDialog
       {
@@ -593,9 +594,9 @@ namespace DiaryApp
       };
       if (dialog.ShowDialog() == true)
       {
-        return dialog.FileName;
+        retVal= dialog.FileName;
       }
-      return null;
+      return retVal;
     }
 
     //call the imageconverter, standard max size is 1024
