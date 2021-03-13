@@ -6,20 +6,27 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
+[assembly: InternalsVisibleTo("DiaryApp.Test", AllInternalsVisible = true)]
 namespace DiaryApp
 {
   //Inherit from AbstractPropertyChanged to use the OnPropertyChanged method
-  class MainWindowControl : ControlBase
+  internal class MainWindowControl : ControlBase
   {
 
     #region Members
-    private byte[] imgInByteArr;
-    private int signedInUserId;
+    private byte[] _imgInByteArr;
+    private int _signedInUserId;
+    public int SigneInUserId
+    {
+      get => _signedInUserId;
+      set { _signedInUserId = value; }
+    }
 
     private string _loggedInUserFullName;
     private string _entryText;
@@ -139,9 +146,6 @@ namespace DiaryApp
       set
       {
         _calendarSelectedRange = value;
-        //prevents the mouse captured inside calender that one not have to click
-        //twice on another control in order to use it
-        Mouse.Capture(null);
       }
     }
 
@@ -295,7 +299,7 @@ namespace DiaryApp
     private void ExecuteDelete(object Parameter) => DeleteSelectedEntry();
     private void ExecuteSearchByTagCommand(object Parameter) => GetEntrysByTag();
     private void ExecuteSearchByDateCommand(object Parameter) => GetEntrysByDate();
-    private void ExecuteSearchDatesWithoutEntryCommand(object Parameter) => GetDatesWithoutEntry();
+    private void ExecuteSearchDatesWithoutEntryCommand(object Parameter) => ShowDatesWithoutEntry();
     private void ExecuteShowAll(object Parameter) => ShowAll();
     #endregion
 
@@ -329,22 +333,22 @@ namespace DiaryApp
       SignInPassword = null;
     }
 
-    private void Verified(UserModel user)
+    internal void Verified(UserModel user)
     {
-      signedInUserId = user.UserId;
+      SigneInUserId = user.UserId;
       MainStackPanelVisibility = true;
       BtnSignOutVisibility = Visibility.Visible;
       BtnSignInVisibility = Visibility.Hidden;
       PopupSignInIsOpen = false;
-      SignedInUserFullName = DbController.GetFullName(signedInUserId);
+      SignedInUserFullName = DbController.GetFullName(SigneInUserId);
       LoadEntrysFromDb();
       ShowAll();
     }
 
     //Load all entrys from DB with the logged in User
-    private void LoadEntrysFromDb()
+    internal void LoadEntrysFromDb()
     {
-      _entriesAll = new List<DiaryEntryModel>(DbController.GetEntrysFromDb(signedInUserId));
+      _entriesAll = new List<DiaryEntryModel>(DbController.GetEntrysFromDb(SigneInUserId));
     }
 
     private void SignOut()
@@ -352,7 +356,7 @@ namespace DiaryApp
       ClearControls();
       _entriesAll.Clear();
       EntriesToShow.Clear();
-      signedInUserId = 0;
+      SigneInUserId = 0;
       SignedInUserFullName = string.Empty;
       MainStackPanelVisibility = false;
       BtnSignInVisibility = Visibility.Visible;
@@ -386,7 +390,7 @@ namespace DiaryApp
       }
     }
 
-    private void SaveEntry()
+    internal void SaveEntry()
     {
       var newEntry = new DiaryEntryModel()
       {
@@ -395,15 +399,15 @@ namespace DiaryApp
         TagFamily = FamilyIsChecked,
         TagFriends = FriendsIsChecked,
         TagBirthday = BirthdayIsChecked,
-        ByteImage = imgInByteArr,
-        UserId = signedInUserId
+        ByteImage = _imgInByteArr,
+        UserId = SigneInUserId
       };
 
       DbController.EntryToDb(newEntry);
       _entriesAll.Add(newEntry);
     }
 
-    private void UpdateEntry(DiaryEntryModel updateEntry)
+    internal void UpdateEntry(DiaryEntryModel updateEntry)
     {
       var entry = new DiaryEntryModel()
       {
@@ -413,8 +417,8 @@ namespace DiaryApp
         TagFamily = FamilyIsChecked,
         TagFriends = FriendsIsChecked,
         TagBirthday = BirthdayIsChecked,
-        ByteImage = imgInByteArr,
-        UserId = signedInUserId
+        ByteImage = _imgInByteArr,
+        UserId = SigneInUserId
       };
 
       DbController.EntryToDb(entry);
@@ -428,7 +432,8 @@ namespace DiaryApp
       {
         if (ShowMessageBox("Delete selected entry?", MessageType.Confirmation, MessageButtons.YesNo))
         {
-          DeleteEntry();
+          //Cast selected Items to Enumerate with foreach
+          DeleteEntry(DatagridSelectedItems.Cast<DiaryEntryModel>().ToList());
           ShowNotification("Success", "Entry Successfull deleted", NotificationType.Success);
           //Update Datagrid
           ShowAll();
@@ -440,10 +445,8 @@ namespace DiaryApp
       }
     }
 
-    private void DeleteEntry()
+    internal void DeleteEntry(List<DiaryEntryModel> entry)
     {
-      //Cast selected Items to Enumerate with foreach
-      var entry = DatagridSelectedItems.Cast<DiaryEntryModel>().ToList();
       foreach (var item in entry)
       {
         _entriesAll.Remove(item);
@@ -513,32 +516,35 @@ namespace DiaryApp
 
     //Search for dates withtout entrys. Display all found dates in the datagrid.
     //By selecting one of the dates, you can add a new entry on that specific date
-    private void GetDatesWithoutEntry()
+    internal void ShowDatesWithoutEntry()
     {
-
       if (CalendarSelectedRange.Count > 1)
       {
-        var onlyDateList = new List<DiaryEntryModel>();
-        //Cast selected range to a DateTime list to Enumerate with foreach
-        var calendarSelectedDateRange = CalendarSelectedRange.Cast<DateTime>().ToList();
-        foreach (var entry in _entriesAll)
-        {
-          calendarSelectedDateRange.Remove(entry.Date.Date);
-        }
-        foreach (var item in calendarSelectedDateRange)
-        {
-          var onlyDate = new DiaryEntryModel()
-          {
-            Date = item
-          };
-          onlyDateList.Add(onlyDate);
-        }
-        Show(onlyDateList);
+        Show(GetDatesWithoutEntry());
       }
       else
       {
         ShowMessageBox("Please specify range to search for in the calendar.", MessageType.Warning, MessageButtons.Ok);
       }
+    }
+    internal List<DiaryEntryModel> GetDatesWithoutEntry()
+    {
+      var onlyDateList = new List<DiaryEntryModel>();
+      //Cast selected range to a DateTime list to Enumerate with foreach
+      var calendarSelectedDateRange = CalendarSelectedRange.Cast<DateTime>().ToList();
+      foreach (var entry in _entriesAll)
+      {
+        calendarSelectedDateRange.Remove(entry.Date.Date);
+      }
+      foreach (var item in calendarSelectedDateRange)
+      {
+        var onlyDate = new DiaryEntryModel()
+        {
+          Date = item
+        };
+        onlyDateList.Add(onlyDate);
+      }
+      return onlyDateList;
     }
 
     #endregion
@@ -553,7 +559,7 @@ namespace DiaryApp
         FriendsIsChecked = DatagridSelectedItem.TagFriends;
         BirthdayIsChecked = DatagridSelectedItem.TagBirthday;
         CalendarSelectedDate = DatagridSelectedItem.Date;
-        imgInByteArr = DatagridSelectedItem.ByteImage;
+        _imgInByteArr = DatagridSelectedItem.ByteImage;
         DisplayImage();
       }
     }
@@ -578,13 +584,13 @@ namespace DiaryApp
       BirthdayIsChecked = false;
       ImageBoxSource = null;
       DatagridSelectedItem = null;
-      imgInByteArr = null;
+      _imgInByteArr = null;
     }
 
     #region Image
     //Load the image uri from file with file dialog
     private string LoadImage()
-    {      
+    {
       string retVal = null;
       //Load image with dialog
       OpenFileDialog dialog = new OpenFileDialog
@@ -594,7 +600,7 @@ namespace DiaryApp
       };
       if (dialog.ShowDialog() == true)
       {
-        retVal= dialog.FileName;
+        retVal = dialog.FileName;
       }
       return retVal;
     }
@@ -603,13 +609,13 @@ namespace DiaryApp
     //specify if needed
     private void ProcessImage(string fileUri)
     {
-      imgInByteArr = Imager.ImageToByteArray(fileUri);
+      _imgInByteArr = Imager.ImageToByteArray(fileUri);
     }
 
     //Display image in GUI
     private void DisplayImage()
     {
-      ImageBoxSource = Imager.ImageFromByteArray(imgInByteArr);
+      ImageBoxSource = Imager.ImageFromByteArray(_imgInByteArr);
     }
     #endregion
   }

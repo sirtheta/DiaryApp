@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
+using System.Linq;
 
 namespace DiaryApp.Test
 {
@@ -21,7 +22,7 @@ namespace DiaryApp.Test
       securePassword.MakeReadOnly();
       return securePassword;
     }
-    public static void InitializeUserDb()
+    public static void InitializeTestingDb()
     {
       DiaryContext.ConnectionName = "DiaryAppTest";
       DiaryContext context = new DiaryContext();

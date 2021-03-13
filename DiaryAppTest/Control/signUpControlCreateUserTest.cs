@@ -11,8 +11,8 @@ namespace DiaryApp.Test
     [AssemblyInitialize]
     public static void Initialize(TestContext context)
     {
-      Database.SetInitializer(new MyDatabaseInitializer());
-      Helper.InitializeUserDb();
+      Database.SetInitializer(new TestDbInitializer());
+      Helper.InitializeTestingDb();
     }
 
     //is running after all test has finished
@@ -20,8 +20,8 @@ namespace DiaryApp.Test
     public static void Cleanup()
     {
       //Drop testing DB
-      using var deleteModel = new DiaryContext();
-      deleteModel.Database.Delete();
+      //using var deleteModel = new DiaryContext();
+      //deleteModel.Database.Delete();
     }
 
     readonly SignUpControl _signUpControl = new SignUpControl();
