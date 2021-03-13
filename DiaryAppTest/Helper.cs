@@ -21,5 +21,11 @@ namespace DiaryApp.Test
       securePassword.MakeReadOnly();
       return securePassword;
     }
+    public static void InitializeUserDb()
+    {
+      DiaryContext.ConnectionName = "DiaryAppTest";
+      DiaryContext context = new DiaryContext();
+      context.Database.Initialize(true);
+    }
   }
 }

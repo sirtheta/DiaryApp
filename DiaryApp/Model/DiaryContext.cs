@@ -1,11 +1,33 @@
 ﻿using System.Data.Entity;
-using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace DiaryApp
 {
-  internal class DiaryContext : DbContext
+  class DiaryContext : DbContext
   {
+    private static string _connectionName;
+    public static string ConnectionName
+    {
+      get
+      {
+        if (_connectionName == null)
+        {
+          return "DiaryApp";
+        }
+        else
+        {
+          return _connectionName;
+        }
+      }
+
+      set
+      {
+        _connectionName = value;
+      }
+    }
+
+    public DiaryContext() : base(ConnectionName)
+    {
+    }
     public virtual DbSet<DiaryEntryModel> DiaryEntrys { get; set; }
     public virtual DbSet<UserModel> Users { get; set; }
   }
