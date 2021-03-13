@@ -24,7 +24,7 @@ namespace DiaryApp.Test
       Assert.AreEqual("SaveEntryTest", entry.Text);
       Assert.AreEqual(DateTime.Today.Date, entry.Date);
       Assert.IsTrue(entry.TagFamily);
-      Assert.IsFalse( entry.TagFriends);
+      Assert.IsFalse(entry.TagFriends);
       Assert.IsTrue(entry.TagBirthday);
       Assert.AreEqual("Family, Birthday", entry.TagText);
     }

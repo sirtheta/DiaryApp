@@ -19,7 +19,7 @@ namespace DiaryApp.Test
       context.DiaryEntrys.Add(new DiaryEntryModel { Text = "Entry for SearchDateWithoutEntryTest", Date = DateTime.Today.Date, TagBirthday = true, TagFamily = false, TagFriends = false, UserId = 2 });
       context.DiaryEntrys.Add(new DiaryEntryModel { Text = "Entry for SearchDateWithoutEntryTest", Date = DateTime.Today.Date, TagBirthday = true, TagFamily = false, TagFriends = false, UserId = 2 });
       //Entry to update
-      context.DiaryEntrys.Add(new DiaryEntryModel {Text = "Seed entry", Date = DateTime.Today.Date, TagBirthday = true, TagFamily = false, TagFriends = false, UserId = 3 });
+      context.DiaryEntrys.Add(new DiaryEntryModel { Text = "Seed entry", Date = DateTime.Today.Date, TagBirthday = true, TagFamily = false, TagFriends = false, UserId = 3 });
       context.SaveChanges();
     }
   }
