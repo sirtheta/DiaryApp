@@ -548,7 +548,7 @@ namespace DiaryApp
       var onlyDateList = new List<DiaryEntryModel>();
       //Cast selected range to a DateTime list to Enumerate with foreach
       var calendarSelectedDateRange = CalendarSelectedRange.Cast<DateTime>().ToList();
-      
+
       foreach (var entry in _entriesAll)
       {
         calendarSelectedDateRange.Remove(entry.Date.Date);
