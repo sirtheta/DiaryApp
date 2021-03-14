@@ -12,31 +12,24 @@ namespace DiaryApp.Test
     readonly MainWindowControl _mainWindowControl = new MainWindowControl();
 
     [TestMethod]
-    public void SearchDateWithoutEntryTest()
+    public void GetDatesWithoutEntryTest()
     {
       _mainWindowControl.SignedInUserId = 2;
       _mainWindowControl.LoadEntrysFromDb();
       _mainWindowControl.CalendarSelectedRange = DateRange();
-      Assert.AreEqual(8, _mainWindowControl.GetDatesWithoutEntry().Count());
+      Assert.IsTrue(_mainWindowControl.GetDatesWithoutEntry());
+      Assert.AreEqual(8, _mainWindowControl.EntriesToShow.Count());
     }
 
     [TestMethod]
-    public void SearchDateWithoutEntryException()
+    public void GetDatesWithoutEntryTestFalse()
     {
       IList dateRangeNotSet = new List<DateTime>
       {
         DateTime.Today
       };
       _mainWindowControl.CalendarSelectedRange = dateRangeNotSet;
-      try
-      {
-        _mainWindowControl.ShowDatesWithoutEntry();
-        Assert.Fail();
-      }
-      catch (Exception)
-      {
-        Console.WriteLine("Exception thrown, Test passed!");
-      }
+      Assert.IsFalse(_mainWindowControl.GetDatesWithoutEntry());
     }
 
     [TestMethod]
