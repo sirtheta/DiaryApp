@@ -7,11 +7,21 @@ namespace DiaryApp.Test
   {
     protected override void Seed(DiaryContext context)
     {
+      AddTestUser(context);
+      AddTestEntrys(context);
+    }
+
+    private void AddTestUser(DiaryContext context)
+    {
       context.Users.Add(new UserModel { UserName = "Tester" });
       context.Users.Add(new UserModel { UserName = "Tester2" });
       context.Users.Add(new UserModel { FirstName = "John", LastName = "Doe", UserName = "SirJohnDoe", Password = SecurePasswordHasher.Hash("5T!kq*o4f") });
       context.Users.Add(new UserModel { FirstName = "Michelle", LastName = "Hunziker", UserName = "Michelle", Password = SecurePasswordHasher.Hash("Cr75@O&Hz") });
       context.SaveChanges();
+    }
+
+    private void AddTestEntrys(DiaryContext context)
+    {
       //Entry to delete
       context.DiaryEntrys.Add(new DiaryEntryModel { Text = "Entry to delete", Date = DateTime.Today.Date, TagBirthday = true, TagFamily = false, TagFriends = false, UserId = 1 });
       //Entrys to test SearchDateWithoutEntry()
