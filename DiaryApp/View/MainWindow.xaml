@@ -89,7 +89,7 @@
               <Button x:Name="btnDeleteEntry" Margin="0,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=DeleteCommand}" fa5:Awesome.Content="Regular_TrashAlt" FontSize="23" ToolTip="Delete selected entry" />
               <Button x:Name="btnSearchByTag" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=SearchByTagCommand}" Content="Search by tag" FontSize="18" ToolTip="Search by tag" />
               <Button x:Name="btnSearchByDate" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=SearchByDateCommand}" Content="Search by date" FontSize="18" ToolTip="Search by date" />
-              <Button x:Name="btnSearchDateWithoutEntry" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=SearchDatesWithoutEntryCommand}" Content="Show dates without entry" FontSize="18" ToolTip="Show all"/>
+              <Button x:Name="btnSearchDateWithoutEntry" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=SearchDatesWithoutEntryCommand}" Content="Show dates without entry" FontSize="18" ToolTip="Show dates without entry"/>
               <Button x:Name="btnShowwAll" Margin="20,0,0,0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{Binding Path=ShowAllCommand}" Content="Show all" FontSize="18" ToolTip="Show all" />
             </StackPanel>
           </StackPanel>
