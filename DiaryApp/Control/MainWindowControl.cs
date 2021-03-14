@@ -22,7 +22,7 @@ namespace DiaryApp
     #region Members
     private byte[] _imgInByteArr;
     private int _signedInUserId;
-    public int SigneInUserId
+    public int SignedInUserId
     {
       get => _signedInUserId;
       set { _signedInUserId = value; }
@@ -335,12 +335,12 @@ namespace DiaryApp
 
     internal void Verified(UserModel user)
     {
-      SigneInUserId = user.UserId;
+      SignedInUserId = user.UserId;
       MainStackPanelVisibility = true;
       BtnSignOutVisibility = Visibility.Visible;
       BtnSignInVisibility = Visibility.Hidden;
       PopupSignInIsOpen = false;
-      SignedInUserFullName = DbController.GetFullName(SigneInUserId);
+      SignedInUserFullName = DbController.GetFullName(SignedInUserId);
       LoadEntrysFromDb();
       ShowAll();
     }
@@ -348,7 +348,7 @@ namespace DiaryApp
     //Load all entrys from DB with the logged in User
     internal void LoadEntrysFromDb()
     {
-      _entriesAll = new List<DiaryEntryModel>(DbController.GetEntrysFromDb(SigneInUserId));
+      _entriesAll = new List<DiaryEntryModel>(DbController.GetEntrysFromDb(SignedInUserId));
     }
 
     private void SignOut()
@@ -356,7 +356,7 @@ namespace DiaryApp
       ClearControls();
       _entriesAll.Clear();
       EntriesToShow.Clear();
-      SigneInUserId = 0;
+      SignedInUserId = 0;
       SignedInUserFullName = string.Empty;
       MainStackPanelVisibility = false;
       BtnSignInVisibility = Visibility.Visible;
@@ -400,7 +400,7 @@ namespace DiaryApp
         TagFriends = FriendsIsChecked,
         TagBirthday = BirthdayIsChecked,
         ByteImage = _imgInByteArr,
-        UserId = SigneInUserId
+        UserId = SignedInUserId
       };
 
       DbController.EntryToDb(newEntry);
@@ -418,7 +418,7 @@ namespace DiaryApp
         TagFriends = FriendsIsChecked,
         TagBirthday = BirthdayIsChecked,
         ByteImage = _imgInByteArr,
-        UserId = SigneInUserId
+        UserId = SignedInUserId
       };
 
       DbController.EntryToDb(entry);

@@ -12,7 +12,7 @@ namespace DiaryApp.Test
     [TestMethod]
     public void SaveEntryTest()
     {
-      _mainWindowControl.SigneInUserId = 4;
+      _mainWindowControl.SignedInUserId = 4;
       _mainWindowControl.LoadEntrysFromDb();
       _mainWindowControl.EntryText = "SaveEntryTest";
       _mainWindowControl.CalendarSelectedDate = DateTime.Today.Date;
@@ -32,9 +32,9 @@ namespace DiaryApp.Test
     [TestMethod]
     public void UpdateEntryTest()
     {
-      _mainWindowControl.SigneInUserId = 3;
+      _mainWindowControl.SignedInUserId = 3;
       _mainWindowControl.LoadEntrysFromDb();
-      var entryToUpdate = DbController.GetEntrysFromDb(_mainWindowControl.SigneInUserId).SingleOrDefault();
+      var entryToUpdate = DbController.GetEntrysFromDb(_mainWindowControl.SignedInUserId).SingleOrDefault();
       _mainWindowControl.EntryText = "Seed entry edited";
       _mainWindowControl.CalendarSelectedDate = DateTime.Today.AddDays(-1);
       _mainWindowControl.FamilyIsChecked = true;
@@ -53,11 +53,11 @@ namespace DiaryApp.Test
     [TestMethod]
     public void DeleteEntryTest()
     {
-      _mainWindowControl.SigneInUserId = 1;
+      _mainWindowControl.SignedInUserId = 1;
       _mainWindowControl.LoadEntrysFromDb();
-      var entryToDelete = DbController.GetEntrysFromDb(_mainWindowControl.SigneInUserId);
+      var entryToDelete = DbController.GetEntrysFromDb(_mainWindowControl.SignedInUserId);
       _mainWindowControl.DeleteEntry(entryToDelete);
-      Assert.AreNotSame(entryToDelete, DbController.GetEntrysFromDb(_mainWindowControl.SigneInUserId));
+      Assert.AreNotSame(entryToDelete, DbController.GetEntrysFromDb(_mainWindowControl.SignedInUserId));
     }
   }
 }

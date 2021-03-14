@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ namespace DiaryApp.Test
     [TestMethod]
     public void SearchDateWithoutEntryTest()
     {
-      _mainWindowControl.SigneInUserId = 2;
+      _mainWindowControl.SignedInUserId = 2;
       _mainWindowControl.LoadEntrysFromDb();
       _mainWindowControl.CalendarSelectedRange = DateRange();
       Assert.AreEqual(8, _mainWindowControl.GetDatesWithoutEntry().Count());
