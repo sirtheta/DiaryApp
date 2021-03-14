@@ -297,7 +297,7 @@ namespace DiaryApp
     private void ExecuteAddImage(object Parameter) => AddImage();
     private void ExecuteNew(object Parameter) => ShowAll();
     private void ExecuteDelete(object Parameter) => DeleteSelectedEntry();
-    private void ExecuteSearchByTagCommand(object Parameter) => GetEntrysByTag();
+    private void ExecuteSearchByTagCommand(object Parameter) => ShowEntrysByTag();
     private void ExecuteSearchByDateCommand(object Parameter) => GetEntrysByDate();
     private void ExecuteSearchDatesWithoutEntryCommand(object Parameter) => ShowDatesWithoutEntry();
     private void ExecuteShowAll(object Parameter) => ShowAll();
@@ -475,7 +475,11 @@ namespace DiaryApp
     //Filter all entrys by clicked tag. 
     //If more than one tag is selected, the range from the second or third will be added to the existing list
     //To remove duplicate, use Distinct at the end
-    private void GetEntrysByTag()
+    private void ShowEntrysByTag()
+    {
+      Show(GetEntrysByTag());
+    }
+    internal List<DiaryEntryModel> GetEntrysByTag()
     {
       var query = new List<DiaryEntryModel>();
       if (FamilyIsChecked)
@@ -511,7 +515,7 @@ namespace DiaryApp
       {
         query = _entriesAll.Where(lst => !lst.TagBirthday && !lst.TagFriends && !lst.TagFamily).ToList();
       }
-      Show(query);
+      return query;
     }
 
     //Search for dates withtout entrys. Display all found dates in the datagrid.
@@ -572,7 +576,7 @@ namespace DiaryApp
 
     private void Show(List<DiaryEntryModel> entry)
     {
-      ClearControls();
+      //ClearControls();
       EntriesToShow = new ObservableCollection<DiaryEntryModel>(entry.OrderByDescending(d => d.Date));
     }
 
