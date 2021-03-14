@@ -515,7 +515,8 @@ namespace DiaryApp
       {
         query = _entriesAll.Where(lst => !lst.TagBirthday && !lst.TagFriends && !lst.TagFamily).ToList();
       }
-      return query;
+
+      return query.Distinct().ToList();
     }
 
     //Search for dates withtout entrys. Display all found dates in the datagrid.
@@ -576,7 +577,6 @@ namespace DiaryApp
 
     private void Show(List<DiaryEntryModel> entry)
     {
-      //ClearControls();
       EntriesToShow = new ObservableCollection<DiaryEntryModel>(entry.OrderByDescending(d => d.Date));
     }
 

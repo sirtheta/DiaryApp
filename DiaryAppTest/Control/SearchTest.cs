@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -37,6 +37,75 @@ namespace DiaryApp.Test
       {
         Console.WriteLine("Exception thrown, Test passed!");
       }
+    }
+
+    [TestMethod]
+    public void GetEntrysByTagTestOne()
+    {
+      _mainWindowControl.SignedInUserId = 2;
+      _mainWindowControl.LoadEntrysFromDb();
+      _mainWindowControl.FamilyIsChecked = true;
+      Assert.AreEqual(3, _mainWindowControl.GetEntrysByTag().Count());
+    }
+
+    [TestMethod]
+    public void GetEntrysByTagTestTwo()
+    {
+      _mainWindowControl.SignedInUserId = 2;
+      _mainWindowControl.LoadEntrysFromDb();
+      _mainWindowControl.BirthdayIsChecked = true;
+      Assert.AreEqual(3, _mainWindowControl.GetEntrysByTag().Count());
+    }
+
+    [TestMethod]
+    public void GetEntrysByTagTestThree()
+    {
+      _mainWindowControl.SignedInUserId = 2;
+      _mainWindowControl.LoadEntrysFromDb();
+      _mainWindowControl.FriendsIsChecked = true;
+      Assert.AreEqual(2, _mainWindowControl.GetEntrysByTag().Count());
+    }
+
+    [TestMethod]
+    public void GetEntrysByTagTestFour()
+    {
+      _mainWindowControl.SignedInUserId = 2;
+      _mainWindowControl.LoadEntrysFromDb();
+      _mainWindowControl.FamilyIsChecked = true;
+      _mainWindowControl.BirthdayIsChecked = true;
+      Assert.AreEqual(4, _mainWindowControl.GetEntrysByTag().Count());
+    }
+
+    [TestMethod]
+    public void GetEntrysByTagTestFive()
+    {
+      _mainWindowControl.SignedInUserId = 2;
+      _mainWindowControl.LoadEntrysFromDb();
+      _mainWindowControl.FamilyIsChecked = true;
+      _mainWindowControl.BirthdayIsChecked = true;
+      _mainWindowControl.FriendsIsChecked = true;
+      Assert.AreEqual(5, _mainWindowControl.GetEntrysByTag().Count());
+    }
+
+    [TestMethod]
+    public void GetEntrysByTagTestSix()
+    {
+      _mainWindowControl.SignedInUserId = 2;
+      _mainWindowControl.LoadEntrysFromDb();
+      _mainWindowControl.FamilyIsChecked = false;
+      _mainWindowControl.BirthdayIsChecked = false;
+      _mainWindowControl.FriendsIsChecked = false;
+      Assert.AreEqual(1, _mainWindowControl.GetEntrysByTag().Count());
+    }
+
+    [TestMethod]
+    public void GetEntrysByTagTestSeven()
+    {
+      _mainWindowControl.SignedInUserId = 2;
+      _mainWindowControl.LoadEntrysFromDb();
+      _mainWindowControl.FriendsIsChecked = true;
+      _mainWindowControl.BirthdayIsChecked = true;
+      Assert.AreEqual(5, _mainWindowControl.GetEntrysByTag().Count());
     }
 
     private IList DateRange()

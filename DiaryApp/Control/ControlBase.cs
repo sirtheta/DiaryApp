@@ -26,7 +26,7 @@ namespace DiaryApp
     {
       var notificationManager = new NotificationManager();
       notificationManager.ShowAsync(new NotificationContent { Title = titel, Message = message, Type = type },
-              areaName: "WindowArea", expirationTime: new TimeSpan(0,0,2));
+              areaName: "WindowArea", expirationTime: new TimeSpan(0, 0, 2));
     }
 
     //Converts the SecureString to a normal string
