@@ -19,7 +19,6 @@ namespace DiaryApp
 
     //Add foreignkey from UserDb to Entry
     public int UserId { get; set; }
-    public virtual UserModel UserDb { get; set; }
 
     public string TagText
     {
