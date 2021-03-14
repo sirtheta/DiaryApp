@@ -318,11 +318,9 @@ namespace DiaryApp
 
     public void SignIn()
     {
-      var user = DbController.GetUserFromDb(SignInUserName).SingleOrDefault();
       //verify entered password with the stored password in DB using securePasswordHasher
-      if (user != null && SecurePasswordHasher.Verify(ToNormalString(SignInPassword), user.Password))
+      if (VerifyUser())
       {
-        Verified(user);
         ShowNotification("Success", "Sign in successfull!", NotificationType.Success);
       }
       else
@@ -331,6 +329,17 @@ namespace DiaryApp
       }
       SignInUserName = string.Empty;
       SignInPassword = null;
+    }
+
+    internal bool VerifyUser()
+    {
+      var user = DbController.GetUserFromDb(SignInUserName).SingleOrDefault();
+      if (SignInPassword != null && SecurePasswordHasher.Verify(ToNormalString(SignInPassword), user.Password))
+      {
+        Verified(user);
+        return true;
+      }
+      return false;
     }
 
     internal void Verified(UserModel user)
@@ -523,24 +532,28 @@ namespace DiaryApp
     //By selecting one of the dates, you can add a new entry on that specific date
     internal void ShowDatesWithoutEntry()
     {
-      if (CalendarSelectedRange.Count > 1)
-      {
-        Show(GetDatesWithoutEntry());
-      }
-      else
+      if (!GetDatesWithoutEntry())
       {
         ShowMessageBox("Please specify range to search for in the calendar.", MessageType.Warning, MessageButtons.Ok);
       }
     }
-    internal List<DiaryEntryModel> GetDatesWithoutEntry()
+
+    internal bool GetDatesWithoutEntry()
     {
+      if (CalendarSelectedRange.Count <= 1)
+      {
+        return false;
+      }
+
       var onlyDateList = new List<DiaryEntryModel>();
       //Cast selected range to a DateTime list to Enumerate with foreach
       var calendarSelectedDateRange = CalendarSelectedRange.Cast<DateTime>().ToList();
+      
       foreach (var entry in _entriesAll)
       {
         calendarSelectedDateRange.Remove(entry.Date.Date);
       }
+
       foreach (var item in calendarSelectedDateRange)
       {
         var onlyDate = new DiaryEntryModel()
@@ -549,7 +562,9 @@ namespace DiaryApp
         };
         onlyDateList.Add(onlyDate);
       }
-      return onlyDateList;
+
+      Show(onlyDateList);
+      return true;
     }
 
     #endregion
