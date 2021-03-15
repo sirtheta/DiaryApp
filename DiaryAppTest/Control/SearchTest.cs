@@ -4,6 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+/// <summary>
+/// Testclass for all search related methods
+/// </summary>
 namespace DiaryApp.Test
 {
   [TestClass]

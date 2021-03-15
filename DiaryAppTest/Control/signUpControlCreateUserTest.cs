@@ -1,6 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
+/// <summary>
+/// Testclass to create new user
+/// </summary>
 namespace DiaryApp.Test
 {
   [TestClass]

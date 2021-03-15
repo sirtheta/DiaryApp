@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-//********************************************************************
-//This class is from
-//https://stackoverflow.com/questions/4181198/how-to-hash-a-password
-//********************************************************************
+///********************************************************************
+///This class is from
+///https://stackoverflow.com/questions/4181198/how-to-hash-a-password
+///********************************************************************
+
+/// <summary>
+/// Class to encrypt and decrypt the given string
+/// </summary>
 namespace DiaryApp
 {
   public static class SecurePasswordHasher
@@ -15,10 +19,10 @@ namespace DiaryApp
     /// Size of hash.
     private const int HashSize = 20;
 
-    // Creates a hash from a password.
-    // <param name="password">The password.</param>
-    // <param name="iterations">Number of iterations.</param>
-    // <returns>The hash.</returns>
+    /// Creates a hash from a password.
+    /// <param name="password">The password.</param>
+    /// <param name="iterations">Number of iterations.</param>
+    /// <returns>The hash.</returns>
     public static string Hash(string password, int iterations)
     {
       // Create salt
@@ -42,26 +46,26 @@ namespace DiaryApp
       }
     }
 
-    // Creates a hash from a password with 10000 iterations
-    // <param name="password">The password.</param>
-    // <returns>The hash.</returns>
+    /// Creates a hash from a password with 10000 iterations
+    /// <param name="password">The password.</param>
+    /// <returns>The hash.</returns>
     public static string Hash(string password)
     {
       return Hash(password, 10000);
     }
 
-    // Checks if hash is supported.
-    // <param name="hashString">The hash.</param>
-    // <returns>Is supported?</returns>
+    /// Checks if hash is supported.
+    /// <param name="hashString">The hash.</param>
+    /// <returns>Is supported?</returns>
     public static bool IsHashSupported(string hashString)
     {
       return hashString.Contains("HASH|V1$");
     }
 
-    // Verifies a password against a hash.
-    // <param name="password">The password.</param>
-    // <param name="hashedPassword">The hash.</param>
-    // <returns>Could be verified?</returns>
+    /// Verifies a password against a hash.
+    /// <param name="password">The password.</param>
+    /// <param name="hashedPassword">The hash.</param>
+    /// <returns>Could be verified?</returns>
     public static bool Verify(string password, string hashedPassword)
     {
       // Check hash

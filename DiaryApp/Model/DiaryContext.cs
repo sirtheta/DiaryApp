@@ -5,6 +5,8 @@ namespace DiaryApp
   class DiaryContext : DbContext
   {
     private static string _connectionName;
+    ///sets the connection name configured in App.config
+    ///if ConnectionName is not set, the standard connection "DiaryApp" will be used
     public static string ConnectionName
     {
       get

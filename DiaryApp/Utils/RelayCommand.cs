@@ -2,6 +2,9 @@
 using System.Diagnostics;
 using System.Windows.Input;
 
+/// <summary>
+/// Relays the command from the command of MainWindowControl
+/// </summary>
 namespace DiaryApp
 {
   class RelayCommand<T> : ICommand

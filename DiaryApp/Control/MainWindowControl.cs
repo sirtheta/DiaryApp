@@ -11,8 +11,12 @@ using System.Security;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-
+//set all internals visible for the unittests
 [assembly: InternalsVisibleTo("DiaryApp.Test", AllInternalsVisible = true)]
+
+/// <summary>
+/// Main Control Class for the MainWindow view
+/// </summary>
 namespace DiaryApp
 {
   //Inherit from AbstractPropertyChanged to use the OnPropertyChanged method
@@ -48,6 +52,7 @@ namespace DiaryApp
     #endregion
 
     #region BindingProperties
+    //all properties with binding to MainWindow.xaml
     public ObservableCollection<DiaryEntryModel> EntriesToShow
     {
       get => _entriesToShow;
@@ -221,6 +226,7 @@ namespace DiaryApp
     #endregion
 
     #region ICommands
+    //contains all commands with binding from MainView.xaml
     public ICommand OpenSignInPopupCommand
     {
       get => new RelayCommand<object>(ExecuteOpenLoginPopup);
@@ -288,6 +294,7 @@ namespace DiaryApp
     #endregion
 
     #region ExecuteCommands
+    //Executen methods of the calling ICommands
     private void ExecuteOpenLoginPopup(object Parameter) => PopupSignInIsOpen = true;
     private void ExecuteCloseLoginPopup(object Parameter) => PopupSignInIsOpen = false;
     private void ExecuteOpenSignUpWindow(object Parameter) => new SignUp().ShowDialog();
@@ -295,12 +302,12 @@ namespace DiaryApp
     private void ExecuteSignOut(object Parameter) => SignOut();
     private void ExecuteSaveEntry(object Parameter) => SaveOrUpdateEntry();
     private void ExecuteAddImage(object Parameter) => AddImage();
-    private void ExecuteNew(object Parameter) => ShowAll();
-    private void ExecuteDelete(object Parameter) => DeleteSelectedEntry();
+    private void ExecuteNew(object Parameter) => ClearAndShow();
+    private void ExecuteDelete(object Parameter) => AskToDeleteSelectedEntry();
     private void ExecuteSearchByTagCommand(object Parameter) => ShowEntrysByTag();
     private void ExecuteSearchByDateCommand(object Parameter) => GetEntrysByDate();
     private void ExecuteSearchDatesWithoutEntryCommand(object Parameter) => ShowDatesWithoutEntry();
-    private void ExecuteShowAll(object Parameter) => ShowAll();
+    private void ExecuteShowAll(object Parameter) => ClearAndShow();
     #endregion
 
     //Is executed when the window is loaded
@@ -311,14 +318,13 @@ namespace DiaryApp
       CalendarSelectedDate = DateTime.Today;
     }
 
-    //**************************************************************************
-    //Methods
-    //**************************************************************************
+    ///**************************************************************************
+    ///Methods
+    ///**************************************************************************
     #region SignIn/out
-
+    //called directly from MainWindow.xaml
     public void SignIn()
     {
-      //verify entered password with the stored password in DB using securePasswordHasher
       if (VerifyUser())
       {
         ShowNotification("Success", "Sign in successfull!", NotificationType.Success);
@@ -331,9 +337,11 @@ namespace DiaryApp
       SignInPassword = null;
     }
 
+    //verify entered password with the stored password in DB using securePasswordHasher
     internal bool VerifyUser()
     {
       var user = DbController.GetUserFromDb(SignInUserName).SingleOrDefault();
+
       if (SignInPassword != null && SecurePasswordHasher.Verify(ToNormalString(SignInPassword), user.Password))
       {
         Verified(user);
@@ -342,6 +350,7 @@ namespace DiaryApp
       return false;
     }
 
+    //this is called when the user is successfull verified
     internal void Verified(UserModel user)
     {
       SignedInUserId = user.UserId;
@@ -351,7 +360,7 @@ namespace DiaryApp
       PopupSignInIsOpen = false;
       SignedInUserFullName = DbController.GetFullName(SignedInUserId);
       LoadEntrysFromDb();
-      ShowAll();
+      ClearAndShow();
     }
 
     //Load all entrys from DB with the logged in User
@@ -360,6 +369,7 @@ namespace DiaryApp
       _entriesAll = new List<DiaryEntryModel>(DbController.GetEntrysFromDb(SignedInUserId));
     }
 
+    //clear all elements on signOut command
     private void SignOut()
     {
       ClearControls();
@@ -377,12 +387,14 @@ namespace DiaryApp
 
     private void SaveOrUpdateEntry()
     {
+      //determine wehter the entry should be updated or created
+      //if datacrid selection is null, a new entry is created
       if (DatagridSelectedItem == null)
       {
         if (!string.IsNullOrEmpty(EntryText))
         {
           SaveEntry();
-          ShowAll();
+          ClearAndShow();
           ShowNotification("Success", "Your diary entry is saved successfull", NotificationType.Success);
         }
         else
@@ -394,7 +406,7 @@ namespace DiaryApp
       else if (DatagridSelectedItem is DiaryEntryModel updateEntry)
       {
         UpdateEntry(updateEntry);
-        ShowAll();
+        ClearAndShow();
         ShowNotification("Success", "Your diary entry is updated!", NotificationType.Success);
       }
     }
@@ -435,7 +447,7 @@ namespace DiaryApp
       _entriesAll.Add(entry);
     }
 
-    private void DeleteSelectedEntry()
+    private void AskToDeleteSelectedEntry()
     {
       if (DatagridSelectedItem != null && DatagridSelectedItem.EntryId != 0)
       {
@@ -445,7 +457,7 @@ namespace DiaryApp
           DeleteEntry(DatagridSelectedItems.Cast<DiaryEntryModel>().ToList());
           ShowNotification("Success", "Entry Successfull deleted", NotificationType.Success);
           //Update Datagrid
-          ShowAll();
+          ClearAndShow();
         }
       }
       else
@@ -456,6 +468,7 @@ namespace DiaryApp
 
     internal void DeleteEntry(List<DiaryEntryModel> entry)
     {
+      //Remove every selected entry in the list and in the DB
       foreach (var item in entry)
       {
         _entriesAll.Remove(item);
@@ -463,6 +476,7 @@ namespace DiaryApp
       }
     }
 
+    //is called from the addImage button
     private void AddImage()
     {
       var fileUri = LoadImage();
@@ -475,19 +489,21 @@ namespace DiaryApp
     #endregion
 
     #region Search
-    //Search for entrys by Date
+    ///Search for entrys by Date 
+    ///compareing is made with string due to the time element in the DateTime struct
     private void GetEntrysByDate()
     {
-      EntriesToShow = new ObservableCollection<DiaryEntryModel>(_entriesAll.Where(lst => lst.Date.ToString("dd.MM yyyy") == CalendarSelectedDate.ToString("dd.MM yyyy")));
+      EntriesToShow = new ObservableCollection<DiaryEntryModel>(_entriesAll.Where(lst => lst.Date == CalendarSelectedDate));
     }
 
-    //Filter all entrys by clicked tag. 
-    //If more than one tag is selected, the range from the second or third will be added to the existing list
-    //To remove duplicate, use Distinct at the end
     private void ShowEntrysByTag()
     {
       Show(GetEntrysByTag());
     }
+
+    ///Filter all entries by clicked tag. If more than one tag is selected, 
+    ///the range from the second or third will be added to the existing 
+    ///list to remove duplicate, use Distinct() at the end
     internal List<DiaryEntryModel> GetEntrysByTag()
     {
       var query = new List<DiaryEntryModel>();
@@ -528,8 +544,8 @@ namespace DiaryApp
       return query.Distinct().ToList();
     }
 
-    //Search for dates withtout entrys. Display all found dates in the datagrid.
-    //By selecting one of the dates, you can add a new entry on that specific date
+    ///Search for dates withtout entrys. Display all found dates in the datagrid.
+    ///By selecting one of the dates, you can add a new entry on that specific date
     internal void ShowDatesWithoutEntry()
     {
       if (!GetDatesWithoutEntry())
@@ -549,11 +565,12 @@ namespace DiaryApp
       //Cast selected range to a DateTime list to Enumerate with foreach
       var calendarSelectedDateRange = CalendarSelectedRange.Cast<DateTime>().ToList();
 
+      //remove all dates from the selected date list where a entry with this date exist
       foreach (var entry in _entriesAll)
       {
         calendarSelectedDateRange.Remove(entry.Date.Date);
       }
-
+      //add every leftover date to the list to show in the datagrid
       foreach (var item in calendarSelectedDateRange)
       {
         var onlyDate = new DiaryEntryModel()
@@ -566,10 +583,10 @@ namespace DiaryApp
       Show(onlyDateList);
       return true;
     }
-
     #endregion
 
-    //If item is selected in Datagrid, show it
+    ///If item is selected in Datagrid, show it
+    ///TODO: Check if input has changed. as of now, not saved changes ar lost
     private void ShowSelectedItem()
     {
       if (DatagridSelectedItem != null)
@@ -584,12 +601,13 @@ namespace DiaryApp
       }
     }
 
-    private void ShowAll()
+    //Clear all controls and display all entries in datagrid
+    private void ClearAndShow()
     {
       ClearControls();
       EntriesToShow = new ObservableCollection<DiaryEntryModel>(_entriesAll.OrderByDescending(d => d.Date));
     }
-
+    //Displays the input list in the datagrid
     private void Show(List<DiaryEntryModel> entry)
     {
       EntriesToShow = new ObservableCollection<DiaryEntryModel>(entry.OrderByDescending(d => d.Date));
@@ -606,6 +624,7 @@ namespace DiaryApp
       _imgInByteArr = null;
     }
 
+    //Methods for Image (load and show)
     #region Image
     //Load the image uri from file with file dialog
     private string LoadImage()
@@ -624,14 +643,14 @@ namespace DiaryApp
       return retVal;
     }
 
-    //call the imageconverter, standard max size is 1024
-    //specify if needed
+    ///call the imageconverter, standard max size is 1024 
+    ///specify if needed
     private void ProcessImage(string fileUri)
     {
       _imgInByteArr = Imager.ImageToByteArray(fileUri);
     }
 
-    //Display image in GUI
+    //Display image in GUI-->ImageBoxSource
     private void DisplayImage()
     {
       ImageBoxSource = Imager.ImageFromByteArray(_imgInByteArr);

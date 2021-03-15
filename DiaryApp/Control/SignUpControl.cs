@@ -5,9 +5,12 @@ using System.Runtime.CompilerServices;
 using System.Security;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
-
+//set all internals visible for the unittests
 [assembly: InternalsVisibleTo("DiaryApp.Test", AllInternalsVisible = true)]
 
+/// <summary>
+/// Control Class for Sign up view
+/// </summary>
 namespace DiaryApp
 {
   internal class SignUpControl : ControlBase
@@ -68,6 +71,7 @@ namespace DiaryApp
       }
     }
 
+    //this sets the registered action in view to close the sign up window
     public Action CloseAction { get; set; }
 
     public ICommand CloseApplicationCommand
@@ -115,11 +119,15 @@ namespace DiaryApp
       }
     }
 
+    ///check if entered user already exist. -->Get a list of user with the entered username
+    ///this list should have zero entries, then user does not exist
     internal bool CheckUserDuplicate()
     {
       return DbController.GetUserFromDb(UserName).Count == 0;
     }
 
+    ///Check the entered password with regex
+    ///Regex: minimum 8 characters, 1 lowercase, 1 uppercase, 1 digit and 1 special char
     internal bool CheckPwdWithRegex()
     {
       Regex regex = new Regex(@"^(?=(.*\d){2})(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).{8,}$");
@@ -130,6 +138,7 @@ namespace DiaryApp
       return true;
     }
 
+    //check if the two entered password matches
     internal bool CheckPasswordMatch()
     {
       if (SignInPassword == null || SignInPasswordConfirm == null)

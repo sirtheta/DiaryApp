@@ -1,6 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
+
+/// <summary>
+/// Testclass for all the login related mehtods
+/// </summary>
 namespace DiaryApp.Test
 {
   [TestClass]

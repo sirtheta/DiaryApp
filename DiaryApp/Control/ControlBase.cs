@@ -29,7 +29,7 @@ namespace DiaryApp
               areaName: "WindowArea", expirationTime: new TimeSpan(0, 0, 2));
     }
 
-    //Converts the SecureString to a normal string
+    //Converts a SecureString to a normal string
     internal protected static string ToNormalString(SecureString input)
     {
       IntPtr strptr = IntPtr.Zero;

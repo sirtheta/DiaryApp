@@ -2,6 +2,9 @@
 using System;
 using System.Linq;
 
+/// <summary>
+/// Testclass for the three enty manipulating methods
+/// </summary>
 namespace DiaryApp.Test
 {
   [TestClass]

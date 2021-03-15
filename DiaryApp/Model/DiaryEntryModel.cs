@@ -17,9 +17,10 @@ namespace DiaryApp
     public DateTime Date { get; set; }
     public byte[] ByteImage { get; set; }
 
-    //Add foreignkey from UserDb to Entry
+    //Add foreign key from UserDb to Entry
     public int UserId { get; set; }
 
+    //generate the tagtext according to selected bool
     public string TagText
     {
       get

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
+/// <summary>
+/// Class to Initialize the database that one can see something without sign up first
+/// </summary>
 namespace DiaryApp
 {
   //**************************************************************************
@@ -13,7 +16,7 @@ namespace DiaryApp
     public static void CreateTestUser()
     {
       using var db = new DiaryContext();
-      if (!db.Users.Any())
+      if (!db.Users.Any())//only create user if no users exist
       {
         List<UserModel> lstUser = new List<UserModel>() { new UserModel { UserName = "1", FirstName = "User", LastName = "Example", Password = SecurePasswordHasher.Hash("1") } };
         lstUser.Add(new UserModel { UserName = "2", FirstName = "User2", LastName = "Example2", Password = SecurePasswordHasher.Hash("2") });
@@ -27,7 +30,7 @@ namespace DiaryApp
     {
       using var db = new DiaryContext();
       //add some test entrys to the EntryDb for TestUser 1 and 2 if db is empty
-      if (!db.DiaryEntrys.Any())
+      if (!db.DiaryEntrys.Any()) //only create entries if no entries exist
       {
         byte[] img;
         string testText = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor " +
@@ -51,6 +54,7 @@ namespace DiaryApp
             ByteImage = img,
             Date = DateTime.Today
           },
+          //create a sencond entry for user 2
           new DiaryEntryModel
           {
             UserId = 2,

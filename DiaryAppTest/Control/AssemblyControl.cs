@@ -1,6 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data.Entity;
 
+/// <summary>
+/// Methods in this class are called at beginning and at the end of test
+/// </summary>
 namespace DiaryApp.Test
 {
   [TestClass]

@@ -4,6 +4,12 @@ using SixLabors.ImageSharp.Processing;
 using System.IO;
 using System.Windows.Media.Imaging;
 
+
+/// <summary>
+/// This class is handling the image.
+/// Convert from and to a Bytearray 
+/// Resize the image to a specified height and width
+/// </summary>
 namespace DiaryApp
 {
   class Imager

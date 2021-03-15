@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Data.Entity;
 
+
+/// <summary>
+/// Class to initialize the UnitTest DB
+/// </summary>
 namespace DiaryApp.Test
 {
+  //always create a new Database and seed it with users and Entrys
   internal class TestDbInitializer : DropCreateDatabaseAlways<DiaryContext>
   {
     protected override void Seed(DiaryContext context)
@@ -11,6 +16,7 @@ namespace DiaryApp.Test
       AddTestEntrys(context);
     }
 
+    //create test users for UnitTest
     private void AddTestUser(DiaryContext context)
     {
       context.Users.Add(new UserModel { UserName = "Tester" });
@@ -20,6 +26,7 @@ namespace DiaryApp.Test
       context.SaveChanges();
     }
 
+    //create test entries for UnitTest
     private void AddTestEntrys(DiaryContext context)
     {
       //Entry to delete

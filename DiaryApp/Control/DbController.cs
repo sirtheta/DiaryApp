@@ -25,9 +25,9 @@ namespace DiaryApp
       var result = db.DiaryEntrys.SingleOrDefault(e => e.EntryId == entry.EntryId);
       if (result != null)
       {
-        db.Entry(result).CurrentValues.SetValues(entry);
+        db.Entry(result).CurrentValues.SetValues(entry);//update entry to the given ID
       }
-      else
+      else //Save new entry
       {
         db.DiaryEntrys.Add(entry);
       }

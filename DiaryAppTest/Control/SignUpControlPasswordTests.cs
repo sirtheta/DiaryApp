@@ -1,5 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+/// <summary>
+/// Testclass to test all the password requirements
+/// </summary>
 namespace DiaryApp.Test
 {
   [TestClass]
