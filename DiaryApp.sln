@@ -5,12 +5,12 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiaryApp", "DiaryApp\DiaryApp.csproj", "{8886AB6D-EB5A-43F0-A8DE-ED5E8916B8C2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A0D7ECFC-BC01-4EF3-912E-943BF79695E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiaryApp.Test", "DiaryAppTest\DiaryApp.Test.csproj", "{499A6E54-F004-4E0A-A84D-FBCC3AC0BFA3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{175A6C5E-8B5F-4B31-8D0D-3CBE4DF988AA}"
 	ProjectSection(SolutionItems) = preProject
 		nuget.config = nuget.config
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiaryApp.Test", "DiaryAppTest\DiaryApp.Test.csproj", "{499A6E54-F004-4E0A-A84D-FBCC3AC0BFA3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
