@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
-using System.Text;
+using System.Linq;
 
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace DiaryApp
@@ -25,28 +25,9 @@ namespace DiaryApp
     {
       get
       {
-        StringBuilder sb = new StringBuilder();
-        if (TagFamily)
-        {
-          sb.Append("Family");
-        }
-        if (TagFriends)
-        {
-          if (sb.Length != 0)
-          {
-            sb.Append(", ");
-          }
-          sb.Append("Friends");
-        }
-        if (TagBirthday)
-        {
-          if (sb.Length != 0)
-          {
-            sb.Append(", ");
-          }
-          sb.Append("Birthday");
-        }
-        return sb.ToString();
+        string[] vs = new string[] { TagFamily ? "Family" : null, TagFriends ? "Friends" : null, TagBirthday ? "Birthday" : null };
+        vs = vs.Where(s => !string.IsNullOrEmpty(s)).ToArray();
+        return vs.Length > 0 ? vs.Aggregate((a, b) => $"{a}, {b}") : "";
       }
     }
   }
