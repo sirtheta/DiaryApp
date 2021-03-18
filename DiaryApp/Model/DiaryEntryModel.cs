@@ -23,9 +23,7 @@ namespace DiaryApp
     {
       get
       {
-        string[] vs = new string[] { TagFamily ? "Family" : null, TagFriends ? "Friends" : null, TagBirthday ? "Birthday" : null };
-        vs = vs.Where(s => !string.IsNullOrEmpty(s)).ToArray();
-        return vs.Length > 0 ? vs.Aggregate((a, b) => $"{a}, {b}") : "";
+        return ((TagFamily ? "Family, " : "") + (TagFriends ? "Friends, " : "") + (TagBirthday ? "Birthday " : "")).Trim(new char[] { ' ', ',' });
       }
     }
   }
