@@ -72,16 +72,12 @@ namespace DiaryApp
         DragMove();
       }
     }
-
-    //private void BtnDarkSwitch_Click(object sender, RoutedEventArgs e)
-    //{
     //  //For Dark Theme switch implementation:
     //  bool isDark = true;
     //  ITheme theme = _paletteHelper.GetTheme();
     //  IBaseTheme baseTheme = isDark ? new MaterialDesignDarkTheme() : (IBaseTheme)new MaterialDesignLightTheme();
     //  theme.SetBaseTheme(baseTheme);
     //  _paletteHelper.SetTheme(theme);
-    //}
     //private readonly PaletteHelper _paletteHelper = new PaletteHelper();
   }
 }

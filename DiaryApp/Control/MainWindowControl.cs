@@ -11,6 +11,7 @@ using System.Security;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+
 //set all internals visible for the unittests
 [assembly: InternalsVisibleTo("DiaryApp.Test", AllInternalsVisible = true)]
 

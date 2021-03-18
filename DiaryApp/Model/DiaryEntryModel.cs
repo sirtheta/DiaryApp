@@ -1,9 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.CompilerServices;
 using System.Linq;
 
-[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace DiaryApp
 {
   internal class DiaryEntryModel
