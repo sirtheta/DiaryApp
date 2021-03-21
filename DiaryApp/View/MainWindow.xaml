@@ -39,7 +39,7 @@
         <!--***************************************************
         Header
         ***************************************************-->
-        <materialDesign:Card x:Name="cardHeader" UniformCornerRadius="0" Grid.Row="0" Padding="10" Margin="0" materialDesign:ShadowAssist.ShadowDepth="Depth3" Height="50"  Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2" MouseDown="CardHeader_MouseDown">
+        <materialDesign:Card x:Name="cardHeader" UniformCornerRadius="0" Grid.Row="0" Padding="10" Margin="0" materialDesign:ShadowAssist.ShadowDepth="Depth2" Height="50"  Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2" MouseDown="CardHeader_MouseDown">
           <Grid>
             <StackPanel Orientation="Horizontal">
               <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" FontSize="20" ><Run Text="Welcome"/></TextBlock>
@@ -136,7 +136,7 @@
         </Border.Effect>
         <Grid Background="{DynamicResource MaterialDesignPaper}">
           <StackPanel>
-            <materialDesign:Card UniformCornerRadius="0" Grid.Row="0" Padding="10" Margin="0" Height="50" materialDesign:ShadowAssist.ShadowDepth="Depth3" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2">
+            <materialDesign:Card UniformCornerRadius="0" Grid.Row="0" Padding="10" Margin="0" Height="50" materialDesign:ShadowAssist.ShadowDepth="Depth2" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Visible" Grid.ColumnSpan="2">
               <StackPanel  Margin="0,0,0,0">
                 <TextBlock x:Name="txtPopupTitle" HorizontalAlignment="Center" VerticalAlignment="Stretch" Style="{DynamicResource MaterialDesignHeadline6TextBlock}" FontSize="25" >Sign in</TextBlock>
                 <Button x:Name="btnSignInClose"  HorizontalAlignment="Right" Margin="0,-36,0,0" Width="54" Command="{Binding Path=CloseSignInPopupCommand}" Style="{DynamicResource MaterialDesignToolForegroundButton}" fa5:Awesome.Content="Solid_PowerOff" FontSize="25" ToolTip="Close" Height="45" />
