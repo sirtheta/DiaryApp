@@ -10,7 +10,7 @@ namespace DiaryApp.Test
   public class SignUpControlCreateUserTest
   {
     readonly SignUpControl _signUpControl = new SignUpControl();
-
+    DbController db = new DbController();
     [TestMethod("User Duplicate: new user")]
     public void CheckUserDuplicateTest()
     {
@@ -33,7 +33,7 @@ namespace DiaryApp.Test
       _signUpControl.UserName = "JDO";
       _signUpControl.SignInPassword = Helper.ConvertToSecureString("5T!kq*o4f");
       _signUpControl.CreateNewUser();
-      var user = DbController.GetUserFromDb("JDO").SingleOrDefault();
+      var user = db.GetUserFromDb("JDO").SingleOrDefault();
       Assert.AreEqual("John", user.FirstName);
       Assert.AreEqual("Doe", user.LastName);
       Assert.AreEqual("JDO", user.UserName);

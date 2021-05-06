@@ -11,6 +11,7 @@ namespace DiaryApp.Test
   public class ManipulateEntryTest
   {
     readonly MainWindowControl _mainWindowControl = new MainWindowControl();
+    DbController db = new DbController();
 
     [TestMethod]
     public void SaveEntryTest()
@@ -23,7 +24,7 @@ namespace DiaryApp.Test
       _mainWindowControl.FriendsIsChecked = false;
       _mainWindowControl.BirthdayIsChecked = true;
       _mainWindowControl.SaveEntry();
-      var entry = DbController.GetEntrysFromDb(4).SingleOrDefault();
+      var entry = db.GetEntrysFromDb(4).SingleOrDefault();
       Assert.AreEqual("SaveEntryTest", entry.Text);
       Assert.AreEqual(DateTime.Today.Date, entry.Date);
       Assert.IsTrue(entry.TagFamily);
@@ -37,14 +38,14 @@ namespace DiaryApp.Test
     {
       _mainWindowControl.SignedInUserId = 3;
       _mainWindowControl.LoadEntrysFromDb();
-      var entryToUpdate = DbController.GetEntrysFromDb(_mainWindowControl.SignedInUserId).SingleOrDefault();
+      var entryToUpdate = db.GetEntrysFromDb(_mainWindowControl.SignedInUserId).SingleOrDefault();
       _mainWindowControl.EntryText = "Seed entry edited";
       _mainWindowControl.CalendarSelectedDate = DateTime.Today.AddDays(-1);
       _mainWindowControl.FamilyIsChecked = true;
       _mainWindowControl.BirthdayIsChecked = false;
       _mainWindowControl.FriendsIsChecked = true;
       _mainWindowControl.UpdateEntry(entryToUpdate);
-      var entry = DbController.GetEntrysFromDb(3).SingleOrDefault();
+      var entry = db.GetEntrysFromDb(3).SingleOrDefault();
       Assert.AreEqual("Seed entry edited", entry.Text);
       Assert.AreEqual(DateTime.Today.AddDays(-1).Date, entry.Date);
       Assert.IsTrue(entry.TagFamily);
@@ -58,9 +59,9 @@ namespace DiaryApp.Test
     {
       _mainWindowControl.SignedInUserId = 1;
       _mainWindowControl.LoadEntrysFromDb();
-      var entryToDelete = DbController.GetEntrysFromDb(_mainWindowControl.SignedInUserId);
+      var entryToDelete = db.GetEntrysFromDb(_mainWindowControl.SignedInUserId);
       _mainWindowControl.DeleteEntry(entryToDelete);
-      Assert.AreNotSame(entryToDelete, DbController.GetEntrysFromDb(_mainWindowControl.SignedInUserId));
+      Assert.AreNotSame(entryToDelete, db.GetEntrysFromDb(_mainWindowControl.SignedInUserId));
     }
   }
 }

@@ -15,6 +15,7 @@ namespace DiaryApp
 {
   internal class SignUpControl : ControlBase
   {
+    DbController db = new DbController();
     private string _lastName;
     private string _firstName;
     private string _userName;
@@ -123,7 +124,7 @@ namespace DiaryApp
     ///this list should have zero entries, then user does not exist
     internal bool CheckUserDuplicate()
     {
-      return DbController.GetUserFromDb(UserName).Count == 0;
+      return db.GetUserFromDb(UserName).Count == 0;
     }
 
     ///Check the entered password with regex
@@ -162,7 +163,7 @@ namespace DiaryApp
         UserName = UserName,
         Password = SecurePasswordHasher.Hash(ToNormalString(SignInPassword))
       };
-      DbController.UserToDb(newUser);
+      db.UserToDb(newUser);
     }
     #endregion
   }

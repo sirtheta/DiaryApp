@@ -11,9 +11,9 @@ namespace DiaryApp
   //**************************************************************************
   //Create test entrys
   //**************************************************************************
-  static class DatabaseInitializer
+  class DatabaseInitializer
   {
-    public static void CreateTestUser()
+    public void CreateTestUser()
     {
       using var db = new DiaryContext();
       if (!db.Users.Any())//only create user if no users exist
@@ -26,7 +26,7 @@ namespace DiaryApp
       }
     }
 
-    public static void CreateTestEntrys()
+    public void CreateTestEntrys()
     {
       using var db = new DiaryContext();
       //add some test entrys to the EntryDb for TestUser 1 and 2 if db is empty

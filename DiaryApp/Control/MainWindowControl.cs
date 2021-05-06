@@ -23,7 +23,7 @@ namespace DiaryApp
   //Inherit from AbstractPropertyChanged to use the OnPropertyChanged method
   internal class MainWindowControl : ControlBase
   {
-
+    DbController db = new DbController();
     #region Members
     private byte[] _imgInByteArr;
     private int _signedInUserId;
@@ -341,7 +341,7 @@ namespace DiaryApp
     //verify entered password with the stored password in DB using securePasswordHasher
     internal bool VerifyUser()
     {
-      var user = DbController.GetUserFromDb(SignInUserName).SingleOrDefault();
+      var user = db.GetUserFromDb(SignInUserName).SingleOrDefault();
 
       if (SignInPassword != null && SecurePasswordHasher.Verify(ToNormalString(SignInPassword), user.Password))
       {
@@ -359,7 +359,7 @@ namespace DiaryApp
       BtnSignOutVisibility = Visibility.Visible;
       BtnSignInVisibility = Visibility.Hidden;
       PopupSignInIsOpen = false;
-      SignedInUserFullName = DbController.GetFullName(SignedInUserId);
+      SignedInUserFullName = db.GetFullName(SignedInUserId);
       LoadEntrysFromDb();
       ClearAndShow();
     }
@@ -367,7 +367,7 @@ namespace DiaryApp
     //Load all entrys from DB with the logged in User
     internal void LoadEntrysFromDb()
     {
-      _entriesAll = new List<DiaryEntryModel>(DbController.GetEntrysFromDb(SignedInUserId));
+      _entriesAll = new List<DiaryEntryModel>(db.GetEntrysFromDb(SignedInUserId));
     }
 
     //clear all elements on signOut command
@@ -425,7 +425,7 @@ namespace DiaryApp
         UserId = SignedInUserId
       };
 
-      DbController.EntryToDb(newEntry);
+      db.EntryToDb(newEntry);
       _entriesAll.Add(newEntry);
     }
 
@@ -443,7 +443,7 @@ namespace DiaryApp
         UserId = SignedInUserId
       };
 
-      DbController.EntryToDb(entry);
+      db.EntryToDb(entry);
       _entriesAll.Remove(updateEntry);
       _entriesAll.Add(entry);
     }
@@ -473,7 +473,7 @@ namespace DiaryApp
       foreach (var item in entry)
       {
         _entriesAll.Remove(item);
-        DbController.DeleteEntryInDb(item);
+        db.DeleteEntryInDb(item);
       }
     }
 
@@ -648,13 +648,15 @@ namespace DiaryApp
     ///specify if needed
     private void ProcessImage(string fileUri)
     {
-      _imgInByteArr = Imager.ImageToByteArray(fileUri);
+      Imager img = new Imager();
+      _imgInByteArr = img.ImageToByteArray(fileUri);
     }
 
     //Display image in GUI-->ImageBoxSource
     private void DisplayImage()
     {
-      ImageBoxSource = Imager.ImageFromByteArray(_imgInByteArr);
+      Imager img = new Imager();
+      ImageBoxSource = img.ImageFromByteArray(_imgInByteArr);
     }
     #endregion
   }

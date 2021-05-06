@@ -10,12 +10,13 @@ namespace DiaryApp.Test
   [TestClass]
   public class LoginTest
   {
+    DbController db = new DbController();
     readonly MainWindowControl _mainWindowControl = new MainWindowControl();
 
     [TestMethod]
     public void VerifiedTest()
     {
-      var user = DbController.GetUserFromDb("Michelle").SingleOrDefault();
+      var user = db.GetUserFromDb("Michelle").SingleOrDefault();
       _mainWindowControl.Verified(user);
       Assert.AreEqual("Michelle Hunziker", _mainWindowControl.SignedInUserFullName);
     }

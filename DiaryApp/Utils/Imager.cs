@@ -12,9 +12,9 @@ using System.Windows.Media.Imaging;
 /// </summary>
 namespace DiaryApp
 {
-  class Imager
+  public class Imager
   {
-    public static BitmapImage ImageFromByteArray(byte[] array)
+    public BitmapImage ImageFromByteArray(byte[] array)
     {
       if (array != null)
       {
@@ -29,7 +29,7 @@ namespace DiaryApp
       return null;
     }
 
-    public static byte[] ImageToByteArray(string fileUri, int width = 1024, int height = 1024)
+    public byte[] ImageToByteArray(string fileUri, int width = 1024, int height = 1024)
     {
       using Image image = Image.Load(fileUri);
       if (image.Width > width || image.Height > height)
@@ -39,7 +39,7 @@ namespace DiaryApp
       return ms.ToArray();
     }
 
-    private static void ResizeImage(Image image, int width, int height)
+    private void ResizeImage(Image image, int width, int height)
     {
       int resizeMaxWidth;
       int resizeMaxHeight;
